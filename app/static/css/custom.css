@@ -1,0 +1,288 @@
+/* カスタムスタイル */
+
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #50C878;
+}
+
+body {
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* ヒーローセクション */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 80px 0;
+    margin-bottom: 40px;
+}
+
+.hero-section .card {
+    background: white;
+    color: #333;
+}
+
+/* ナビゲーション */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* ボタン */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #3a7bc8;
+    border-color: #3a7bc8;
+}
+
+/* 質問ページ */
+.option-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option-card:hover {
+    background-color: #f8f9fa;
+    border-color: var(--primary-color) !important;
+}
+
+.option-card.selected {
+    background-color: #e7f3ff;
+    border-color: var(--primary-color) !important;
+    border-width: 2px !important;
+}
+
+.option-card .form-check-input {
+    margin-top: 0.5rem;
+}
+
+.option-card label {
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+/* プログレスバー */
+.progress {
+    border-radius: 10px;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+}
+
+/* カード */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* 質問カードのアニメーション */
+.question-card {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 軸バッジ */
+.axis-badge {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    color: white;
+    margin-right: 5px;
+}
+
+/* 軸アイテムのアニメーション */
+.axis-item {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.axis-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.axis-item:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.axis-item:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.axis-item:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+/* 結果ページ */
+.display-3 {
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* 結果カードのアニメーション */
+.result-card {
+    animation: zoomIn 0.8s ease-out;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-result {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* スコアカード */
+.score-card {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 強み・適職カード */
+.strength-card, .career-card {
+    animation: fadeInScale 0.8s ease-out;
+    transition: transform 0.3s ease;
+}
+
+.strength-card:hover, .career-card:hover {
+    transform: translateY(-5px);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.career-card {
+    animation-delay: 0.2s;
+}
+
+/* テーブル */
+.table {
+    font-size: 0.95rem;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* フッター */
+footer {
+    margin-top: auto;
+}
+

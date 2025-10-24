@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}トップページ - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">あなたの性格タイプを診断</h1>
+                <p class="lead mb-4">
+                    12問の質問に答えて、あなたのMBTI性格タイプを発見しましょう。<br>
+                    所要時間はわずか3分です。
+                </p>
+                
+                <div class="card shadow-sm mb-5">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3">診断について</h5>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">✓ 全12問の質問</li>
+                            <li class="mb-2">✓ 所要時間: 約3分</li>
+                            <li class="mb-2">✓ 4つの軸（E/I、S/N、T/F、J/P）で分析</li>
+                            <li class="mb-2">✓ 16タイプのいずれかに分類</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 診断開始フォーム -->
+                <form method="POST" action="{{ url_for('main.start') }}">
+                    <div class="row g-3 justify-content-center mb-4">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control form-control-lg" 
+                                   name="user_name" placeholder="お名前（任意）">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control form-control-lg" 
+                                   name="user_email" placeholder="メールアドレス（任意）">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3">
+                        診断を始める
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="text-center mb-4">MBTIとは？</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">E / I</h5>
+                            <p class="card-text">外向型 / 内向型<br>エネルギーの源</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">S / N</h5>
+                            <p class="card-text">感覚型 / 直観型<br>情報の受け取り方</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">T / F</h5>
+                            <p class="card-text">思考型 / 感情型<br>意思決定の方法</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">J / P</h5>
+                            <p class="card-text">判断型 / 知覚型<br>生活スタイル</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

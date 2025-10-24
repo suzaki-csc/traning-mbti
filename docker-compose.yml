@@ -1,0 +1,59 @@
+services:
+  # Flaskアプリケーション
+  web:
+    build: ./app
+    container_name: mbti-web
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://mbti_user:mbti_pass@db:5432/mbti_db
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+    networks:
+      - mbti-network
+    restart: unless-stopped
+
+  # PostgreSQLデータベース
+  db:
+    image: postgres:15-alpine
+    container_name: mbti-db
+    environment:
+      - POSTGRES_USER=mbti_user
+      - POSTGRES_PASSWORD=mbti_pass
+      - POSTGRES_DB=mbti_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - mbti-network
+    restart: unless-stopped
+
+  # pgAdmin（オプション: DB管理UI）
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: mbti-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - mbti-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  mbti-network:
+    driver: bridge
+

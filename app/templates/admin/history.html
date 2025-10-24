@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}診断履歴 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>診断履歴</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
+            ダッシュボードに戻る
+        </a>
+    </div>
+    
+    <!-- フィルター -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="type" class="form-label">タイプでフィルター</label>
+                    <select name="type" id="type" class="form-select">
+                        <option value="">すべてのタイプ</option>
+                        {% for type_code in ['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 
+                                             'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'] %}
+                        <option value="{{ type_code }}" {% if current_filter == type_code %}selected{% endif %}>
+                            {{ type_code }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">フィルター</button>
+                </div>
+                {% if current_filter %}
+                <div class="col-md-2">
+                    <a href="{{ url_for('admin.history') }}" class="btn btn-secondary w-100">クリア</a>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
+    <!-- 診断一覧テーブル -->
+    {% if diagnoses %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>タイプ</th>
+                            <th>ユーザー名</th>
+                            <th>メールアドレス</th>
+                            <th>診断日時</th>
+                            <th>アクション</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for diagnosis in diagnoses %}
+                        <tr id="row-{{ diagnosis.id }}">
+                            <td>{{ diagnosis.id }}</td>
+                            <td><span class="badge bg-primary">{{ diagnosis.mbti_type }}</span></td>
+                            <td>{{ diagnosis.user_name or '匿名' }}</td>
+                            <td>{{ diagnosis.user_email or '-' }}</td>
+                            <td>{{ diagnosis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" 
+                                        onclick="deleteDiagnosis({{ diagnosis.id }})">
+                                    削除
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ページネーション -->
+            {% if pagination.pages > 1 %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.history', page=pagination.prev_num, type=current_filter) }}">
+                            前へ
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('admin.history', page=page_num, type=current_filter) }}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.history', page=pagination.next_num, type=current_filter) }}">
+                            次へ
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <p class="mb-0">該当する診断データがありません。</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function deleteDiagnosis(id) {
+    if (!confirm('この診断を削除してもよろしいですか？')) {
+        return;
+    }
+    
+    fetch(`/admin/history/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 行を削除
+            const row = document.getElementById(`row-${id}`);
+            if (row) {
+                row.remove();
+            }
+            alert('削除しました');
+        } else {
+            alert('削除に失敗しました: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('エラーが発生しました: ' + error);
+    });
+}
+</script>
+{% endblock %}
+

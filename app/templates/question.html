@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}質問 {{ question_number }} / {{ total_questions }} - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- プログレスバー -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="mb-0">
+                            質問 <span class="badge bg-primary" style="font-size: 1.2rem;">{{ question_number }}</span> / {{ total_questions }}
+                        </h5>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success" style="font-size: 1rem;">{{ ((question_number / total_questions) * 100) | round | int }}%</span>
+                    </div>
+                </div>
+                <div class="progress" style="height: 12px; border-radius: 10px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-gradient" 
+                         role="progressbar" 
+                         style="width: {{ (question_number / total_questions) * 100 }}%; background: linear-gradient(90deg, #4A90E2 0%, #50C878 100%);"
+                         aria-valuenow="{{ question_number }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="{{ total_questions }}"></div>
+                </div>
+            </div>
+            
+            <!-- 質問カード -->
+            <div class="card shadow-sm mb-4 question-card">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="card-title mb-4 text-center fw-bold" style="color: #2c3e50; font-size: 1.5rem;">
+                        {{ question.text }}
+                    </h3>
+                    
+                    <form method="POST" id="questionForm">
+                        <div class="d-grid gap-3">
+                            {% for option in question.options %}
+                            <div class="form-check option-card p-4 border rounded">
+                                <input class="form-check-input" type="radio" 
+                                       name="answer" id="option{{ option.value }}" 
+                                       value="{{ option.value }}"
+                                       {% if saved_answer == option.value %}checked{% endif %}
+                                       required>
+                                <label class="form-check-label w-100" for="option{{ option.value }}">
+                                    <strong>{{ option.value }}.</strong> {{ option.text }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            {% if question_number > 1 %}
+                            <a href="{{ url_for('main.question', q_id=question_number - 1) }}" 
+                               class="btn btn-outline-secondary">
+                                ← 前の質問
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                                ← 最初に戻る
+                            </a>
+                            {% endif %}
+                            
+                            <button type="submit" class="btn btn-primary px-4">
+                                {% if question_number < total_questions %}
+                                    次へ →
+                                {% else %}
+                                    結果を見る
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ラジオボタンの親要素をクリックしても選択できるようにする
+document.querySelectorAll('.option-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'INPUT') {
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
+        }
+    });
+});
+
+// 選択されたオプションをハイライト
+document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        this.closest('.option-card').classList.add('selected');
+    });
+    
+    // ページロード時に選択済みをハイライト
+    if (radio.checked) {
+        radio.closest('.option-card').classList.add('selected');
+    }
+});
+</script>
+{% endblock %}
+

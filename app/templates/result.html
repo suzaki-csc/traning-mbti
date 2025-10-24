@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果: {{ mbti_type }} - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- 結果カード -->
+            <div class="card shadow-lg mb-4 result-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body p-4 p-md-5 text-center">
+                    <div class="mb-3">
+                        <span class="badge bg-light text-dark" style="font-size: 0.9rem;">あなたのタイプ</span>
+                    </div>
+                    <h1 class="display-1 fw-bold mb-3 animate-result" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: 5px;">
+                        {{ mbti_type }}
+                    </h1>
+                    <h2 class="h2 mb-4 fw-bold">{{ type_info.name }}</h2>
+                    <p class="lead mb-0" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                        {{ type_info.description[:100] }}{% if type_info.description|length > 100 %}...{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- スコア詳細 -->
+            <div class="card shadow-sm mb-4 score-card">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4 fw-bold">
+                        <i class="bi bi-graph-up"></i> あなたの傾向
+                    </h4>
+                    
+                    <!-- E/I 軸 -->
+                    <div class="mb-4 axis-item">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold"><span class="axis-badge bg-success">E</span> 外向 {{ percentages.E | round | int }}%</span>
+                            <span class="fw-bold"><span class="axis-badge bg-info">I</span> 内向 {{ percentages.I | round | int }}%</span>
+                        </div>
+                        <div class="progress" style="height: 30px; border-radius: 15px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ percentages.E }}%">
+                                <span class="px-2">{{ percentages.E | round | int }}%</span>
+                            </div>
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ percentages.I }}%">
+                                <span class="px-2">{{ percentages.I | round | int }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- S/N 軸 -->
+                    <div class="mb-4 axis-item">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold"><span class="axis-badge bg-warning text-dark">S</span> 感覚 {{ percentages.S | round | int }}%</span>
+                            <span class="fw-bold"><span class="axis-badge bg-primary">N</span> 直観 {{ percentages.N | round | int }}%</span>
+                        </div>
+                        <div class="progress" style="height: 30px; border-radius: 15px;">
+                            <div class="progress-bar bg-warning" role="progressbar" 
+                                 style="width: {{ percentages.S }}%">
+                                <span class="px-2 text-dark">{{ percentages.S | round | int }}%</span>
+                            </div>
+                            <div class="progress-bar bg-primary" role="progressbar" 
+                                 style="width: {{ percentages.N }}%">
+                                <span class="px-2">{{ percentages.N | round | int }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- T/F 軸 -->
+                    <div class="mb-4 axis-item">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold"><span class="axis-badge bg-secondary">T</span> 思考 {{ percentages.T | round | int }}%</span>
+                            <span class="fw-bold"><span class="axis-badge bg-danger">F</span> 感情 {{ percentages.F | round | int }}%</span>
+                        </div>
+                        <div class="progress" style="height: 30px; border-radius: 15px;">
+                            <div class="progress-bar bg-secondary" role="progressbar" 
+                                 style="width: {{ percentages.T }}%">
+                                <span class="px-2">{{ percentages.T | round | int }}%</span>
+                            </div>
+                            <div class="progress-bar bg-danger" role="progressbar" 
+                                 style="width: {{ percentages.F }}%">
+                                <span class="px-2">{{ percentages.F | round | int }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- J/P 軸 -->
+                    <div class="mb-4 axis-item">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold"><span class="axis-badge bg-dark">J</span> 判断 {{ percentages.J | round | int }}%</span>
+                            <span class="fw-bold"><span class="axis-badge" style="background-color: #9b59b6;">P</span> 知覚 {{ percentages.P | round | int }}%</span>
+                        </div>
+                        <div class="progress" style="height: 30px; border-radius: 15px;">
+                            <div class="progress-bar bg-dark" role="progressbar" 
+                                 style="width: {{ percentages.J }}%">
+                                <span class="px-2">{{ percentages.J | round | int }}%</span>
+                            </div>
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{ percentages.P }}%; background-color: #9b59b6;">
+                                <span class="px-2">{{ percentages.P | round | int }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 強み・適職 -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100 strength-card border-0" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-3 fw-bold text-primary">
+                                <i class="bi bi-star-fill"></i> あなたの強み
+                            </h5>
+                            <ul class="list-unstyled">
+                                {% for strength in type_info.strengths %}
+                                <li class="mb-3 d-flex align-items-center">
+                                    <span class="badge bg-success me-2" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">✓</span>
+                                    <span class="fw-bold">{{ strength }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100 career-card border-0" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-3 fw-bold text-danger">
+                                <i class="bi bi-briefcase-fill"></i> 向いている職業
+                            </h5>
+                            <ul class="list-unstyled">
+                                {% for career in type_info.careers %}
+                                <li class="mb-3 d-flex align-items-center">
+                                    <span class="badge bg-warning text-dark me-2" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">★</span>
+                                    <span class="fw-bold">{{ career }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- アクションボタン -->
+            <div class="text-center">
+                <form method="POST" action="{{ url_for('main.save_result') }}" class="d-inline">
+                    <button type="submit" class="btn btn-success btn-lg me-2 mb-2 px-5 py-3 shadow-sm">
+                        <i class="bi bi-save"></i> 結果を保存
+                    </button>
+                </form>
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg mb-2 px-5 py-3 shadow-sm">
+                    <i class="bi bi-arrow-repeat"></i> もう一度診断する
+                </a>
+                <div class="mt-4">
+                    <small class="text-muted">
+                        診断結果は管理画面で確認できます
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// アニメーション効果の追加
+document.addEventListener('DOMContentLoaded', function() {
+    // プログレスバーのアニメーション
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach((bar, index) => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => {
+            bar.style.transition = 'width 1s ease-out';
+            bar.style.width = width;
+        }, 300 + (index * 100));
+    });
+    
+    // スクロール時のアニメーション
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // 強み・適職カードの監視
+    document.querySelectorAll('.strength-card, .career-card').forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %}

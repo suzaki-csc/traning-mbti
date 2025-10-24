@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}管理ダッシュボード - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">管理ダッシュボード</h1>
+    
+    <!-- 統計サマリー -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">総診断回数</h6>
+                    <h2 class="display-4 text-primary">{{ total_diagnoses }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">直近7日間</h6>
+                    <h2 class="display-4 text-success">{{ recent_diagnoses }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">最多タイプ</h6>
+                    <h2 class="display-4 text-info">{{ most_common_type }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タイプ別分布 -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-4">タイプ別分布</h5>
+            <div class="row">
+                {% for type, count in type_distribution.items() %}
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="border rounded p-3 text-center">
+                        <h6 class="mb-1">{{ type }}</h6>
+                        <strong class="text-primary">{{ count }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 最新診断一覧 -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">最新診断（5件）</h5>
+                <a href="{{ url_for('admin.history') }}" class="btn btn-sm btn-primary">
+                    全履歴を見る
+                </a>
+            </div>
+            
+            {% if recent_list %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>タイプ</th>
+                            <th>ユーザー名</th>
+                            <th>診断日時</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for diagnosis in recent_list %}
+                        <tr>
+                            <td>{{ diagnosis.id }}</td>
+                            <td><span class="badge bg-primary">{{ diagnosis.mbti_type }}</span></td>
+                            <td>{{ diagnosis.user_name or '匿名' }}</td>
+                            <td>{{ diagnosis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-4">まだ診断データがありません。</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
