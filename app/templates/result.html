@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- 結果カード -->
+        <div class="card shadow-lg border-0 mb-4">
+            <div class="card-body text-center p-5">
+                <h2 class="mb-3">診断結果</h2>
+                
+                <!-- MBTIタイプ -->
+                <div class="mbti-type-display my-4">
+                    <h1 class="display-1 fw-bold text-primary mb-3">{{ mbti_type }}</h1>
+                    <h3 class="text-secondary mb-4">{{ type_name }}</h3>
+                </div>
+
+                <!-- 説明 -->
+                <div class="alert alert-light mx-auto mb-4" style="max-width: 700px;">
+                    <p class="lead mb-0">{{ description }}</p>
+                </div>
+
+                <!-- 各軸のスコア表示 -->
+                <div class="mt-5">
+                    <h4 class="mb-4">各軸のスコア</h4>
+                    
+                    <!-- E/I軸 -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><strong>E</strong> 外向型</span>
+                            <span><strong>I</strong> 内向型</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-success" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.EI.E }}%;"
+                                 aria-valuenow="{{ percentages.EI.E }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.EI.E }}%
+                            </div>
+                            <div class="progress-bar bg-info" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.EI.I }}%;"
+                                 aria-valuenow="{{ percentages.EI.I }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.EI.I }}%
+                            </div>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            E: {{ scores.E }}点 | I: {{ scores.I }}点
+                        </div>
+                    </div>
+
+                    <!-- S/N軸 -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><strong>S</strong> 感覚型</span>
+                            <span><strong>N</strong> 直感型</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-warning" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.SN.S }}%;"
+                                 aria-valuenow="{{ percentages.SN.S }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.SN.S }}%
+                            </div>
+                            <div class="progress-bar bg-primary" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.SN.N }}%;"
+                                 aria-valuenow="{{ percentages.SN.N }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.SN.N }}%
+                            </div>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            S: {{ scores.S }}点 | N: {{ scores.N }}点
+                        </div>
+                    </div>
+
+                    <!-- T/F軸 -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><strong>T</strong> 思考型</span>
+                            <span><strong>F</strong> 感情型</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-secondary" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.TF.T }}%;"
+                                 aria-valuenow="{{ percentages.TF.T }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.TF.T }}%
+                            </div>
+                            <div class="progress-bar bg-danger" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.TF.F }}%;"
+                                 aria-valuenow="{{ percentages.TF.F }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.TF.F }}%
+                            </div>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            T: {{ scores.T }}点 | F: {{ scores.F }}点
+                        </div>
+                    </div>
+
+                    <!-- J/P軸 -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><strong>J</strong> 判断型</span>
+                            <span><strong>P</strong> 知覚型</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-dark" 
+                                 role="progressbar" 
+                                 style="width: {{ percentages.JP.J }}%;"
+                                 aria-valuenow="{{ percentages.JP.J }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.JP.J }}%
+                            </div>
+                            <div class="progress-bar" 
+                                 style="width: {{ percentages.JP.P }}%; background-color: #6c757d;"
+                                 role="progressbar" 
+                                 aria-valuenow="{{ percentages.JP.P }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ percentages.JP.P }}%
+                            </div>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            J: {{ scores.J }}点 | P: {{ scores.P }}点
+                        </div>
+                    </div>
+                </div>
+
+                <!-- アクションボタン -->
+                <div class="mt-5">
+                    <a href="{{ url_for('main.restart') }}" class="btn btn-primary btn-lg px-5">
+                        もう一度診断する
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

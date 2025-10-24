@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}質問 {{ progress.current }}/{{ progress.total }} - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <!-- 進捗バー -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">質問 {{ progress.current }} / {{ progress.total }}</span>
+                <span class="text-muted">{{ progress.percentage }}%</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-primary" role="progressbar" 
+                     style="width: {{ progress.percentage }}%;" 
+                     aria-valuenow="{{ progress.percentage }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+
+        <!-- 質問カード -->
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                <h3 class="card-title mb-4 text-center">
+                    {{ question.text }}
+                </h3>
+
+                <form method="POST" id="quizForm">
+                    <div class="d-grid gap-3">
+                        {% for option in question.options %}
+                        <div class="option-card">
+                            <input type="radio" 
+                                   class="btn-check" 
+                                   name="option" 
+                                   id="option{{ loop.index0 }}" 
+                                   value="{{ loop.index0 }}"
+                                   required>
+                            <label class="btn btn-outline-primary btn-lg w-100 text-start p-3" 
+                                   for="option{{ loop.index0 }}">
+                                <div class="d-flex align-items-center">
+                                    <span class="option-number me-3">{{ loop.index }}</span>
+                                    <span class="option-text">{{ option.text }}</span>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            {% if progress.current < progress.total %}
+                                次へ →
+                            {% else %}
+                                結果を見る
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 選択肢をクリックしたときのアニメーション
+    document.querySelectorAll('.btn-check').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // すべての選択肢のアクティブ状態をリセット
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 選択された選択肢にアクティブクラスを追加
+            if (this.checked) {
+                this.closest('.option-card').classList.add('selected');
+            }
+        });
+    });
+
+    // フォーム送信時のバリデーション
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        const selected = document.querySelector('input[name="option"]:checked');
+        if (!selected) {
+            e.preventDefault();
+            alert('選択肢を選んでください。');
+        }
+    });
+</script>
+{% endblock %}

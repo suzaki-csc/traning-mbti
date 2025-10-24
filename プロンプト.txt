@@ -24,7 +24,7 @@ BootstrapでシンプルなUIにします。
 
 ------------------------------
 [出力されたマークダウンファイルを添付]
-定義した仕様で動く最小アプリのコード一式（app.py, templates/index.html, templates/quiz.html, templates/result.html, static/style.css）を生成してください。
+定義した仕様で動く最小アプリのコード一式を生成してください。
 
 
 ------------------------------

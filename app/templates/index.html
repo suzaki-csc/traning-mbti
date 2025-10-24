@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}トップページ - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg border-0">
+            <div class="card-body text-center p-5">
+                <h1 class="display-4 mb-4">🧠 MBTI性格診断</h1>
+                <p class="lead mb-4">
+                    あなたの性格タイプを診断します
+                </p>
+                
+                <div class="alert alert-info mx-auto" style="max-width: 500px;">
+                    <h5 class="alert-heading">診断について</h5>
+                    <ul class="text-start mb-0">
+                        <li>質問数：<strong>12問</strong></li>
+                        <li>所要時間：約<strong>3分</strong></li>
+                        <li>診断軸：<strong>4軸</strong>（E/I, S/N, T/F, J/P）</li>
+                    </ul>
+                </div>
+
+                <div class="my-5">
+                    <h5 class="mb-3">診断する4つの軸</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="axis-card p-3 bg-light rounded">
+                                <strong>E/I</strong> - 外向型 / 内向型<br>
+                                <small class="text-muted">エネルギーの方向性</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="axis-card p-3 bg-light rounded">
+                                <strong>S/N</strong> - 感覚型 / 直感型<br>
+                                <small class="text-muted">情報の受け取り方</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="axis-card p-3 bg-light rounded">
+                                <strong>T/F</strong> - 思考型 / 感情型<br>
+                                <small class="text-muted">意思決定の方法</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="axis-card p-3 bg-light rounded">
+                                <strong>J/P</strong> - 判断型 / 知覚型<br>
+                                <small class="text-muted">生活スタイル</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('main.quiz') }}" class="btn btn-primary btn-lg px-5 py-3">
+                    診断を始める
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,243 @@
+/* カスタムスタイル */
+
+/* 全体設定 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+}
+
+main {
+    flex: 1;
+}
+
+/* ナビゲーションバー */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* カード */
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* トップページの軸カード */
+.axis-card {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.axis-card:hover {
+    background-color: #e7f1ff !important;
+    transform: scale(1.05);
+}
+
+/* ボタン */
+.btn-lg {
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 質問ページの選択肢 */
+.option-card {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.option-card .btn-check:checked + label {
+    background-color: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.option-card label {
+    transition: all 0.3s ease;
+    border-width: 2px;
+    cursor: pointer;
+}
+
+.option-card label:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.option-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    background-color: #e9ecef;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-check:checked + label .option-number {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.option-text {
+    font-size: 1.1rem;
+}
+
+/* 進捗バー */
+.progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 結果ページ */
+.mbti-type-display {
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.mbti-type-display h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 10px;
+}
+
+.mbti-type-display h3 {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* 結果ページのプログレスバー */
+.progress {
+    overflow: visible;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* フッター */
+.footer {
+    margin-top: auto;
+    border-top: 1px solid #dee2e6;
+}
+
+/* アラート */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-info {
+    background-color: #e7f3ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.alert-light {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 4rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .option-text {
+        font-size: 1rem;
+    }
+    
+    .option-number {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    .mbti-type-display h1 {
+        letter-spacing: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-1 {
+        font-size: 3rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+    }
+
+    .progress {
+        height: 8px !important;
+    }
+
+    .card-body.p-5 {
+        padding: 2rem !important;
+    }
+
+    .mbti-type-display h1 {
+        letter-spacing: 3px;
+    }
+}
+
