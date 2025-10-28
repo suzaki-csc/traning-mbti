@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}診断 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- 進捗バー -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">質問 {{ question_id }} / {{ total_questions }}</span>
+                    <span class="text-muted">{{ ((question_id / total_questions) * 100) | round | int }}%</span>
+                </div>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" 
+                         style="width: {{ (question_id / total_questions) * 100 }}%"
+                         aria-valuenow="{{ question_id }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="{{ total_questions }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 質問カード -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-question-circle"></i> 質問 {{ question_id }}
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="mb-4">{{ question.text }}</h4>
+                
+                <form method="POST">
+                    <div class="d-grid gap-3">
+                        {% for option in question.options %}
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                                   type="radio" 
+                                   name="option" 
+                                   id="option{{ loop.index0 }}" 
+                                   value="{{ loop.index0 }}"
+                                   required>
+                            <label class="form-check-label w-100" for="option{{ loop.index0 }}" style="cursor: pointer;">
+                                <div class="card mb-0">
+                                    <div class="card-body py-3">
+                                        {{ option.text }}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        {% if question_id > 1 %}
+                        <a href="{{ url_for('quiz.question', question_id=question_id-1) }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> 前へ
+                        </a>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+                        
+                        {% if question_id < total_questions %}
+                        <button type="submit" class="btn btn-primary">
+                            次へ <i class="bi bi-arrow-right"></i>
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> 結果を見る
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

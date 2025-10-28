@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}診断履歴 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0"><i class="bi bi-clock-history"></i> あなたの診断履歴</h4>
+            </div>
+            <div class="card-body">
+                {% if results %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>診断日時</th>
+                                <th>MBTIタイプ</th>
+                                <th>タイプ名</th>
+                                <th>詳細</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.taken_at.strftime('%Y/%m/%d %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-primary fs-6">{{ result.mbti_type }}</span>
+                                </td>
+                                <td>{{ get_mbti_name(result.mbti_type) }}</td>
+                                <td>
+                                    <a href="{{ url_for('quiz.result', result_id=result.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> 表示
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- ページネーション -->
+                {% if pagination.pages > 1 %}
+                <nav aria-label="診断履歴ページネーション">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.history', page=pagination.prev_num) }}">前へ</a>
+                        </li>
+                        
+                        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('main.history', page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.history', page=pagination.next_num) }}">次へ</a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <p class="lead mt-3">まだ診断履歴がありません</p>
+                    <a href="{{ url_for('quiz.start') }}" class="btn btn-primary">
+                        <i class="bi bi-clipboard-check"></i> 診断を受ける
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

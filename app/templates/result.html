@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- 結果カード -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0"><i class="bi bi-trophy"></i> 診断結果</h4>
+            </div>
+            <div class="card-body text-center p-5">
+                <div class="display-1 mb-3 text-primary">{{ mbti_type }}</div>
+                <h3 class="mb-3">{{ mbti_name }}</h3>
+                <p class="lead">{{ mbti_description }}</p>
+                <p class="text-muted">診断日時: {{ result.taken_at.strftime('%Y年%m月%d日 %H:%M') }}</p>
+            </div>
+        </div>
+        
+        <!-- スコア詳細 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> スコア詳細</h5>
+            </div>
+            <div class="card-body p-4">
+                <!-- E/I軸 -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>外向性 (E)</strong>
+                        <strong>内向性 (I)</strong>
+                    </div>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-info" 
+                             style="width: {{ percentages.E }}%">
+                            {{ percentages.E }}%
+                        </div>
+                        <div class="progress-bar bg-warning" 
+                             style="width: {{ percentages.I }}%">
+                            {{ percentages.I }}%
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 text-muted small">
+                        <span>スコア: {{ scores.E }}</span>
+                        <span>スコア: {{ scores.I }}</span>
+                    </div>
+                </div>
+                
+                <!-- S/N軸 -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>感覚 (S)</strong>
+                        <strong>直観 (N)</strong>
+                    </div>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-success" 
+                             style="width: {{ percentages.S }}%">
+                            {{ percentages.S }}%
+                        </div>
+                        <div class="progress-bar bg-primary" 
+                             style="width: {{ percentages.N }}%">
+                            {{ percentages.N }}%
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 text-muted small">
+                        <span>スコア: {{ scores.S }}</span>
+                        <span>スコア: {{ scores.N }}</span>
+                    </div>
+                </div>
+                
+                <!-- T/F軸 -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>思考 (T)</strong>
+                        <strong>感情 (F)</strong>
+                    </div>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-secondary" 
+                             style="width: {{ percentages.T }}%">
+                            {{ percentages.T }}%
+                        </div>
+                        <div class="progress-bar bg-danger" 
+                             style="width: {{ percentages.F }}%">
+                            {{ percentages.F }}%
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 text-muted small">
+                        <span>スコア: {{ scores.T }}</span>
+                        <span>スコア: {{ scores.F }}</span>
+                    </div>
+                </div>
+                
+                <!-- J/P軸 -->
+                <div class="mb-0">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>判断 (J)</strong>
+                        <strong>知覚 (P)</strong>
+                    </div>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-dark" 
+                             style="width: {{ percentages.J }}%">
+                            {{ percentages.J }}%
+                        </div>
+                        <div class="progress-bar" 
+                             style="width: {{ percentages.P }}%; background-color: #6c757d;">
+                            {{ percentages.P }}%
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 text-muted small">
+                        <span>スコア: {{ scores.J }}</span>
+                        <span>スコア: {{ scores.P }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="d-flex gap-2 justify-content-center mb-4">
+            <a href="{{ url_for('quiz.start') }}" class="btn btn-primary">
+                <i class="bi bi-arrow-clockwise"></i> もう一度診断する
+            </a>
+            <a href="{{ url_for('main.history') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-clock-history"></i> 履歴を見る
+            </a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-house"></i> ホームに戻る
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

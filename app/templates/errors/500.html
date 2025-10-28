@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}500 Internal Server Error - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <i class="bi bi-exclamation-circle display-1 text-danger"></i>
+                <h1 class="display-4 mt-4">500</h1>
+                <p class="lead">サーバーエラーが発生しました</p>
+                <p class="text-muted">
+                    申し訳ございません。一時的な問題が発生しています。<br>
+                    しばらくしてから再度お試しください。
+                </p>
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-house"></i> ホームに戻る
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

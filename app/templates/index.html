@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}ホーム - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- ウェルカムメッセージ -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center p-5">
+                <h1 class="display-4 mb-3">
+                    <i class="bi bi-person-badge text-primary"></i> MBTI性格診断
+                </h1>
+                <p class="lead mb-4">
+                    ようこそ、{{ current_user.username }}さん！<br>
+                    あなたの性格タイプを診断してみませんか？
+                </p>
+                <a href="{{ url_for('quiz.start') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-clipboard-check"></i> 診断を開始する
+                </a>
+            </div>
+        </div>
+        
+        <!-- MBTI説明 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> MBTIとは？</h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    MBTI（Myers-Briggs Type Indicator）は、人々の性格を16のタイプに分類する性格診断テストです。
+                    4つの軸（外向性/内向性、感覚/直観、思考/感情、判断/知覚）の組み合わせで、あなたの性格タイプを判定します。
+                </p>
+                <ul class="list-unstyled">
+                    <li><strong>E/I軸：</strong> 外向性（Extraversion）/ 内向性（Introversion）</li>
+                    <li><strong>S/N軸：</strong> 感覚（Sensing）/ 直観（Intuition）</li>
+                    <li><strong>T/F軸：</strong> 思考（Thinking）/ 感情（Feeling）</li>
+                    <li><strong>J/P軸：</strong> 判断（Judging）/ 知覚（Perceiving）</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 最近の診断結果 -->
+        {% if latest_results %}
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> 最近の診断結果</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>診断日時</th>
+                                <th>タイプ</th>
+                                <th>詳細</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in latest_results %}
+                            <tr>
+                                <td>{{ result.taken_at.strftime('%Y/%m/%d %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-primary fs-6">{{ result.mbti_type }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('quiz.result', result_id=result.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> 表示
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('main.history') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-list"></i> すべての履歴を見る
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
