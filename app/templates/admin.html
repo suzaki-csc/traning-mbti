@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}診断履歴 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-clock-history"></i> 診断履歴管理
+            </h2>
+        </div>
+        <div class="card-body">
+            <!-- 検索フォーム -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-search"></i> 検索
+                    </h5>
+                    <form method="GET" action="{{ url_for('admin') }}" class="row g-3">
+                        <div class="col-md-5">
+                            <label for="search_name" class="form-label">ユーザー名</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="search_name" 
+                                   name="name" 
+                                   placeholder="ユーザー名で検索"
+                                   value="{{ search_name }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="search_type" class="form-label">MBTIタイプ</label>
+                            <select class="form-select" id="search_type" name="type">
+                                <option value="">すべてのタイプ</option>
+                                {% for mbti_type in mbti_types %}
+                                <option value="{{ mbti_type }}" {% if search_type == mbti_type %}selected{% endif %}>
+                                    {{ mbti_type }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> 検索
+                            </button>
+                        </div>
+                    </form>
+                    {% if search_name or search_type %}
+                    <div class="mt-2">
+                        <a href="{{ url_for('admin') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> 検索をクリア
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 統計情報 -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        合計 <strong>{{ results|length }}</strong> 件の診断結果が見つかりました
+                    </div>
+                </div>
+            </div>
+
+            <!-- 診断履歴テーブル -->
+            {% if results %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>ユーザー名</th>
+                            <th>MBTIタイプ</th>
+                            <th>E-I</th>
+                            <th>S-N</th>
+                            <th>T-F</th>
+                            <th>J-P</th>
+                            <th>診断日時</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td>{{ result.id }}</td>
+                            <td>
+                                <!-- 脆弱性: XSS - user_nameをエスケープせずに表示 -->
+                                {{ result.user_name | safe }}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary fs-6">{{ result.mbti_type }}</span>
+                            </td>
+                            <td>
+                                <small>{{ result.e_score }} / {{ result.i_score }}</small>
+                            </td>
+                            <td>
+                                <small>{{ result.s_score }} / {{ result.n_score }}</small>
+                            </td>
+                            <td>
+                                <small>{{ result.t_score }} / {{ result.f_score }}</small>
+                            </td>
+                            <td>
+                                <small>{{ result.j_score }} / {{ result.p_score }}</small>
+                            </td>
+                            <td>
+                                <small>{{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('result', result_id=result.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> 詳細
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="bi bi-exclamation-triangle"></i> 
+                診断履歴がありません
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 戻るボタン -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-house"></i> ホームへ戻る
+        </a>
+    </div>
+</div>
+{% endblock %}
+

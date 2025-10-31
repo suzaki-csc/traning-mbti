@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- 結果ヘッダー -->
+            <div class="text-center mb-5">
+                <!-- 脆弱性: XSS - user_nameをエスケープせずに表示 -->
+                <h1 class="display-4 mb-3">
+                    {{ diagnosis.user_name | safe }}さんの診断結果
+                </h1>
+                <p class="text-muted">
+                    <i class="bi bi-calendar"></i> {{ diagnosis.created_at.strftime('%Y年%m月%d日 %H:%M') }}
+                </p>
+            </div>
+
+            <!-- MBTIタイプ表示 -->
+            <div class="card shadow-lg mb-4">
+                <div class="card-body text-center p-5">
+                    <h2 class="text-muted mb-3">あなたのMBTIタイプは</h2>
+                    <div class="mbti-type-display mb-4">
+                        {{ diagnosis.mbti_type }}
+                    </div>
+                    <h3 class="text-primary mb-3">{{ description }}</h3>
+                </div>
+            </div>
+
+            <!-- スコア詳細 -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-bar-chart"></i> 各軸のスコア詳細
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- E vs I -->
+                    <div class="score-section mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">外向性 (E)</span>
+                            <span class="fw-bold">内向性 (I)</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            {% set e_percent = (diagnosis.e_score / (diagnosis.e_score + diagnosis.i_score) * 100) | int %}
+                            <div class="progress-bar bg-warning" 
+                                 role="progressbar" 
+                                 style="width: {{ e_percent }}%"
+                                 aria-valuenow="{{ e_percent }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                E: {{ diagnosis.e_score }}
+                            </div>
+                            <div class="progress-bar bg-info" 
+                                 role="progressbar" 
+                                 style="width: {{ 100 - e_percent }}%"
+                                 aria-valuenow="{{ 100 - e_percent }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                I: {{ diagnosis.i_score }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S vs N -->
+                    <div class="score-section mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">感覚 (S)</span>
+                            <span class="fw-bold">直感 (N)</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            {% set s_percent = (diagnosis.s_score / (diagnosis.s_score + diagnosis.n_score) * 100) | int %}
+                            <div class="progress-bar bg-primary" 
+                                 role="progressbar" 
+                                 style="width: {{ s_percent }}%">
+                                S: {{ diagnosis.s_score }}
+                            </div>
+                            <div class="progress-bar bg-secondary" 
+                                 role="progressbar" 
+                                 style="width: {{ 100 - s_percent }}%">
+                                N: {{ diagnosis.n_score }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- T vs F -->
+                    <div class="score-section mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">思考 (T)</span>
+                            <span class="fw-bold">感情 (F)</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            {% set t_percent = (diagnosis.t_score / (diagnosis.t_score + diagnosis.f_score) * 100) | int %}
+                            <div class="progress-bar bg-success" 
+                                 role="progressbar" 
+                                 style="width: {{ t_percent }}%">
+                                T: {{ diagnosis.t_score }}
+                            </div>
+                            <div class="progress-bar bg-danger" 
+                                 role="progressbar" 
+                                 style="width: {{ 100 - t_percent }}%">
+                                F: {{ diagnosis.f_score }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- J vs P -->
+                    <div class="score-section">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">判断 (J)</span>
+                            <span class="fw-bold">知覚 (P)</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                            {% set j_percent = (diagnosis.j_score / (diagnosis.j_score + diagnosis.p_score) * 100) | int %}
+                            <div class="progress-bar" 
+                                 style="width: {{ j_percent }}%; background-color: #6f42c1;">
+                                J: {{ diagnosis.j_score }}
+                            </div>
+                            <div class="progress-bar" 
+                                 style="width: {{ 100 - j_percent }}%; background-color: #fd7e14;">
+                                P: {{ diagnosis.p_score }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-5">
+                <a href="{{ url_for('diagnosis') }}" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-arrow-repeat"></i> もう一度診断する
+                </a>
+                <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary btn-lg px-5">
+                    <i class="bi bi-clock-history"></i> 診断履歴を見る
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg px-5">
+                    <i class="bi bi-house"></i> ホームへ戻る
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}ホーム - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- ヒーローセクション -->
+    <div class="hero-section text-center mb-5">
+        <h1 class="display-3 fw-bold mb-4">
+            <i class="bi bi-stars text-primary"></i>
+            MBTI性格診断
+        </h1>
+        <p class="lead text-muted mb-4">
+            あなたの性格タイプを発見しましょう！<br>
+            簡単な12の質問に答えるだけで、あなたのMBTIタイプが分かります。
+        </p>
+        <a href="{{ url_for('diagnosis') }}" class="btn btn-primary btn-lg px-5 py-3">
+            <i class="bi bi-play-circle"></i> 診断を始める
+        </a>
+    </div>
+
+    <!-- 説明セクション -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning-charge-fill text-warning fs-1"></i>
+                    </div>
+                    <h5 class="card-title">外向性 vs 内向性</h5>
+                    <p class="card-text text-muted">
+                        E (Extraversion) / I (Introversion)
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-eye-fill text-info fs-1"></i>
+                    </div>
+                    <h5 class="card-title">感覚 vs 直感</h5>
+                    <p class="card-text text-muted">
+                        S (Sensing) / N (Intuition)
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-heart-fill text-danger fs-1"></i>
+                    </div>
+                    <h5 class="card-title">思考 vs 感情</h5>
+                    <p class="card-text text-muted">
+                        T (Thinking) / F (Feeling)
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-compass-fill text-success fs-1"></i>
+                    </div>
+                    <h5 class="card-title">判断 vs 知覚</h5>
+                    <p class="card-text text-muted">
+                        J (Judging) / P (Perceiving)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 診断の流れ -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">
+                <i class="bi bi-list-check"></i> 診断の流れ
+            </h2>
+            <div class="row">
+                <div class="col-md-4 text-center mb-3">
+                    <div class="step-number">1</div>
+                    <h5>質問に回答</h5>
+                    <p class="text-muted">12の質問に5段階で回答します</p>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="step-number">2</div>
+                    <h5>自動判定</h5>
+                    <p class="text-muted">あなたのMBTIタイプを判定します</p>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="step-number">3</div>
+                    <h5>結果表示</h5>
+                    <p class="text-muted">詳細な診断結果を確認できます</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- その他のリンク -->
+    <div class="text-center">
+        <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-clock-history"></i> 過去の診断履歴を見る
+        </a>
+    </div>
+</div>
+{% endblock %}
+
