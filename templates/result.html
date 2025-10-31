@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2>あなたの診断結果</h2>
+        <div class="mbti-type-display my-4">
+            <h1 class="display-1">{{ mbti_type }}</h1>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-center mb-3">タイプの説明</h4>
+            <p class="text-center lead">{{ description }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title mb-4">各軸のスコア</h4>
+            
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>外向型 (E)</span>
+                    <span>内向型 (I)</span>
+                </div>
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-success" style="width: {{ (scores.E / (scores.E + scores.I) * 100) if (scores.E + scores.I) > 0 else 50 }}%">
+                        E: {{ scores.E }}
+                    </div>
+                    <div class="progress-bar bg-info" style="width: {{ (scores.I / (scores.E + scores.I) * 100) if (scores.E + scores.I) > 0 else 50 }}%">
+                        I: {{ scores.I }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>感覚型 (S)</span>
+                    <span>直感型 (N)</span>
+                </div>
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-warning" style="width: {{ (scores.S / (scores.S + scores.N) * 100) if (scores.S + scores.N) > 0 else 50 }}%">
+                        S: {{ scores.S }}
+                    </div>
+                    <div class="progress-bar bg-primary" style="width: {{ (scores.N / (scores.S + scores.N) * 100) if (scores.S + scores.N) > 0 else 50 }}%">
+                        N: {{ scores.N }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>思考型 (T)</span>
+                    <span>感情型 (F)</span>
+                </div>
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-danger" style="width: {{ (scores.T / (scores.T + scores.F) * 100) if (scores.T + scores.F) > 0 else 50 }}%">
+                        T: {{ scores.T }}
+                    </div>
+                    <div class="progress-bar bg-secondary" style="width: {{ (scores.F / (scores.T + scores.F) * 100) if (scores.T + scores.F) > 0 else 50 }}%">
+                        F: {{ scores.F }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>判断型 (J)</span>
+                    <span>知覚型 (P)</span>
+                </div>
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-dark" style="width: {{ (scores.J / (scores.J + scores.P) * 100) if (scores.J + scores.P) > 0 else 50 }}%">
+                        J: {{ scores.J }}
+                    </div>
+                    <div class="progress-bar" style="width: {{ (scores.P / (scores.J + scores.P) * 100) if (scores.J + scores.P) > 0 else 50 }}%; background-color: #6c757d;">
+                        P: {{ scores.P }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="/diagnosis" class="btn btn-primary">もう一度診断する</a>
+        <a href="/" class="btn btn-secondary">ホームに戻る</a>
+    </div>
+</div>
+{% endblock %}
+

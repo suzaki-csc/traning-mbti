@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ホーム - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container text-center py-5">
+        <h1 class="display-4 mb-4">MBTI性格診断</h1>
+        <p class="lead mb-4">12の質問に答えて、あなたの性格タイプを診断しましょう</p>
+        <a href="/diagnosis" class="btn btn-primary btn-lg">診断を始める</a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">MBTIとは？</h3>
+                    <p class="card-text">
+                        MBTIは16の性格タイプに分類する性格診断です。
+                        4つの軸（外向/内向、感覚/直感、思考/感情、判断/知覚）の組み合わせで
+                        あなたの性格を分析します。
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">4つの軸</h3>
+                    <ul class="list-unstyled">
+                        <li><strong>E/I:</strong> 外向型 / 内向型</li>
+                        <li><strong>S/N:</strong> 感覚型 / 直感型</li>
+                        <li><strong>T/F:</strong> 思考型 / 感情型</li>
+                        <li><strong>J/P:</strong> 判断型 / 知覚型</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

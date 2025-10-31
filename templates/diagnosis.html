@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}診断 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">性格診断</h2>
+    
+    <div class="mb-2 text-center">
+        <span class="badge bg-secondary" id="progressText">回答済み: 0 / 12</span>
+    </div>
+    <div class="progress mb-4" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="progressBar">0%</div>
+    </div>
+
+    <form method="POST" action="/submit" id="diagnosisForm">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="user_name" class="form-label">お名前（任意）</label>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="名前を入力してください">
+                </div>
+            </div>
+        </div>
+
+        {% for question in questions %}
+        <div class="card mb-3 question-card">
+            <div class="card-body">
+                <h5 class="card-title">質問 {{ loop.index }} / {{ questions|length }}</h5>
+                <p class="card-text">{{ question.text }}</p>
+                <div class="options">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ question.id }}" id="q{{ question.id }}_5" value="5" required>
+                        <label class="form-check-label" for="q{{ question.id }}_5">
+                            とてもそう思う
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ question.id }}" id="q{{ question.id }}_3" value="3">
+                        <label class="form-check-label" for="q{{ question.id }}_3">
+                            ややそう思う
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ question.id }}" id="q{{ question.id }}_1" value="1">
+                        <label class="form-check-label" for="q{{ question.id }}_1">
+                            どちらでもない
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ question.id }}" id="q{{ question.id }}_-3" value="-3">
+                        <label class="form-check-label" for="q{{ question.id }}_-3">
+                            あまりそう思わない
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ question.id }}" id="q{{ question.id }}_-5" value="-5">
+                        <label class="form-check-label" for="q{{ question.id }}_-5">
+                            全くそう思わない
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg">結果を見る</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // プログレスバーの更新
+    const form = document.getElementById('diagnosisForm');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const totalQuestions = {{ questions|length }};
+
+    form.addEventListener('change', function() {
+        const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+        const progress = (answeredQuestions / totalQuestions) * 100;
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = Math.round(progress) + '%';
+        progressText.textContent = '回答済み: ' + answeredQuestions + ' / ' + totalQuestions;
+        
+        // 全問回答済みの場合
+        if (answeredQuestions === totalQuestions) {
+            progressText.classList.remove('bg-secondary');
+            progressText.classList.add('bg-success');
+        }
+    });
+</script>
+{% endblock %}
+
