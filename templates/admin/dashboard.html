@@ -41,12 +41,12 @@
                     <tbody>
                         {% for result in results %}
                         <tr>
-                            <td>{{ result[0] }}</td>
-                            <td>{{ result[1] if result[1] else '未入力' }}</td>
-                            <td><span class="badge bg-primary">{{ result[2] }}</span></td>
-                            <td>{{ result[3] }}</td>
+                            <td>{{ result.id }}</td>
+                            <td>{{ result.user_name if result.user_name else '未入力' }}</td>
+                            <td><span class="badge bg-primary">{{ result.mbti_type }}</span></td>
+                            <td>{{ result.diagnosed_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                             <td>
-                                <a href="/result/{{ result[0] }}" class="btn btn-sm btn-info">詳細</a>
+                                <a href="/result/{{ result.id }}" class="btn btn-sm btn-info">詳細</a>
                             </td>
                         </tr>
                         {% endfor %}

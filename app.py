@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask_mysqldb import MySQL
-import os
 from config import Config
+from models.models import db, DiagnosisResult, Answer, Question
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-mysql = MySQL(app)
+# データベース初期化
+db.init_app(app)
 
 # 質問データ
 QUESTIONS = [
@@ -98,48 +98,61 @@ def submit():
     
     # データベースに保存
     try:
-        cur = mysql.connection.cursor()
+        user_ip = request.remote_addr
         
         # 診断結果を保存
-        user_ip = request.remote_addr
-        sql = f"INSERT INTO diagnosis_results (user_name, mbti_type, e_score, i_score, s_score, n_score, t_score, f_score, j_score, p_score, user_ip) VALUES ('{user_name}', '{mbti_type}', {scores['E']}, {scores['I']}, {scores['S']}, {scores['N']}, {scores['T']}, {scores['F']}, {scores['J']}, {scores['P']}, '{user_ip}')"
-        cur.execute(sql)
-        result_id = cur.lastrowid
+        diagnosis_result = DiagnosisResult(
+            user_name=user_name,
+            mbti_type=mbti_type,
+            e_score=scores['E'],
+            i_score=scores['I'],
+            s_score=scores['S'],
+            n_score=scores['N'],
+            t_score=scores['T'],
+            f_score=scores['F'],
+            j_score=scores['J'],
+            p_score=scores['P'],
+            user_ip=user_ip
+        )
+        db.session.add(diagnosis_result)
+        db.session.flush()  # IDを取得するためにflush
         
         # 回答詳細を保存
         for question_id, answer_value in answers.items():
             if question_id.isdigit():
-                sql = f"INSERT INTO answers (result_id, question_id, answer_value) VALUES ({result_id}, {question_id}, {answer_value})"
-                cur.execute(sql)
+                answer = Answer(
+                    result_id=diagnosis_result.id,
+                    question_id=int(question_id),
+                    answer_value=int(answer_value)
+                )
+                db.session.add(answer)
         
-        mysql.connection.commit()
-        cur.close()
+        db.session.commit()
         
-        return redirect(url_for('result', id=result_id))
+        return redirect(url_for('result', id=diagnosis_result.id))
     except Exception as e:
+        db.session.rollback()
         return f"エラーが発生しました: {str(e)}", 500
 
 @app.route('/result/<int:id>')
 def result(id):
     try:
-        cur = mysql.connection.cursor()
-        query = f"SELECT * FROM diagnosis_results WHERE id = {id}"
-        cur.execute(query)
-        result = cur.fetchone()
-        cur.close()
+        diagnosis_result = DiagnosisResult.query.get_or_404(id)
         
-        if result:
-            mbti_type = result[2]
-            description = MBTI_DESCRIPTIONS.get(mbti_type, 'タイプの説明はありません')
-            scores = {
-                'E': result[3], 'I': result[4],
-                'S': result[5], 'N': result[6],
-                'T': result[7], 'F': result[8],
-                'J': result[9], 'P': result[10]
-            }
-            return render_template('result.html', mbti_type=mbti_type, description=description, scores=scores, result_id=id)
-        else:
-            return "結果が見つかりません", 404
+        mbti_type = diagnosis_result.mbti_type
+        description = MBTI_DESCRIPTIONS.get(mbti_type, 'タイプの説明はありません')
+        scores = {
+            'E': diagnosis_result.e_score,
+            'I': diagnosis_result.i_score,
+            'S': diagnosis_result.s_score,
+            'N': diagnosis_result.n_score,
+            'T': diagnosis_result.t_score,
+            'F': diagnosis_result.f_score,
+            'J': diagnosis_result.j_score,
+            'P': diagnosis_result.p_score
+        }
+        
+        return render_template('result.html', mbti_type=mbti_type, description=description, scores=scores, result_id=id)
     except Exception as e:
         return f"エラーが発生しました: {str(e)}", 500
 
@@ -164,17 +177,15 @@ def admin_dashboard():
         return redirect(url_for('admin_login'))
     
     try:
-        cur = mysql.connection.cursor()
         search = request.args.get('search', '')
         
         if search:
-            query = f"SELECT id, user_name, mbti_type, diagnosed_at FROM diagnosis_results WHERE user_name LIKE '%{search}%' OR mbti_type LIKE '%{search}%' ORDER BY diagnosed_at DESC"
+            results = DiagnosisResult.query.filter(
+                (DiagnosisResult.user_name.like(f'%{search}%')) |
+                (DiagnosisResult.mbti_type.like(f'%{search}%'))
+            ).order_by(DiagnosisResult.diagnosed_at.desc()).all()
         else:
-            query = "SELECT id, user_name, mbti_type, diagnosed_at FROM diagnosis_results ORDER BY diagnosed_at DESC"
-        
-        cur.execute(query)
-        results = cur.fetchall()
-        cur.close()
+            results = DiagnosisResult.query.order_by(DiagnosisResult.diagnosed_at.desc()).all()
         
         return render_template('admin/dashboard.html', results=results, search=search)
     except Exception as e:
@@ -187,4 +198,3 @@ def admin_logout():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
