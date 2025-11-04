@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果: {{ mbti_type }} - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- 結果カード -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <span class="badge bg-success px-4 py-2 fs-6">診断完了</span>
+                    </div>
+                    
+                    <h1 class="display-3 fw-bold text-primary mb-3">
+                        {{ mbti_type }}
+                    </h1>
+                    
+                    <h3 class="mb-4">{{ mbti_info.name }}</h3>
+                    
+                    <p class="lead text-muted">
+                        {{ mbti_info.description }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- スコア詳細 -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">あなたのスコア</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% for axis_name, axis_data in percentages.items() %}
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">
+                                {{ axis_descriptions[axis_name]['name'] }}
+                            </span>
+                        </div>
+                        
+                        <div class="row g-2 align-items-center">
+                            {% set axis1, axis2 = axis_name.split('/') %}
+                            
+                            <div class="col-2 text-end">
+                                <span class="badge bg-info">{{ axis1 }}</span>
+                                <small class="d-block">{{ axis_data[axis1] }}%</small>
+                            </div>
+                            
+                            <div class="col-8">
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar bg-info" 
+                                         role="progressbar" 
+                                         style="width: {{ axis_data[axis1] }}%"
+                                         aria-valuenow="{{ axis_data[axis1] }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                    <div class="progress-bar bg-warning" 
+                                         role="progressbar" 
+                                         style="width: {{ axis_data[axis2] }}%"
+                                         aria-valuenow="{{ axis_data[axis2] }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-2 text-start">
+                                <span class="badge bg-warning">{{ axis2 }}</span>
+                                <small class="d-block">{{ axis_data[axis2] }}%</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col-6 text-center small text-muted">
+                                {{ axis_descriptions[axis_name][axis1] }}
+                            </div>
+                            <div class="col-6 text-center small text-muted">
+                                {{ axis_descriptions[axis_name][axis2] }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-arrow-repeat"></i>
+                        もう一度診断する
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ url_for('admin.history') }}" class="btn btn-outline-secondary btn-lg w-100">
+                        <i class="bi bi-clock-history"></i>
+                        診断履歴を見る
+                    </a>
+                </div>
+            </div>
+
+            <!-- 診断日時 -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    診断日時: {{ created_at.strftime('%Y年%m月%d日 %H:%M') }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

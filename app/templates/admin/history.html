@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}診断履歴 - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-clock-history"></i>
+                診断履歴
+            </h1>
+
+            <!-- フィルター -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('admin.history') }}" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="type" class="form-label">MBTIタイプでフィルター</label>
+                            <select name="type" id="type" class="form-select">
+                                <option value="">すべて</option>
+                                {% for mbti_type in mbti_types %}
+                                <option value="{{ mbti_type }}" {% if search_type == mbti_type %}selected{% endif %}>
+                                    {{ mbti_type }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> 検索
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 統計情報 -->
+            <div class="alert alert-info" role="alert">
+                <strong>総診断数:</strong> {{ diagnoses.total }} 件
+            </div>
+
+            <!-- 診断履歴テーブル -->
+            <div class="card shadow">
+                <div class="card-body">
+                    {% if diagnoses.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>診断日時</th>
+                                    <th>MBTIタイプ</th>
+                                    <th>IPアドレス</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for diagnosis in diagnoses.items %}
+                                <tr>
+                                    <td>{{ diagnosis.id }}</td>
+                                    <td>{{ diagnosis.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ diagnosis.mbti_type }}</span>
+                                    </td>
+                                    <td>{{ diagnosis.ip_address or 'N/A' }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" 
+                                                onclick="viewDetail({{ diagnosis.id }})">
+                                            <i class="bi bi-eye"></i> 詳細
+                                        </button>
+                                        <a href="{{ url_for('main.result', session_id=diagnosis.session_id) }}" 
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-file-earmark-text"></i> 結果
+                                        </a>
+                                        <button class="btn btn-sm btn-danger" 
+                                                onclick="deleteRecord({{ diagnosis.id }})">
+                                            <i class="bi bi-trash"></i> 削除
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ページネーション -->
+                    {% if diagnoses.pages > 1 %}
+                    <nav aria-label="診断履歴ページネーション">
+                        <ul class="pagination justify-content-center mt-4">
+                            {% if diagnoses.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin.history', page=diagnoses.prev_num, type=search_type) }}">
+                                    前へ
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for page_num in diagnoses.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                                {% if page_num %}
+                                    {% if page_num == diagnoses.page %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin.history', page=page_num, type=search_type) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if diagnoses.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin.history', page=diagnoses.next_num, type=search_type) }}">
+                                    次へ
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-warning" role="alert">
+                        診断履歴がありません。
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 詳細表示モーダル -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">診断詳細</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="detailContent">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">読み込み中...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function viewDetail(id) {
+        const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+        modal.show();
+        
+        fetch(`/admin/history/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                const content = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>セッションID:</strong> ${data.session_id}</p>
+                            <p><strong>MBTIタイプ:</strong> <span class="badge bg-primary">${data.mbti_type}</span></p>
+                            <p><strong>診断日時:</strong> ${new Date(data.created_at).toLocaleString('ja-JP')}</p>
+                            <p><strong>IPアドレス:</strong> ${data.ip_address || 'N/A'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>スコア:</strong></p>
+                            <pre class="bg-light p-3 rounded">${JSON.stringify(data.scores, null, 2)}</pre>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>回答詳細:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>質問番号</th>
+                                    <th>軸</th>
+                                    <th>スコア</th>
+                                    <th>回答</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.answers.map(a => `
+                                    <tr>
+                                        <td>${a.question_id}</td>
+                                        <td><span class="badge bg-info">${a.axis}</span></td>
+                                        <td>${a.score}</td>
+                                        <td>${a.answer_text}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('detailContent').innerHTML = content;
+            })
+            .catch(error => {
+                document.getElementById('detailContent').innerHTML = 
+                    '<div class="alert alert-danger">エラーが発生しました。</div>';
+            });
+    }
+    
+    function deleteRecord(id) {
+        if (!confirm('この診断履歴を削除してもよろしいですか？')) {
+            return;
+        }
+        
+        fetch(`/admin/history/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            alert('削除中にエラーが発生しました。');
+        });
+    }
+</script>
+{% endblock %}
+

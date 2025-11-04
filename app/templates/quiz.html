@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}質問 {{ current }} / {{ total }} - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- 進捗バー -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">質問 {{ current }} / {{ total }}</span>
+                    <span class="text-muted">{{ (current / total * 100) | round | int }}%</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary" 
+                         role="progressbar" 
+                         style="width: {{ (current / total * 100) }}%"
+                         aria-valuenow="{{ current }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="{{ total }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 質問カード -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4 text-center">
+                        {{ question.text }}
+                    </h2>
+                    
+                    <form method="POST" action="{{ url_for('main.quiz') }}">
+                        <div class="row g-3">
+                            {% for option in question.options %}
+                            <div class="col-12">
+                                <button type="submit" 
+                                        name="option" 
+                                        value="{{ loop.index0 }}"
+                                        class="btn btn-outline-primary btn-lg w-100 text-start quiz-option">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary me-3">{{ loop.index }}</span>
+                                        <span>{{ option.text }}</span>
+                                    </div>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ヒント -->
+            <div class="alert alert-light mt-4 text-center" role="alert">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i>
+                    直感的に、最も自分に近いと感じる選択肢を選んでください
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // ボタンのホバー効果
+    document.querySelectorAll('.quiz-option').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.classList.add('shadow');
+        });
+        button.addEventListener('mouseleave', function() {
+            this.classList.remove('shadow');
+        });
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}MBTI性格診断 - トップページ{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <h1 class="display-4 mb-4">
+                        <i class="bi bi-person-circle"></i>
+                        MBTI性格診断
+                    </h1>
+                    
+                    <p class="lead text-muted mb-4">
+                        あなたの性格タイプを診断します
+                    </p>
+                    
+                    <div class="alert alert-info mb-4" role="alert">
+                        <h5 class="alert-heading">診断について</h5>
+                        <p class="mb-0">
+                            12問の質問に答えることで、MBTI（Myers-Briggs Type Indicator）風の性格診断を行います。
+                            あなたの性格を4つの軸（E/I、S/N、T/F、J/P）で分析し、16種類のタイプのいずれかを判定します。
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="text-start mb-3">診断でわかること</h5>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <strong>外向型 / 内向型</strong> - エネルギーの方向性
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <strong>感覚型 / 直観型</strong> - 情報の受け取り方
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <strong>思考型 / 感情型</strong> - 意思決定の方法
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <strong>判断型 / 知覚型</strong> - 生活スタイル
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('main.quiz') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-circle"></i>
+                            診断を始める
+                        </a>
+                    </div>
+                    
+                    <p class="text-muted mt-4 small">
+                        所要時間：約3〜5分
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
