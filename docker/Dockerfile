@@ -31,7 +31,7 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry install --no-interaction --no-ansi --no-root --only main
 
 # アプリケーションのソースコードをコピー
-COPY . .
+COPY app ./app
 
 # 非rootユーザーを作成
 RUN useradd -m -u 1000 appuser && \
@@ -48,5 +48,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:5000', timeout=2)" || exit 1
 
 # アプリケーションを起動
-CMD ["python", "app.py"]
+CMD ["python", "-m", "app.main"]
 

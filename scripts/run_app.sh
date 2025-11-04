@@ -6,10 +6,11 @@
 APP_NAME="MBTI風性格診断"
 PID_FILE="app.pid"
 LOG_FILE="app.log"
-APP_SCRIPT="app.py"
+APP_SCRIPT="app/main.py"
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-# スクリプトのディレクトリに移動
-cd "$(dirname "$0")"
+# プロジェクトのルートディレクトリに移動
+cd "$PROJECT_ROOT"
 
 # カラー定義
 GREEN='\033[0;32m'
@@ -60,7 +61,7 @@ detect_mode() {
     fi
     
     # docker-compose.ymlの存在とDockerの利用可能性をチェック
-    if [ -f "docker-compose.yml" ] && command -v docker-compose &> /dev/null; then
+    if [ -f "docker/docker-compose.yml" ] && command -v docker-compose &> /dev/null; then
         EXEC_MODE="docker"
     else
         EXEC_MODE="native"
@@ -78,9 +79,9 @@ docker_start() {
     echo ""
     
     # 既に起動しているかチェック
-    if docker-compose ps | grep -q "mbti-app.*Up"; then
+    if docker-compose -f docker/docker-compose.yml ps | grep -q "mbti-app.*Up"; then
         echo -e "${YELLOW}⚠ Docker環境は既に起動しています${NC}"
-        docker-compose ps
+        docker-compose -f docker/docker-compose.yml ps
         return 0
     fi
     
@@ -97,7 +98,7 @@ docker_start() {
     echo ""
     
     # docker-compose up
-    docker-compose up -d --build
+    docker-compose -f docker/docker-compose.yml up -d --build
     
     if [ $? -eq 0 ]; then
         echo ""
@@ -107,11 +108,11 @@ docker_start() {
         echo -e "  ${BLUE}→ http://localhost:5000${NC}"
         echo ""
         echo "コンテナ状態:"
-        docker-compose ps
+        docker-compose -f docker/docker-compose.yml ps
         echo "=========================================="
     else
         echo -e "${RED}✗ Docker環境の起動に失敗しました${NC}"
-        echo -e "ログを確認してください: docker-compose logs"
+        echo -e "ログを確認してください: docker-compose -f docker/docker-compose.yml logs"
         exit 1
     fi
 }
@@ -123,14 +124,14 @@ docker_stop() {
     echo ""
     
     # 起動しているかチェック
-    if ! docker-compose ps | grep -q "mbti-app"; then
+    if ! docker-compose -f docker/docker-compose.yml ps | grep -q "mbti-app"; then
         echo -e "${YELLOW}⚠ Docker環境は起動していません${NC}"
         return 0
     fi
     
     echo -e "${GREEN}✓${NC} Dockerコンテナを停止しています..."
     
-    docker-compose down
+    docker-compose -f docker/docker-compose.yml down
     
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Docker環境を停止しました${NC}"
@@ -160,21 +161,21 @@ docker_status() {
     echo -e "${BLUE}[Docker環境]${NC}"
     echo ""
     
-    if docker-compose ps | grep -q "mbti-app.*Up"; then
+    if docker-compose -f docker/docker-compose.yml ps | grep -q "mbti-app.*Up"; then
         echo -e "${GREEN}✓ Docker環境は実行中です${NC}"
         echo ""
         echo -e "  URL: ${BLUE}http://localhost:5000${NC}"
         echo ""
         echo "コンテナ状態:"
-        docker-compose ps
+        docker-compose -f docker/docker-compose.yml ps
         echo ""
         echo "リソース使用状況:"
-        docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" $(docker-compose ps -q 2>/dev/null) 2>/dev/null || echo "  (情報取得不可)"
+        docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" $(docker-compose -f docker/docker-compose.yml ps -q 2>/dev/null) 2>/dev/null || echo "  (情報取得不可)"
     else
         echo -e "${YELLOW}⚠ Docker環境は起動していません${NC}"
         echo ""
         echo "利用可能なコンテナ:"
-        docker-compose ps -a
+        docker-compose -f docker/docker-compose.yml ps -a
     fi
     
     echo "=========================================="

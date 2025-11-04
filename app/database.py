@@ -55,6 +55,6 @@ class DiagnosisResult(db.Model):
     
     def get_type_name(self):
         """タイプ名を取得"""
-        from mbti_descriptions import get_mbti_info
+        from app.mbti import get_mbti_info
         return get_mbti_info(self.mbti_type)['name']
 

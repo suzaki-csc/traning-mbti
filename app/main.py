@@ -6,10 +6,11 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime
-from database import db, User, DiagnosisResult
-from questions import QUESTIONS, ANSWER_OPTIONS, get_question_by_id, get_total_questions
-from mbti_logic import calculate_scores, determine_mbti_type, get_axis_percentages
-from mbti_descriptions import get_mbti_info
+from app.database import db, User, DiagnosisResult
+from app.mbti import (
+    QUESTIONS, ANSWER_OPTIONS, get_question_by_id, get_total_questions,
+    calculate_scores, determine_mbti_type, get_axis_percentages, get_mbti_info
+)
 
 app = Flask(__name__)
 

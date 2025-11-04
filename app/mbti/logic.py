@@ -2,7 +2,7 @@
 採点ロジック・判定処理
 """
 
-from questions import QUESTIONS
+from .questions import QUESTIONS
 
 
 def calculate_scores(answers):

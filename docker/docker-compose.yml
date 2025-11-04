@@ -2,8 +2,8 @@ services:
   # Flaskアプリケーション
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: mbti-app
     restart: unless-stopped
     ports:
@@ -14,7 +14,7 @@ services:
       - DATABASE_URL=mysql+pymysql://${MYSQL_USER:-mbti_user}:${MYSQL_PASSWORD:-mbti_password}@db:3306/${MYSQL_DATABASE:-mbti_db}
     volumes:
       # 開発時のホットリロード用（本番環境では削除推奨）
-      - .:/app
+      - ..:/app
     depends_on:
       db:
         condition: service_healthy
