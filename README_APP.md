@@ -453,8 +453,14 @@ pip install flask
 # 起動スクリプトに実行権限を付与（初回のみ）
 chmod +x run_app.sh
 
-# アプリケーションを起動
+# アプリケーションを起動（自動検出）
 ./run_app.sh start
+
+# Docker環境で起動
+./run_app.sh --docker start
+
+# ネイティブ環境で起動
+./run_app.sh --native start
 
 # アプリケーションの状態を確認
 ./run_app.sh status
@@ -467,10 +473,15 @@ chmod +x run_app.sh
 ```
 
 **利用可能なコマンド:**
-- `start` - アプリケーションをバックグラウンドで起動
+- `start` - アプリケーションを起動
 - `stop` - アプリケーションを停止
 - `restart` - アプリケーションを再起動
 - `status` - アプリケーションの実行状態を確認
+
+**環境指定オプション:**
+- `--docker` - Docker環境で実行
+- `--native` - ネイティブPython環境で実行
+- （指定なし） - 自動検出
 
 #### 方法2: 直接起動（フォアグラウンド）
 
@@ -504,9 +515,97 @@ tail -n 50 app.log
 
 ---
 
-## 14. 実装完了
+## 14. Docker環境での運用
 
-### 14.1 作成ファイル一覧
+### 14.1 Docker構成
+
+アプリケーションはDockerコンテナで運用できるように構成されています。
+
+#### サービス構成
+- **app**: Flaskアプリケーション（Python 3.12）
+- **db**: MySQL 8.0データベース
+- **phpmyadmin**: データベース管理ツール（開発用・オプション）
+
+### 14.2 Dockerでの起動方法
+
+#### 初回セットアップ
+
+```bash
+# 1. 環境変数ファイルを作成
+cp .env.example .env
+
+# 2. .envファイルを編集（SECRET_KEYとパスワードを変更）
+vim .env
+
+# 3. Dockerイメージをビルド
+docker-compose build
+
+# 4. コンテナを起動
+docker-compose up -d
+```
+
+#### アクセス
+
+- **アプリケーション**: http://localhost:5000
+- **phpMyAdmin**（開発モード）: http://localhost:8080
+
+#### 基本コマンド
+
+```bash
+# 起動
+docker-compose up -d
+
+# 停止
+docker-compose down
+
+# ログ確認
+docker-compose logs -f app
+
+# コンテナの状態確認
+docker-compose ps
+
+# 開発モード（phpMyAdmin含む）で起動
+docker-compose --profile dev up -d
+```
+
+### 14.3 データベース管理
+
+#### バックアップ
+
+```bash
+docker-compose exec db mysqldump -u root -p mbti_db > backup.sql
+```
+
+#### リストア
+
+```bash
+docker-compose exec -T db mysql -u root -p mbti_db < backup.sql
+```
+
+#### データベース初期化
+
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+### 14.4 デフォルト認証情報
+
+#### 管理者アカウント
+- Email: admin@example.com
+- Password: admin123
+
+⚠️ **本番環境では必ずパスワードを変更してください！**
+
+### 14.5 詳細情報
+
+Docker環境の詳細な運用方法は `DOCKER_README.md` を参照してください。
+
+---
+
+## 15. 実装完了
+
+### 15.1 作成ファイル一覧
 
 ✅ **Pythonファイル**
 - `app.py` - Flaskメインアプリケーション
@@ -526,7 +625,17 @@ tail -n 50 app.log
 ✅ **補助ファイル**
 - `run_app.sh` - アプリケーション管理スクリプト（start/stop/restart/status）
 
-### 14.2 機能確認
+✅ **Docker関連ファイル**
+- `Dockerfile` - アプリケーションコンテナの定義
+- `docker-compose.yml` - サービス構成定義
+- `.dockerignore` - Dockerビルド時の除外ファイル
+- `.env.example` - 環境変数テンプレート
+- `docker/mysql/init/01_create_tables.sql` - データベーススキーマ定義
+- `docker/mysql/init/02_insert_admin_user.sql` - 初期データ投入
+- `docker/mysql/conf.d/my.cnf` - MySQL設定ファイル
+- `DOCKER_README.md` - Docker運用ガイド
+
+### 15.2 機能確認
 
 以下の機能が実装されています：
 

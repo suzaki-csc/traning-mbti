@@ -2,10 +2,31 @@
 
 ## クイックスタート
 
+### 起動方法の選択
+
+`run_app.sh`は自動的に環境を検出し、Docker環境またはネイティブPython環境で起動します。
+
+- **Docker環境**: `docker-compose.yml`が存在し、Docker Composeが利用可能な場合
+- **ネイティブ環境**: 上記以外の場合、またはPoetry/pip環境
+
 ### 1. アプリケーションを起動
+
+#### 自動検出モード（推奨）
 
 ```bash
 ./run_app.sh start
+```
+
+#### Docker環境を明示的に指定
+
+```bash
+./run_app.sh --docker start
+```
+
+#### ネイティブ環境を明示的に指定
+
+```bash
+./run_app.sh --native start
 ```
 
 実行結果:
@@ -103,12 +124,23 @@ tail -n 50 app.log
 
 ## コマンド一覧
 
+### 基本コマンド
+
 | コマンド | 説明 |
 |---------|------|
-| `./run_app.sh start` | アプリケーションをバックグラウンドで起動 |
+| `./run_app.sh start` | アプリケーションを起動（自動検出） |
 | `./run_app.sh stop` | アプリケーションを停止 |
-| `./run_app.sh restart` | アプリケーションを再起動（stop → start） |
+| `./run_app.sh restart` | アプリケーションを再起動 |
 | `./run_app.sh status` | アプリケーションの実行状態を確認 |
+
+### 環境指定オプション
+
+| コマンド | 説明 |
+|---------|------|
+| `./run_app.sh --docker start` | Docker環境で起動 |
+| `./run_app.sh --native start` | ネイティブPython環境で起動 |
+| `./run_app.sh --docker status` | Docker環境の状態確認 |
+| `./run_app.sh --native status` | ネイティブ環境の状態確認 |
 
 ---
 
