@@ -160,6 +160,15 @@ docker-compose exec db mysqladmin ping -h localhost -u root -proot_password
 - **メインアプリ**: http://localhost:5000
 - **診断履歴**: http://localhost:5000/admin/history
 
+### 5. デフォルト管理者アカウント
+
+アプリケーション起動時に、デフォルト管理者ユーザーが自動作成されます：
+
+- **メールアドレス**: `admin@example.com`
+- **パスワード**: `admin123`
+
+> ⚠️ **セキュリティ警告**: 本番環境では必ずパスワードを変更してください。
+
 ## 🎮 起動スクリプトの詳細
 
 ### start.sh

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}マイページ - MBTI性格診断{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- ユーザー情報 -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 5rem; color: #4a90e2;"></i>
+                    </div>
+                    <h4 class="card-title">{{ current_user.username }}</h4>
+                    <p class="text-muted">{{ current_user.email }}</p>
+                    
+                    {% if current_user.is_admin() %}
+                    <span class="badge bg-danger">管理者</span>
+                    {% else %}
+                    <span class="badge bg-primary">一般ユーザー</span>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="mb-1">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> 登録日
+                            </small>
+                        </p>
+                        <p class="mb-3">{{ current_user.created_at.strftime('%Y年%m月%d日') }}</p>
+                        
+                        {% if current_user.last_login %}
+                        <p class="mb-1">
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> 最終ログイン
+                            </small>
+                        </p>
+                        <p>{{ current_user.last_login.strftime('%Y年%m月%d日 %H:%M') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if current_user.is_admin() %}
+            <div class="card shadow mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-shield-check"></i> 管理者メニュー
+                    </h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> ユーザー管理
+                        </a>
+                        <a href="{{ url_for('admin.history') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-clock-history"></i> 診断履歴
+                        </a>
+                        <a href="{{ url_for('admin.stats') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-graph-up"></i> 統計情報
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 診断履歴 -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-clock-history"></i> あなたの診断履歴
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if diagnoses %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>診断日時</th>
+                                    <th>MBTIタイプ</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for diagnosis in diagnoses %}
+                                <tr>
+                                    <td>{{ diagnosis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <span class="badge bg-primary fs-6">{{ diagnosis.mbti_type }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('main.result', session_id=diagnosis.session_id) }}" 
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-eye"></i> 結果を見る
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if diagnoses|length == 10 %}
+                    <p class="text-muted text-center mt-3">
+                        最新10件を表示しています
+                    </p>
+                    {% endif %}
+                    
+                    {% else %}
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        まだ診断を受けていません。診断を始めましょう！
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="{{ url_for('main.quiz') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-circle"></i> 診断を始める
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
