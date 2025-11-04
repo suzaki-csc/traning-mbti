@@ -65,6 +65,9 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 app.pid
+*.db
+mbti.db
+app_simple.py
 
 # Scrapy stuff:
 .scrapy

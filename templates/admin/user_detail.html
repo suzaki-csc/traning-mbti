@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー詳細 - MBTI風性格診断{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- ユーザー情報編集フォーム -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">ユーザー情報編集</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_user_edit', user_id=user.id) }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">ユーザー名</label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   value="{{ user.username }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ user.email }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="role" class="form-label">ロール</label>
+                            <select class="form-select" id="role" name="role" required
+                                    {% if user.id == current_user.id %}disabled{% endif %}>
+                                <option value="user" {% if user.role == 'user' %}selected{% endif %}>一般ユーザー</option>
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>管理者</option>
+                            </select>
+                            {% if user.id == current_user.id %}
+                            <small class="text-muted">自分自身のロールは変更できません</small>
+                            <input type="hidden" name="role" value="{{ user.role }}">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">アカウント状態</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                       {% if user.is_active %}checked{% endif %}
+                                       {% if user.id == current_user.id %}disabled{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    アカウントを有効化
+                                </label>
+                            </div>
+                            {% if user.id == current_user.id %}
+                            <small class="text-muted">自分自身のアカウントは無効化できません</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">新しいパスワード（変更する場合のみ入力）</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" 
+                               placeholder="変更しない場合は空欄">
+                        <small class="text-muted">6文字以上で入力してください</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> 一覧に戻る
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> 保存
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 診断履歴 -->
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">診断履歴（{{ results|length }}件）</h5>
+            </div>
+            <div class="card-body">
+                {% if results %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>診断日時</th>
+                                    <th>MBTIタイプ</th>
+                                    <th>スコア</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td><span class="badge bg-success">{{ result.mbti_type }}</span></td>
+                                    <td>
+                                        <small>
+                                            E/I:{{ result.score_ei }} 
+                                            S/N:{{ result.score_sn }} 
+                                            T/F:{{ result.score_tf }} 
+                                            J/P:{{ result.score_jp }}
+                                        </small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted py-3">診断履歴がありません</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- ユーザー情報サマリー -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">ユーザー情報</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">ID</dt>
+                    <dd class="col-sm-7">{{ user.id }}</dd>
+                    
+                    <dt class="col-sm-5">ロール</dt>
+                    <dd class="col-sm-7">
+                        {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">管理者</span>
+                        {% else %}
+                            <span class="badge bg-secondary">一般ユーザー</span>
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-5">状態</dt>
+                    <dd class="col-sm-7">
+                        {% if user.is_active %}
+                            <span class="badge bg-success">有効</span>
+                        {% else %}
+                            <span class="badge bg-warning">無効</span>
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-5">登録日</dt>
+                    <dd class="col-sm-7">
+                        {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else '-' }}
+                    </dd>
+                    
+                    <dt class="col-sm-5">最終ログイン</dt>
+                    <dd class="col-sm-7">
+                        {{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '未ログイン' }}
+                    </dd>
+                    
+                    <dt class="col-sm-5">診断回数</dt>
+                    <dd class="col-sm-7">{{ user.diagnosis_results|length }}回</dd>
+                </dl>
+            </div>
+        </div>
+        
+        <!-- 危険操作 -->
+        {% if user.id != current_user.id %}
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">危険な操作</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-danger mb-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i> 
+                    この操作は取り消せません
+                </p>
+                <form method="POST" action="{{ url_for('admin_user_delete', user_id=user.id) }}"
+                      onsubmit="return confirm('本当にユーザー「{{ user.username }}」を削除しますか？\nこの操作は取り消せません。');">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-trash-fill"></i> このユーザーを削除
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
