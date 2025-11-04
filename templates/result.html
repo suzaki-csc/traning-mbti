@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}診断結果 - MBTI風性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <!-- 結果カード -->
+        <div class="card shadow-lg mb-4">
+            <div class="card-body text-center p-5">
+                <h2 class="mb-3">診断結果</h2>
+                <div class="mbti-type-display mb-4">
+                    <h1 class="display-1 fw-bold text-primary">{{ mbti_type }}</h1>
+                    <h3 class="text-muted">{{ mbti_info.name }}</h3>
+                </div>
+                <p class="lead mb-0">
+                    {{ mbti_info.description }}
+                </p>
+            </div>
+        </div>
+
+        <!-- スコア詳細 -->
+        <div class="card shadow mb-4">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4">各軸のスコア</h4>
+
+                {% set axis_labels = {
+                    'EI': ['外向型 (E)', '内向型 (I)'],
+                    'SN': ['感覚型 (S)', '直感型 (N)'],
+                    'TF': ['思考型 (T)', '感情型 (F)'],
+                    'JP': ['判断型 (J)', '知覚型 (P)']
+                } %}
+
+                {% for axis, label_pair in axis_labels.items() %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-bold">{{ label_pair[0] }}</span>
+                        <span class="fw-bold">{{ label_pair[1] }}</span>
+                    </div>
+                    
+                    {% set percentage = percentages[axis] %}
+                    {% set abs_percentage = percentage if percentage > 0 else -percentage %}
+                    
+                    <div class="axis-bar-container">
+                        <div class="axis-bar">
+                            <div class="axis-bar-fill 
+                                {% if percentage > 0 %}axis-bar-left{% else %}axis-bar-right{% endif %}"
+                                 style="width: {{ abs_percentage }}%;">
+                            </div>
+                        </div>
+                        <div class="axis-bar-center"></div>
+                    </div>
+                    
+                    <div class="text-center text-muted small mt-1">
+                        {% if percentage > 0 %}
+                            {{ label_pair[0].split()[0] }} 寄り ({{ abs_percentage | round(1) }}%)
+                        {% elif percentage < 0 %}
+                            {{ label_pair[1].split()[0] }} 寄り ({{ abs_percentage | round(1) }}%)
+                        {% else %}
+                            中立
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="text-center mb-4">
+            <a href="{{ url_for('restart') }}" class="btn btn-primary btn-lg px-5">
+                もう一度診断する
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

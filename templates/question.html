@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}質問 {{ q_num }} / {{ total }} - MBTI風性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <!-- 進捗バー -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">質問 {{ q_num }} / {{ total }}</span>
+                <span class="text-muted">{{ ((q_num / total) * 100) | round | int }}%</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-primary" role="progressbar" 
+                     style="width: {{ (q_num / total) * 100 }}%;" 
+                     aria-valuenow="{{ q_num }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="{{ total }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 質問カード -->
+        <div class="card shadow">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="card-title mb-4 text-center">
+                    {{ question.text }}
+                </h3>
+
+                <form method="POST" action="{{ url_for('answer', q_num=q_num) }}" id="answerForm">
+                    <div class="d-grid gap-3">
+                        {% for option in answer_options %}
+                        <label class="answer-option">
+                            <input type="radio" 
+                                   name="answer" 
+                                   value="{{ option.value }}" 
+                                   {% if current_answer == option.value %}checked{% endif %}
+                                   required>
+                            <span class="answer-label">{{ option.label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        {% if q_num > 1 %}
+                        <button type="button" class="btn btn-outline-secondary" onclick="goBack()">
+                            ← 前の質問
+                        </button>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary px-4">
+                            {% if q_num < total %}
+                            次へ →
+                            {% else %}
+                            結果を見る
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function goBack() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{{ url_for('back', q_num=q_num) }}";
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// ラジオボタン選択時に自動でフォーム送信（オプション）
+/*
+document.querySelectorAll('input[name="answer"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        setTimeout(() => {
+            document.getElementById('answerForm').submit();
+        }, 300);
+    });
+});
+*/
+</script>
+{% endblock %}
+

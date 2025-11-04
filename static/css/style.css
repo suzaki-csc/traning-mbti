@@ -1,0 +1,187 @@
+/* MBTI風性格診断 カスタムスタイル */
+
+/* 全体設定 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+main.container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* カード */
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* ボタン */
+.btn {
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #63398d 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* 回答選択肢 */
+.answer-option {
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+.answer-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.answer-option .answer-label {
+    display: block;
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.answer-option:hover .answer-label {
+    background: #e9ecef;
+    border-color: #667eea;
+}
+
+.answer-option input[type="radio"]:checked ~ .answer-label {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 進捗バー */
+.progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* MBTIタイプ表示 */
+.mbti-type-display {
+    padding: 2rem 0;
+}
+
+.mbti-type-display h1 {
+    letter-spacing: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 軸スコアバー */
+.axis-bar-container {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.axis-bar {
+    position: relative;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.axis-bar-fill {
+    position: absolute;
+    height: 100%;
+    transition: width 1s ease;
+}
+
+.axis-bar-fill.axis-bar-left {
+    left: 0;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px 0 0 15px;
+}
+
+.axis-bar-fill.axis-bar-right {
+    right: 0;
+    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 0 15px 15px 0;
+}
+
+.axis-bar-center {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 3px;
+    height: 30px;
+    background: #495057;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    body {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card-body {
+        padding: 2rem 1.5rem !important;
+    }
+
+    .mbti-type-display h1 {
+        font-size: 3rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .answer-option .answer-label {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* フッター */
+footer {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease;
+}
+

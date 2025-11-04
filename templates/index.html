@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}トップページ - MBTI風性格診断{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-body text-center p-5">
+                <h1 class="card-title mb-4">
+                    <i class="bi bi-person-circle"></i>
+                    MBTI風性格診断
+                </h1>
+                <p class="lead text-muted mb-4">
+                    12の質問であなたの性格タイプを診断します
+                </p>
+                <div class="mb-4">
+                    <p class="text-start">
+                        <strong>診断内容：</strong><br>
+                        4つの軸（外向/内向、感覚/直感、思考/感情、判断/知覚）から、<br>
+                        あなたの性格を16タイプの中から判定します。
+                    </p>
+                </div>
+                <form method="POST" action="{{ url_for('start') }}">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        診断を始める
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <p class="text-muted small">
+                <i class="bi bi-clock"></i> 所要時間: 約3〜5分
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
