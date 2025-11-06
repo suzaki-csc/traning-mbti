@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}クイズ実行中 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        {% if is_review_mode %}
+        <div class="alert alert-info mb-4" role="alert">
+            <i class="bi bi-arrow-repeat"></i> <strong>復習モード</strong> - 間違えた問題を再挑戦しています
+        </div>
+        {% endif %}
+
+        <!-- プログレスバー -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <span>問題 <span id="current-question">1</span> / {{ total_questions }}</span>
+                <span id="timer-display" class="text-primary fw-bold"></span>
+            </div>
+            <div class="progress" style="height: 8px;">
+                <div id="progress-bar" class="progress-bar" role="progressbar" 
+                     style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+
+        <!-- 問題カード -->
+        <div class="card shadow-sm mb-4" id="question-card">
+            <div class="card-body">
+                <div id="question-area" role="region" aria-live="polite" aria-atomic="true">
+                    <h2 id="question-title" class="card-title h4 mb-4" tabindex="-1">
+                        問題 <span id="question-number">1</span>
+                    </h2>
+                    <p id="question-text" class="lead mb-4"></p>
+                    
+                    <!-- 選択肢 -->
+                    <fieldset id="choices-fieldset">
+                        <legend class="sr-only">回答選択</legend>
+                        <div id="choices-container" class="d-grid gap-2">
+                            <!-- JavaScriptで動的に生成 -->
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- 解説エリア（回答後に表示） -->
+                <div id="explanation-area" class="mt-4 d-none">
+                    <hr>
+                    <div id="result-badge" class="mb-3"></div>
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> 解説
+                        </h5>
+                        <p id="explanation-text" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ボタンエリア -->
+        <div class="d-grid gap-2">
+            <button id="submit-btn" class="btn btn-primary btn-lg" disabled>
+                <i class="bi bi-check-circle"></i> 回答する
+            </button>
+            <button id="next-btn" class="btn btn-success btn-lg d-none">
+                <i class="bi bi-arrow-right-circle"></i> 次の問題へ
+            </button>
+            <button id="finish-btn" class="btn btn-success btn-lg d-none">
+                <i class="bi bi-flag-fill"></i> 結果を見る
+            </button>
+            <a href="{{ url_for('main.category') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle"></i> 中断する
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ローディングオーバーレイ -->
+<div id="loading-overlay" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">読み込み中...</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+<script>
+const SESSION_KEY = '{{ session_key }}';
+const TOTAL_QUESTIONS = {{ total_questions }};
+const TIMER_SECONDS = {{ quiz_session.timer_seconds }};
+const SOUND_ENABLED = {{ 'true' if quiz_session.sound_enabled else 'false' }};
+
+// クイズアプリを初期化
+const quizApp = new QuizApp(SESSION_KEY, TOTAL_QUESTIONS, TIMER_SECONDS, SOUND_ENABLED);
+quizApp.init();
+</script>
+{% endblock %}
+

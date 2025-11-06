@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}全ユーザーのクイズ履歴 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-clock-history"></i> 全ユーザーのクイズ履歴
+        </h1>
+    </div>
+    
+    <!-- フィルター -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-5">
+                    <label for="user_id" class="form-label">ユーザー</label>
+                    <select class="form-select" id="user_id" name="user_id">
+                        <option value="">すべてのユーザー</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}" {% if selected_user_id == user.id %}selected{% endif %}>
+                            {{ user.email }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="category_id" class="form-label">カテゴリ</label>
+                    <select class="form-select" id="category_id" name="category_id">
+                        <option value="">すべてのカテゴリ</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-filter"></i> フィルター
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 履歴一覧 -->
+    {% if sessions %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>ユーザー</th>
+                                <th>カテゴリ</th>
+                                <th>スコア</th>
+                                <th>正答率</th>
+                                <th>日時</th>
+                                <th>完了日時</th>
+                                <th>ステータス</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                            <tr>
+                                <td>{{ session.id }}</td>
+                                <td>
+                                    {% if session.user %}
+                                        <a href="{{ url_for('admin.user_detail', user_id=session.user.id) }}">
+                                            {{ session.user.email }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">ゲスト</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ session.category.name }}</span>
+                                </td>
+                                <td>{{ session.correct_count }} / {{ session.total_questions }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if session.get_accuracy_rate() >= 80 %}bg-success
+                                        {% elif session.get_accuracy_rate() >= 60 %}bg-info
+                                        {% elif session.get_accuracy_rate() >= 40 %}bg-warning
+                                        {% else %}bg-danger
+                                        {% endif %}">
+                                        {{ "%.1f"|format(session.get_accuracy_rate()) }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <small>{{ session.started_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </td>
+                                <td>
+                                    <small>{{ session.completed_at.strftime('%Y-%m-%d %H:%M') if session.completed_at else '-' }}</small>
+                                </td>
+                                <td>
+                                    {% if session.completed_at %}
+                                        <span class="badge bg-success">完了</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">未完了</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ページネーション -->
+        {% if pagination.pages > 1 %}
+        <nav aria-label="ページネーション" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.quiz_history', page=pagination.prev_num, user_id=selected_user_id, category_id=selected_category_id) if pagination.has_prev else '#' }}">
+                        前へ
+                    </a>
+                </li>
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.quiz_history', page=page_num, user_id=selected_user_id, category_id=selected_category_id) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.quiz_history', page=pagination.next_num, user_id=selected_user_id, category_id=selected_category_id) if pagination.has_next else '#' }}">
+                        次へ
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> クイズ履歴がありません
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

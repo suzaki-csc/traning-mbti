@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}管理者ダッシュボード - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="bi bi-speedometer2"></i> 管理者ダッシュボード
+    </h1>
+    
+    <!-- 統計カード -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">ユーザー数</h6>
+                            <h2 class="mb-0">{{ total_users }}</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-people" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('admin.users') }}" class="text-white text-decoration-none">
+                        詳細を見る <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">カテゴリ数</h6>
+                            <h2 class="mb-0">{{ total_categories }}</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-folder" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('admin.categories') }}" class="text-white text-decoration-none">
+                        詳細を見る <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">問題数</h6>
+                            <h2 class="mb-0">{{ total_questions }}</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-question-circle" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('admin.questions') }}" class="text-white text-decoration-none">
+                        詳細を見る <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">クイズ実施数</h6>
+                            <h2 class="mb-0">{{ total_quiz_sessions }}</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-play-circle" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('admin.quiz_history') }}" class="text-white text-decoration-none">
+                        詳細を見る <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 最近のクイズセッション -->
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> 最近のクイズセッション
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_sessions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ユーザー</th>
+                                        <th>カテゴリ</th>
+                                        <th>スコア</th>
+                                        <th>正答率</th>
+                                        <th>日時</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for session in recent_sessions %}
+                                    <tr>
+                                        <td>
+                                            {% if session.user %}
+                                                <a href="{{ url_for('admin.user_detail', user_id=session.user.id) }}">
+                                                    {{ session.user.email }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">ゲスト</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ session.category.name }}</span>
+                                        </td>
+                                        <td>{{ session.correct_count }} / {{ session.total_questions }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if session.get_accuracy_rate() >= 80 %}bg-success
+                                                {% elif session.get_accuracy_rate() >= 60 %}bg-info
+                                                {% elif session.get_accuracy_rate() >= 40 %}bg-warning
+                                                {% else %}bg-danger
+                                                {% endif %}">
+                                                {{ "%.1f"|format(session.get_accuracy_rate()) }}%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small>{{ session.started_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">まだクイズセッションがありません</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people"></i> 最近登録されたユーザー
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_users %}
+                        <div class="list-group list-group-flush">
+                            {% for user in recent_users %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ user.email }}</h6>
+                                        <small class="text-muted">
+                                            {% if user.is_admin() %}
+                                                <span class="badge bg-danger">管理者</span>
+                                            {% else %}
+                                                <span class="badge bg-primary">ユーザー</span>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> 
+                                    {{ user.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">まだユーザーがいません</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}結果 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="mb-4">
+            <i class="bi bi-trophy"></i> クイズ結果
+        </h1>
+
+        <!-- スコアカード -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <h2 class="display-3 mb-3" aria-label="スコア {{ result.correct_count }}点、{{ result.total_questions }}問中">
+                    <span class="text-primary">{{ result.correct_count }}</span> / {{ result.total_questions }}
+                </h2>
+                <p class="lead mb-3">
+                    正答率: <strong>{{ "%.0f"|format(result.accuracy_rate) }}%</strong>
+                </p>
+                <div class="progress mb-3" style="height: 30px;">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ result.accuracy_rate }}%"
+                         aria-valuenow="{{ result.accuracy_rate }}" 
+                         aria-valuemin="0" aria-valuemax="100">
+                        {{ "%.0f"|format(result.accuracy_rate) }}%
+                    </div>
+                </div>
+                <p class="text-muted mb-0">{{ evaluation_message }}</p>
+            </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="d-grid gap-2 mb-4">
+            <button id="copy-score-btn" class="btn btn-outline-primary">
+                <i class="bi bi-clipboard"></i> スコアをコピー
+            </button>
+            {% if result.has_incorrect %}
+            <button id="review-btn" class="btn btn-warning" 
+                    data-session-key="{{ result.session_key }}"
+                    data-category-id="{{ quiz_session.category_id }}">
+                <i class="bi bi-arrow-repeat"></i> 間違えた問題を復習 ({{ result.incorrect_questions|length }}問)
+            </button>
+            {% endif %}
+            <a href="{{ url_for('main.category') }}" class="btn btn-primary">
+                <i class="bi bi-collection"></i> 別のカテゴリで挑戦
+            </a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-house-door"></i> トップに戻る
+            </a>
+        </div>
+
+        <!-- 間違えた問題のリスト -->
+        {% if result.incorrect_questions %}
+        <h3 class="mb-3">
+            <i class="bi bi-x-circle text-danger"></i> 間違えた問題
+        </h3>
+        <div class="accordion" id="incorrectQuestionsAccordion">
+            {% for question in result.incorrect_questions %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#question-{{ loop.index }}"
+                            aria-expanded="false" 
+                            aria-controls="question-{{ loop.index }}">
+                        問題 {{ loop.index }}: {{ question.question_text[:50] }}...
+                    </button>
+                </h2>
+                <div id="question-{{ loop.index }}" class="accordion-collapse collapse" 
+                     data-bs-parent="#incorrectQuestionsAccordion">
+                    <div class="accordion-body">
+                        <p class="fw-bold">{{ question.question_text }}</p>
+                        <div class="mb-2">
+                            <span class="badge bg-danger">あなたの回答</span>
+                            <p>{{ question.user_choice_text }}</p>
+                        </div>
+                        <div class="mb-2">
+                            <span class="badge bg-success">正解</span>
+                            <p>{{ question.correct_choice_text }}</p>
+                        </div>
+                        <div class="alert alert-info mb-0">
+                            <strong>解説:</strong> {{ question.explanation }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <strong>完璧です！</strong> すべての問題に正解しました！
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- スコア共有テキスト（非表示） -->
+<textarea id="share-text" class="d-none">{{ result.share_text }}</textarea>
+
+<!-- ローディングモーダル -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" 
+     tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">読み込み中...</span>
+                </div>
+                <p class="mb-0">復習モードを準備中...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// スコアコピー機能
+document.getElementById('copy-score-btn').addEventListener('click', async function() {
+    const shareText = document.getElementById('share-text').value;
+    
+    try {
+        await navigator.clipboard.writeText(shareText);
+        showToast('スコアをクリップボードにコピーしました', 'success');
+    } catch (err) {
+        // フォールバック
+        const textarea = document.getElementById('share-text');
+        textarea.classList.remove('d-none');
+        textarea.select();
+        document.execCommand('copy');
+        textarea.classList.add('d-none');
+        showToast('スコアをクリップボードにコピーしました', 'success');
+    }
+});
+
+// 復習モード開始
+const reviewBtn = document.getElementById('review-btn');
+if (reviewBtn) {
+    reviewBtn.addEventListener('click', async function() {
+        const sessionKey = this.dataset.sessionKey;
+        const categoryId = this.dataset.categoryId;
+        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+        
+        loadingModal.show();
+        
+        try {
+            // 復習モードでクイズを開始
+            const response = await fetch('/api/quiz/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    category_id: parseInt(categoryId),
+                    timer_seconds: 30,
+                    sound_enabled: true,
+                    is_review_mode: true,
+                    parent_session_key: sessionKey
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                window.location.href = `/quiz/${data.session_key}`;
+            } else {
+                throw new Error('復習モードの開始に失敗しました');
+            }
+        } catch (error) {
+            loadingModal.hide();
+            alert('エラーが発生しました: ' + error.message);
+        }
+    });
+}
+
+// トースト表示関数
+function showToast(message, type = 'info') {
+    const toastHtml = `
+        <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="閉じる"></button>
+            </div>
+        </div>
+    `;
+    
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(container);
+    }
+    
+    container.innerHTML = toastHtml;
+    const toastElement = container.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+</script>
+{% endblock %}
+

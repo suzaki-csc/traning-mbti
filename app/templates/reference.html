@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}用語参考リンク集 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <h1 class="mb-4">
+            <i class="bi bi-book"></i> 用語参考リンク集
+        </h1>
+        <p class="lead text-muted mb-4">
+            IT用語の理解を深めるための参考情報です。
+        </p>
+
+        <!-- カテゴリタブ -->
+        <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
+            {% for category in categories %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if loop.first %}active{% endif %}" 
+                        id="tab-{{ category.id }}" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#content-{{ category.id }}" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="content-{{ category.id }}" 
+                        aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+                    {{ category.name }}
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- タブコンテンツ -->
+        <div class="tab-content" id="categoryTabsContent">
+            {% for category in categories %}
+            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" 
+                 id="content-{{ category.id }}" 
+                 role="tabpanel" 
+                 aria-labelledby="tab-{{ category.id }}">
+                
+                {% if terms_by_category.get(category.name) %}
+                <div class="row g-4">
+                    {% for term in terms_by_category[category.name] %}
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ term.term_name }}</h5>
+                                <p class="card-text">{{ term.description }}</p>
+                                <a href="{{ term.url }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-link-45deg"></i> 詳しく見る
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    このカテゴリの用語は準備中です。
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

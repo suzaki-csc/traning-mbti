@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ app_name }} - ホーム{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- ヒーローセクション -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">
+                <i class="bi bi-lightbulb-fill text-primary"></i>
+                {{ app_name }}へようこそ
+            </h1>
+            <p class="lead text-muted">
+                IT・セキュリティ用語を4択クイズで楽しく学習しましょう
+            </p>
+        </div>
+
+        <!-- 特徴カード -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-collection display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">多彩なカテゴリ</h5>
+                        <p class="card-text">セキュリティ、IT基礎、プログラミングなど幅広い分野をカバー</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-clock-history display-4 text-success mb-3"></i>
+                        <h5 class="card-title">タイマー機能</h5>
+                        <p class="card-text">制限時間内に回答してスキルアップ。設定でカスタマイズ可能</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-arrow-repeat display-4 text-info mb-3"></i>
+                        <h5 class="card-title">復習モード</h5>
+                        <p class="card-text">間違えた問題だけを集中的に復習できます</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="d-grid gap-3">
+            <a href="{{ url_for('main.category') }}" class="btn btn-primary btn-lg" role="button">
+                <i class="bi bi-play-circle-fill"></i> クイズを始める
+            </a>
+            <a href="{{ url_for('main.reference') }}" class="btn btn-outline-secondary btn-lg" role="button">
+                <i class="bi bi-book"></i> 用語参考リンク集を見る
+            </a>
+        </div>
+
+        <!-- 使い方説明 -->
+        <div class="card mt-5 border-0 bg-light">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-info-circle"></i> 使い方
+                </h5>
+                <ol class="mb-0">
+                    <li class="mb-2">カテゴリを選択します</li>
+                    <li class="mb-2">10問の4択クイズに挑戦します</li>
+                    <li class="mb-2">各問題には解説が付いています</li>
+                    <li class="mb-2">結果を確認して、間違えた問題を復習できます</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- アクセシビリティ情報 -->
+        <div class="alert alert-info mt-4" role="alert">
+            <i class="bi bi-universal-access"></i>
+            <strong>アクセシビリティ:</strong> 
+            このアプリはキーボード操作に対応しています。矢印キーで選択肢を移動、Enterキーで決定できます。
+        </div>
+    </div>
+</div>
+{% endblock %}
+

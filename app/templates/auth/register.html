@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}新規登録 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h1 class="card-title text-center mb-4">
+                        <i class="bi bi-person-plus"></i> 新規登録
+                    </h1>
+                    
+                    <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   placeholder="example@example.com"
+                                   required 
+                                   autocomplete="email"
+                                   autofocus>
+                            <div class="form-text">ログイン時に使用します</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="••••••••"
+                                   required 
+                                   autocomplete="new-password"
+                                   minlength="6">
+                            <div class="form-text">6文字以上で設定してください</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password_confirm" class="form-label">パスワード（確認）</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password_confirm" 
+                                   name="password_confirm" 
+                                   placeholder="••••••••"
+                                   required 
+                                   autocomplete="new-password"
+                                   minlength="6">
+                            <div class="form-text">確認のためもう一度入力してください</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> 登録する
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-2">既にアカウントをお持ちですか？</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-box-arrow-in-right"></i> ログイン
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}問題管理 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-question-circle"></i> 問題管理
+        </h1>
+        <a href="{{ url_for('admin.question_create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> 新規作成
+        </a>
+    </div>
+    
+    <!-- フィルター -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-10">
+                    <label for="category_id" class="form-label">カテゴリ</label>
+                    <select class="form-select" id="category_id" name="category_id">
+                        <option value="">すべてのカテゴリ</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-filter"></i> フィルター
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% if questions %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>問題文</th>
+                                <th>カテゴリ</th>
+                                <th>難易度</th>
+                                <th>ステータス</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in questions %}
+                            <tr>
+                                <td>{{ question.id }}</td>
+                                <td>{{ question.question_text[:80] }}{% if question.question_text|length > 80 %}...{% endif %}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ question.category.name }}</span>
+                                </td>
+                                <td>
+                                    {% for i in range(question.difficulty) %}
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if question.is_active %}
+                                        <span class="badge bg-success">有効</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">無効</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ url_for('admin.question_edit', question_id=question.id) }}" 
+                                           class="btn btn-outline-secondary" title="編集">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="POST" action="{{ url_for('admin.question_delete', question_id=question.id) }}" 
+                                              style="display:inline;" 
+                                              onsubmit="return confirm('この問題を削除してもよろしいですか？');">
+                                            <button type="submit" class="btn btn-outline-danger" title="削除">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ページネーション -->
+        {% if pagination.pages > 1 %}
+        <nav aria-label="ページネーション" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.questions', page=pagination.prev_num, category_id=selected_category_id) if pagination.has_prev else '#' }}">
+                        前へ
+                    </a>
+                </li>
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.questions', page=page_num, category_id=selected_category_id) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.questions', page=pagination.next_num, category_id=selected_category_id) if pagination.has_next else '#' }}">
+                        次へ
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> 問題がありません。
+            <a href="{{ url_for('admin.question_create') }}" class="alert-link">新規作成</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

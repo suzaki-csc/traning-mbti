@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー編集 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-pencil"></i> ユーザー編集
+        </h1>
+        <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> 戻る
+        </a>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   value="{{ user.email }}"
+                                   required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label">ロール</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="user" {% if user.role == 'user' %}selected{% endif %}>一般ユーザー</option>
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>管理者</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="is_active" class="form-label">ステータス</label>
+                            <select class="form-select" id="is_active" name="is_active" required>
+                                <option value="true" {% if user.is_active %}selected{% endif %}>有効</option>
+                                <option value="false" {% if not user.is_active %}selected{% endif %}>無効</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">新しいパスワード（変更する場合のみ）</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="new_password" 
+                                   name="new_password"
+                                   minlength="6"
+                                   placeholder="変更しない場合は空欄">
+                            <div class="form-text">6文字以上で設定してください。空欄の場合はパスワードは変更されません。</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> 更新する
+                            </button>
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+                               class="btn btn-outline-secondary">
+                                キャンセル
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー詳細 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-person-circle"></i> ユーザー詳細
+        </h1>
+        <div>
+            <a href="{{ url_for('admin.user_edit', user_id=user.id) }}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> 編集
+            </a>
+            <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> 戻る
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">ユーザー情報</h5>
+                    <hr>
+                    <p><strong>メールアドレス:</strong><br>{{ user.email }}</p>
+                    <p><strong>ロール:</strong><br>
+                        {% if user.is_admin() %}
+                            <span class="badge bg-danger">管理者</span>
+                        {% else %}
+                            <span class="badge bg-primary">ユーザー</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>ステータス:</strong><br>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">有効</span>
+                        {% else %}
+                            <span class="badge bg-secondary">無効</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>登録日:</strong><br>
+                        {{ user.created_at.strftime('%Y年%m月%d日 %H:%M') if user.created_at else '-' }}
+                    </p>
+                    <p><strong>最終ログイン:</strong><br>
+                        {{ user.last_login_at.strftime('%Y年%m月%d日 %H:%M') if user.last_login_at else '-' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> クイズ履歴
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if quiz_sessions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>カテゴリ</th>
+                                        <th>スコア</th>
+                                        <th>正答率</th>
+                                        <th>日時</th>
+                                        <th>ステータス</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for session in quiz_sessions %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ session.category.name }}</span>
+                                        </td>
+                                        <td>{{ session.correct_count }} / {{ session.total_questions }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if session.get_accuracy_rate() >= 80 %}bg-success
+                                                {% elif session.get_accuracy_rate() >= 60 %}bg-info
+                                                {% elif session.get_accuracy_rate() >= 40 %}bg-warning
+                                                {% else %}bg-danger
+                                                {% endif %}">
+                                                {{ "%.1f"|format(session.get_accuracy_rate()) }}%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small>{{ session.started_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </td>
+                                        <td>
+                                            {% if session.completed_at %}
+                                                <span class="badge bg-success">完了</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">未完了</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">まだクイズを実施していません</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

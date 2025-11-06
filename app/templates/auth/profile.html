@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}プロフィール - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <!-- ユーザー情報 -->
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="card-title">{{ current_user.email }}</h5>
+                    <p class="text-muted">
+                        {% if current_user.is_admin() %}
+                            <span class="badge bg-danger">管理者</span>
+                        {% else %}
+                            <span class="badge bg-primary">一般ユーザー</span>
+                        {% endif %}
+                    </p>
+                    <hr>
+                    <p class="mb-1 small text-muted">
+                        <i class="bi bi-calendar-plus"></i> 
+                        登録日: {{ current_user.created_at.strftime('%Y年%m月%d日') if current_user.created_at else '不明' }}
+                    </p>
+                    {% if current_user.last_login_at %}
+                    <p class="mb-0 small text-muted">
+                        <i class="bi bi-clock"></i> 
+                        最終ログイン: {{ current_user.last_login_at.strftime('%Y年%m月%d日 %H:%M') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- 統計情報 -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-graph-up"></i> 統計情報
+                    </h6>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h3 class="text-primary mb-0">{{ total_quizzes }}</h3>
+                            <small class="text-muted">クイズ実施数</small>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h3 class="text-success mb-0">{{ completed_quizzes }}</h3>
+                            <small class="text-muted">完了数</small>
+                        </div>
+                        <div class="col-12">
+                            <h3 class="text-info mb-0">{{ "%.1f"|format(avg_accuracy) }}%</h3>
+                            <small class="text-muted">平均正答率</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- クイズ履歴 -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-clock-history"></i> クイズ履歴
+                    </h5>
+                    <hr>
+                    
+                    {% if quiz_sessions %}
+                        <div class="list-group">
+                            {% for session in quiz_sessions %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">
+                                            <span class="badge bg-secondary">{{ session.category.name }}</span>
+                                            {% if session.completed_at %}
+                                                <span class="badge bg-success">完了</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">未完了</span>
+                                            {% endif %}
+                                        </h6>
+                                        <p class="mb-1">
+                                            正解数: {{ session.correct_count }} / {{ session.total_questions }}
+                                            <span class="badge 
+                                                {% if session.get_accuracy_rate() >= 80 %}bg-success
+                                                {% elif session.get_accuracy_rate() >= 60 %}bg-info
+                                                {% elif session.get_accuracy_rate() >= 40 %}bg-warning
+                                                {% else %}bg-danger
+                                                {% endif %}">
+                                                {{ "%.1f"|format(session.get_accuracy_rate()) }}%
+                                            </span>
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> 
+                                            {{ session.started_at.strftime('%Y年%m月%d日 %H:%M') }}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        {% if session.completed_at %}
+                                        <a href="{{ url_for('quiz.result', session_key=session.session_key) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> 詳細
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if total_quizzes > 10 %}
+                        <div class="text-center mt-3">
+                            <p class="text-muted">最近10件を表示中（全{{ total_quizzes }}件）</p>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle"></i> 
+                            まだクイズを実施していません。
+                            <a href="{{ url_for('main.category') }}" class="alert-link">クイズを始める</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

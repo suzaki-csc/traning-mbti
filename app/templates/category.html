@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}カテゴリ選択 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <h1 class="mb-4">
+            <i class="bi bi-collection"></i> カテゴリを選択
+        </h1>
+        <p class="lead text-muted mb-4">
+            学習したいカテゴリを選んでください。各カテゴリ10問のクイズに挑戦できます。
+        </p>
+
+        <!-- 設定パネル -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link w-100 text-start text-decoration-none" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#settingsPanel" 
+                            aria-expanded="false" aria-controls="settingsPanel">
+                        <i class="bi bi-gear"></i> クイズ設定
+                        <i class="bi bi-chevron-down float-end"></i>
+                    </button>
+                </h5>
+            </div>
+            <div id="settingsPanel" class="collapse">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="timerToggle" class="form-label">
+                                <i class="bi bi-clock"></i> タイマー設定
+                            </label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="timerToggle" checked>
+                                <label class="form-check-label" for="timerToggle">
+                                    タイマーを有効にする
+                                </label>
+                            </div>
+                            <div id="timerSettings" class="mt-2">
+                                <label for="timerSeconds" class="form-label">
+                                    制限時間: <span id="timerValue">30</span>秒
+                                </label>
+                                <input type="range" class="form-range" id="timerSeconds" 
+                                       min="15" max="60" value="30" step="5"
+                                       aria-label="1問あたりの制限時間（秒）">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="soundToggle" class="form-label">
+                                <i class="bi bi-volume-up"></i> 効果音設定
+                            </label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="soundToggle" checked>
+                                <label class="form-check-label" for="soundToggle">
+                                    効果音を有効にする
+                                </label>
+                            </div>
+                            <small class="text-muted">
+                                正解・不正解で異なる効果音が再生されます
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- カテゴリカード -->
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm category-card" tabindex="0"
+                     role="button" aria-label="{{ category.name }}カテゴリを選択">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-folder"></i> {{ category.name }}
+                        </h5>
+                        <p class="card-text text-muted">
+                            {{ category.description }}
+                        </p>
+                        <p class="text-muted small">
+                            <i class="bi bi-file-text"></i> 
+                            {{ category.to_dict()['question_count'] }}問
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <button class="btn btn-primary w-100 start-quiz-btn" 
+                                data-category-id="{{ category.id }}"
+                                data-category-name="{{ category.name }}">
+                            <i class="bi bi-play-fill"></i> このカテゴリで始める
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not categories %}
+        <div class="alert alert-warning mt-4" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            現在利用可能なカテゴリがありません。
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ローディングモーダル -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" 
+     tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">読み込み中...</span>
+                </div>
+                <p class="mb-0">クイズを準備中...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+<script>
+// カテゴリ選択とクイズ開始
+document.addEventListener('DOMContentLoaded', function() {
+    const startButtons = document.querySelectorAll('.start-quiz-btn');
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    
+    startButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const categoryId = this.dataset.categoryId;
+            const categoryName = this.dataset.categoryName;
+            
+            // 設定を取得
+            const timerEnabled = document.getElementById('timerToggle').checked;
+            const timerSeconds = timerEnabled ? parseInt(document.getElementById('timerSeconds').value) : 0;
+            const soundEnabled = document.getElementById('soundToggle').checked;
+            
+            // ローディング表示
+            loadingModal.show();
+            
+            try {
+                // クイズ開始APIを呼び出し
+                const response = await fetch('/api/quiz/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        category_id: parseInt(categoryId),
+                        timer_seconds: timerSeconds,
+                        sound_enabled: soundEnabled
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    // クイズ画面に遷移
+                    window.location.href = `/quiz/${data.session_key}`;
+                } else {
+                    throw new Error('クイズの開始に失敗しました');
+                }
+            } catch (error) {
+                loadingModal.hide();
+                alert('エラーが発生しました: ' + error.message);
+            }
+        });
+    });
+    
+    // タイマースライダーの値表示更新
+    const timerSlider = document.getElementById('timerSeconds');
+    const timerValue = document.getElementById('timerValue');
+    
+    timerSlider.addEventListener('input', function() {
+        timerValue.textContent = this.value;
+    });
+    
+    // タイマートグルで設定パネルの有効/無効を切り替え
+    const timerToggle = document.getElementById('timerToggle');
+    const timerSettings = document.getElementById('timerSettings');
+    
+    timerToggle.addEventListener('change', function() {
+        if (this.checked) {
+            timerSettings.style.opacity = '1';
+            timerSlider.disabled = false;
+        } else {
+            timerSettings.style.opacity = '0.5';
+            timerSlider.disabled = true;
+        }
+    });
+});
+</script>
+{% endblock %}
+

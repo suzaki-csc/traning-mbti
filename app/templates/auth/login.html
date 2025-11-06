@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h1 class="card-title text-center mb-4">
+                        <i class="bi bi-box-arrow-in-right"></i> ログイン
+                    </h1>
+                    
+                    <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   placeholder="example@example.com"
+                                   required 
+                                   autocomplete="email"
+                                   autofocus>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="••••••••"
+                                   required 
+                                   autocomplete="current-password">
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" 
+                                   class="form-check-input" 
+                                   id="remember" 
+                                   name="remember">
+                            <label class="form-check-label" for="remember">
+                                ログイン状態を保持する
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> ログイン
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-2">アカウントをお持ちでないですか？</p>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-person-plus"></i> 新規登録
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 alert alert-info" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> デフォルト管理者
+                        </h6>
+                        <p class="mb-0 small">
+                            <strong>Email:</strong> admin@example.com<br>
+                            <strong>Password:</strong> admin123
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}問題作成 - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-plus-circle"></i> 問題作成
+        </h1>
+        <a href="{{ url_for('admin.questions') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> 戻る
+        </a>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">カテゴリ</label>
+                            <select class="form-select" id="category_id" name="category_id" required>
+                                <option value="">カテゴリを選択してください</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="question_text" class="form-label">問題文</label>
+                            <textarea class="form-control" 
+                                      id="question_text" 
+                                      name="question_text" 
+                                      rows="3"
+                                      required
+                                      placeholder="問題文を入力してください"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="explanation" class="form-label">解説</label>
+                            <textarea class="form-control" 
+                                      id="explanation" 
+                                      name="explanation" 
+                                      rows="4"
+                                      required
+                                      placeholder="正解の解説を入力してください"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">選択肢（4つ）</label>
+                            {% for i in range(1, 5) %}
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">{{ i }}</span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="choice_{{ i }}" 
+                                       required
+                                       placeholder="選択肢{{ i }}を入力">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" 
+                                           type="radio" 
+                                           name="correct_choice" 
+                                           value="{{ i }}"
+                                           {% if i == 1 %}checked{% endif %}
+                                           required>
+                                    <label class="ms-2 mb-0">正解</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="difficulty" class="form-label">難易度</label>
+                                <select class="form-select" id="difficulty" name="difficulty">
+                                    <option value="1">1 - とても簡単</option>
+                                    <option value="2">2 - 簡単</option>
+                                    <option value="3" selected>3 - 普通</option>
+                                    <option value="4">4 - 難しい</option>
+                                    <option value="5">5 - とても難しい</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="is_active" class="form-label">ステータス</label>
+                                <select class="form-select" id="is_active" name="is_active">
+                                    <option value="true" selected>有効</option>
+                                    <option value="false">無効</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> 作成する
+                            </button>
+                            <a href="{{ url_for('admin.questions') }}" 
+                               class="btn btn-outline-secondary">
+                                キャンセル
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
