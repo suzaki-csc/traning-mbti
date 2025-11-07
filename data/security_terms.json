@@ -1,0 +1,32 @@
+[
+  {
+    "term_name": "XSS (Cross-Site Scripting)",
+    "description": "Web Applicationの脆弱性の一つで、攻撃者が悪意のあるScriptをWeb Pageに挿入する攻撃。ユーザーの入力値を適切にEscapeすることで防ぐことができます。",
+    "url": "#",
+    "display_order": 1
+  },
+  {
+    "term_name": "CSRF (Cross-Site Request Forgery)",
+    "description": "Login中のユーザーが意図しない操作を実行させられる攻撃。CSRF Tokenを使用することで防御できます。",
+    "url": "#",
+    "display_order": 2
+  },
+  {
+    "term_name": "SQL Injection",
+    "description": "不正なSQL文を挿入してDatabaseを操作する攻撃。Prepared Statementを使用することで防止できます。",
+    "url": "#",
+    "display_order": 3
+  },
+  {
+    "term_name": "MFA (Multi-Factor Authentication)",
+    "description": "パスワードに加えて、SmartphoneやBiometric認証など複数の認証要素を組み合わせる方法。Securityが大幅に向上します。",
+    "url": "#",
+    "display_order": 4
+  },
+  {
+    "term_name": "Zero Trust",
+    "description": "「信頼しない、常に検証する」という考え方に基づくSecurity Model。Networkの内外を問わず、すべてのAccessを検証します。",
+    "url": "#",
+    "display_order": 5
+  }
+]

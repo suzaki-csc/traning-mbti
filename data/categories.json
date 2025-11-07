@@ -1,0 +1,22 @@
+[
+  {
+    "name": "セキュリティ",
+    "description": "情報セキュリティに関する用語や概念を学習します",
+    "display_order": 1
+  },
+  {
+    "name": "IT基礎",
+    "description": "ITの基礎知識やネットワーク、ハードウェアについて学習します",
+    "display_order": 2
+  },
+  {
+    "name": "プログラミング",
+    "description": "プログラミング言語やアルゴリズム、データ構造について学習します",
+    "display_order": 3
+  },
+  {
+    "name": "プロジェクトマネージメント",
+    "description": "プロジェクト管理手法、リスク管理、チーム運営について学習します",
+    "display_order": 4
+  }
+]

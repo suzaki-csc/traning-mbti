@@ -1,0 +1,542 @@
+[
+  {
+    "question_text": "OSの主な役割として正しくないものはどれですか？",
+    "explanation": "OS (Operating System) は、Hardware資源の管理、Applicationの実行環境提供、User Interfaceの提供などを担当します。しかし、Web Pageの作成はWeb開発ToolやText Editorの役割であり、OSの主な役割ではありません。OSはあくまでSystemを管理する基盤Softwareです。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Web Pageの作成",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Hardware資源の管理",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Applicationの実行環境提供",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Fileの管理",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "IP AddressのVersion 4 (IPv4) で使用されるBit数は？",
+    "explanation": "IPv4 Addressは32 bitで構成され、一般的に「192.168.1.1」のような4つのDecimal数（各0-255）で表現されます。IPv6は128 bitです。IPv4の枯渇問題に対応するため、IPv6への移行が進んでいます。Subnetの概念を理解することも重要です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "32 bit",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "16 bit",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "64 bit",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "128 bit",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "TCP/IP ModelにおけるTransport Layerに属するProtocolはどれですか？",
+    "explanation": "TCP (Transmission Control Protocol) とUDPはTransport Layerに属します。TCPは信頼性の高い通信を提供し、UDPは高速だが信頼性は保証されません。HTTPやFTPはApplication Layer、IPはInternet Layerに属します。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "TCP",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "HTTP",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "IP",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "FTP",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "CPUのClockとは何を示していますか？",
+    "explanation": "CPU Clockは、CPUが1秒間に実行できる動作の回数を示します。単位はHertz (Hz) で、現代のCPUは数GHz (Giga Hertz = 10億Hz) で動作します。Clock数が高いほど一般的に処理速度が速くなりますが、Core数やArchitectureも性能に影響します。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "CPUの動作周波数",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "CPUの温度",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "CPUの消費電力",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "CPUの物理的なサイズ",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "RAMとROMの違いとして正しいものはどれですか？",
+    "explanation": "RAM (Random Access Memory) は揮発性Memoryで、電源を切るとデータが消えます。ROM (Read-Only Memory) は不揮発性Memoryで、電源を切ってもデータが保持されます。RAMは作業用Memory、ROMはFirmwareなどの永続的なデータ保存に使用されます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "RAMは揮発性、ROMは不揮発性",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "RAMは不揮発性、ROMは揮発性",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "両方とも揮発性",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "両方とも不揮発性",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "DNSの主な役割は何ですか？",
+    "explanation": "DNS (Domain Name System) は、人間が読みやすいDomain Name（例: google.com）をIPアドレス（例: 142.250.196.78）に変換します。これにより、数字の羅列を覚えなくても、わかりやすい名前でWebsiteにAccessできます。Internetの電話帳のような役割です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Domain NameをIP Addressに変換",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Emailの送受信",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Fileの圧縮",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Dataの暗号化",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Cloud Computingの主なService Modelに含まれないものはどれですか？",
+    "explanation": "Cloud ComputingのService Modelは、IaaS (Infrastructure as a Service)、PaaS (Platform as a Service)、SaaS (Software as a Service) の3つが主要です。DaaS (Data as a Service) という用語もありますが、主要な3つのModelには含まれません。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "DaaS (Data as a Service)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "IaaS (Infrastructure as a Service)",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "PaaS (Platform as a Service)",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "SaaS (Software as a Service)",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Bit (ビット) とByte (バイト) の関係として正しいものはどれですか？",
+    "explanation": "1 Byte = 8 bitです。Bitは最小単位で0または1の値を持ちます。Byteは8 bitをまとめた単位で、ASCII文字1文字を表現できます。Data容量は通常Byte単位（KB、MB、GB）で表されます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "1 Byte = 8 bit",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "1 Byte = 16 bit",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "1 Byte = 4 bit",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "1 Byte = 1 bit",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "RAID 1 (Mirroring) の主な目的は何ですか？",
+    "explanation": "RAID 1 (Mirroring) は、同じDataを複数のDiskに書き込むことで、冗長性を確保しData保護を実現します。1台のDiskが故障してもDataは保持されます。性能向上が目的のRAID 0 (Striping) とは異なります。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Data保護のための冗長性確保",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Read/Write速度の向上",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Storage容量の増加",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "消費電力の削減",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "HTTPとHTTPSの主な違いは何ですか？",
+    "explanation": "HTTPSは、HTTPに暗号化機能（SSL/TLS）を追加したProtocolです。通信内容が暗号化されるため、第三者による盗聴や改ざんを防ぐことができます。現代のWebでは、個人情報を扱うSiteはHTTPSが必須です。URLは「https://」で始まります。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "通信の暗号化の有無",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "通信速度の違い",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "対応Browserの違い",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "File転送の可否",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Virtual Machineの主なメリットとして適切でないものはどれですか？",
+    "explanation": "Virtual Machineは、1台の物理Serverで複数のOSを実行でき、Resource効率が向上します。しかし、仮想化LayerのOverheadにより、物理Machineと比較して若干の性能低下が発生します。Isolation、柔軟性、Cost削減などがメリットです。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "物理Machineより高速な処理",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Hardware資源の効率的な利用",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "複数のOSを同時実行可能",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "環境の簡単な複製・移行",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "MAC Addressに関する説明として正しいものはどれですか？",
+    "explanation": "MAC (Media Access Control) Addressは、Network Interface Cardに割り当てられた物理Address（Hardware Address）です。48 bit（6 Byte）で、世界中で一意です。例: 00:1A:2B:3C:4D:5E。IP AddressがLogical Addressであるのに対し、MAC AddressはPhysical Addressです。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Network機器の物理Address",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Userの識別番号",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Softwareの License Key",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Emailの送信元Address",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "SSDとHDDの主な違いとして正しいものはどれですか？",
+    "explanation": "SSD (Solid State Drive) は半導体Memory、HDD (Hard Disk Drive) は磁気Diskを使用します。SSDは可動部品がないため、高速・静音・耐衝撃性に優れますが、容量あたりの価格は高めです。HDDは大容量・低価格ですが、速度と耐久性ではSSDに劣ります。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "SSDは半導体、HDDは磁気Disk",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "SSDは磁気Disk、HDDは半導体",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "両方とも磁気Diskを使用",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "両方とも半導体を使用",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Cookieの主な用途として適切でないものはどれですか？",
+    "explanation": "Cookieは、WebsiteがBrowserに保存する小さなText Dataです。Login状態の維持、User設定の保存、広告Trackingなどに使用されます。しかし、Server側のDatabaseへのDataの直接保存はCookieの用途ではありません。Cookieは Client側に保存されます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Server側のDatabaseへのData保存",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Login状態の維持",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "User設定の保存",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Website訪問履歴のTracking",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Load Balancerの主な役割は何ですか？",
+    "explanation": "Load Balancerは、複数のServerに対してTrafficを分散させることで、負荷を均等化し、可用性とScalabilityを向上させます。1台のServerに負荷が集中するのを防ぎ、Serverダウン時も他のServerで処理を継続できます。AWS ELBやNginxなどが有名です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "複数のServerへTrafficを分散",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Dataの暗号化",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Virusのスキャン",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "User認証の管理",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "API (Application Programming Interface) の主な役割は何ですか？",
+    "explanation": "APIは、異なるSoftware間で機能やDataをやり取りするための Interface（仕様）です。REST APIやGraphQL APIなどがあり、Web ServiceやMobile Appの開発に広く使用されます。例えば、天気情報APIを使うことで、自分のAppに天気情報を表示できます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Software間のData・機能のやり取り",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "User InterfaceのDesign",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Databaseの管理",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Networkの監視",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Container技術（例: Docker）の主なメリットとして適切でないものはどれですか？",
+    "explanation": "Containerは軽量で高速起動が特徴ですが、Kernelは Host OSと共有します。完全なOS Isolationが必要な場合はVirtual Machineを使用します。Containerは、Application実行環境の一貫性、移植性、Resource効率が主なメリットです。",
+    "difficulty": 3,
+    "choices": [
+      {
+        "choice_text": "完全なOS Isolation",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "高速な起動時間",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "環境の一貫性確保",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "軽量なResource消費",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Latency (レイテンシ) とは何を示す指標ですか？",
+    "explanation": "Latencyは、Requestを送信してから Responseが返ってくるまでの遅延時間です。単位はミリ秒（ms）で、Network性能やUser体験に大きく影響します。Latencyが低いほど応答が速く、快適です。Throughput（単位時間あたりの処理量）とは異なる概念です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "通信の遅延時間",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Data転送速度",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "CPU使用率",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Memory容量",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "CacheとはどのようなMemory技術ですか？",
+    "explanation": "Cacheは、頻繁にAccessされるDataを高速なMemoryに一時保存する技術です。CPU Cache、Browser Cache、CDN Cacheなど様々な階層で使用されます。Cache Hitすると高速にDataを取得でき、全体の性能が向上します。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "頻繁に使うDataの一時保存領域",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "長期的なData保管Storage",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "削除されたFileの復元領域",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Virusを隔離する領域",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Bandwidthに関する説明として正しいものはどれですか？",
+    "explanation": "Bandwidthは、Networkで単位時間あたりに転送できるDataの最大量を示します。単位は bps (bits per second) で、例えば100 Mbpsは1秒間に100メガビットのDataを転送できることを意味します。Bandwidthが大きいほど、大容量Dataの転送が可能です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "単位時間あたりのData転送量",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Networkの物理的な距離",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "接続可能なDevice数",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Serverの処理能力",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  }
+]

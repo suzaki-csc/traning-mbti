@@ -1,0 +1,32 @@
+[
+  {
+    "term_name": "Data Structure (データ構造)",
+    "description": "Dataを効率的に格納・管理するための構造。Array、List、Stack、Queue、Tree、Hash Tableなどがあります。",
+    "url": "#",
+    "display_order": 1
+  },
+  {
+    "term_name": "Algorithm (アルゴリズム)",
+    "description": "問題を解決するための手順。Sort、探索、Graph探索など様々なAlgorithmがあり、効率性が重要です。",
+    "url": "#",
+    "display_order": 2
+  },
+  {
+    "term_name": "Object Oriented Programming (OOP)",
+    "description": "Objectを中心としたProgramming手法。Encapsulation、Inheritance、Polymorphismが特徴です。",
+    "url": "#",
+    "display_order": 3
+  },
+  {
+    "term_name": "Git",
+    "description": "分散型Version管理System。Codeの変更履歴を管理し、共同開発を支援します。",
+    "url": "#",
+    "display_order": 4
+  },
+  {
+    "term_name": "Design Pattern",
+    "description": "繰り返し現れる問題に対する再利用可能な解決策。Singleton、Factory、Observerなど様々なPatternがあります。",
+    "url": "#",
+    "display_order": 5
+  }
+]

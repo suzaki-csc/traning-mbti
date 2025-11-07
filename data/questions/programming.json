@@ -1,0 +1,542 @@
+[
+  {
+    "question_text": "変数の命名規則として適切でないものはどれですか？",
+    "explanation": "変数名は数字で始めることはできません。多くのProgramming言語では、変数名は文字またはUnderscoreで始まる必要があります。camelCase、snake_case、予約語の回避は一般的な良い慣習です。読みやすく意味のある変数名を付けることが重要です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "数字で始まる変数名",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "camelCaseの使用",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "snake_caseの使用",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "予約語を避ける",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Stack (スタック) Data Structureの特徴として正しいものはどれですか？",
+    "explanation": "Stackは LIFO (Last In, First Out) の原則に従います。最後に追加された要素が最初に取り出されます。Push（追加）とPop（取り出し）が主な操作です。関数呼び出しの管理、Undo機能、式の評価などに使用されます。Queueは FIFO (First In, First Out) です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "LIFO (Last In, First Out)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "FIFO (First In, First Out)",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Random Access可能",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "順序を持たない",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "再帰関数 (Recursive Function) の必須要素として正しいものはどれですか？",
+    "explanation": "再帰関数には、再帰を終了させる基底条件（Base Case）が必須です。基底条件がないと無限Loopになり、Stack Overflowが発生します。再帰は自分自身を呼び出す関数で、階乗計算、Tree走査、Fibonacci数列などに使用されます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "基底条件 (Base Case)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Global変数の使用",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "複数のReturn文",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Loop構文",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Object Oriented Programming (OOP) の4大原則に含まれないものはどれですか？",
+    "explanation": "OOPの4大原則は、Encapsulation（カプセル化）、Inheritance（継承）、Polymorphism（多態性）、Abstraction（抽象化）です。Recursion（再帰）はProgramming技法の一つですが、OOPの原則には含まれません。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Recursion（再帰）",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Encapsulation（カプセル化）",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Inheritance（継承）",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Polymorphism（多態性）",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Big O Notationで O(1) が示すものは何ですか？",
+    "explanation": "O(1)は定数時間を示し、入力Sizeに関わらず常に同じ時間で処理が完了します。例えば、Arrayのindex accessや、Hash TableのKey検索（平均）などです。O(n)は線形時間、O(n²)は二乗時間、O(log n)は対数時間を示します。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "定数時間",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "線形時間",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "二乗時間",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "対数時間",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Gitにおける 'commit' の役割は何ですか？",
+    "explanation": "Git commitは、変更履歴をLocal Repositoryに保存する操作です。Snapshotを作成し、後で変更を追跡・復元できます。commitには意味のあるMessageを付けることが重要です。pushはRemote Repositoryへの送信、pullは取得、cloneは複製です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "変更をLocal Repositoryに保存",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Remote Repositoryから取得",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Branchを削除",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Fileを圧縮",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Binary Search (二分探索) Algorithmの前提条件は何ですか？",
+    "explanation": "Binary Searchは、Dataがソート済みであることが前提です。中央の要素と比較し、探索範囲を半分ずつ絞り込みます。時間計算量は O(log n) で、線形探索の O(n) より効率的です。ただし、ソートされていないDataには使用できません。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Dataがソート済み",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Dataが未ソート",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Dataが重複なし",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Dataが数値のみ",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "例外処理 (Exception Handling) の主な目的は何ですか？",
+    "explanation": "例外処理は、Programの異常な状態（Error）を適切に処理し、Programのクラッシュを防ぐことが目的です。try-catch（またはtry-except）構文を使用し、Errorが発生してもGracefulに対応できます。適切なError Messageや回復処理を実装することが重要です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Errorを適切に処理しクラッシュを防ぐ",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Programの実行速度を向上",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Memoryの使用量を削減",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Codeの行数を削減",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Hash Table (Hash Map) の平均時間計算量として正しいものはどれですか？",
+    "explanation": "Hash Tableは、Key-Value pairを格納するData Structureで、平均的な検索・挿入・削除の時間計算量は O(1) です。Hash関数でKeyをIndexに変換します。衝突（Collision）が多い場合は最悪 O(n) になることもありますが、適切なHash関数を使用すれば平均 O(1) を維持できます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "O(1)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "O(n)",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "O(log n)",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "O(n²)",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Mutable (可変) とImmutable (不変) の違いとして正しいものはどれですか？",
+    "explanation": "MutableなObjectは作成後に内容を変更できますが、ImmutableなObjectは変更できません。例えば、PythonではListはMutable、TupleやStringはImmutableです。Immutableは Thread-Safeで、Hash Tableの Keyとして使用できるメリットがあります。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Mutableは変更可能、Immutableは変更不可",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Mutableは変更不可、Immutableは変更可能",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "両方とも変更可能",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "両方とも変更不可",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Unit Test (単体Test) の主な目的は何ですか？",
+    "explanation": "Unit Testは、個々の関数やMethodが正しく動作することを確認するTestです。早期にBugを発見し、Refactoring時の安全性を確保します。Test Driven Development (TDD) では、Codeを書く前にTestを書きます。JUnit、pytest、Jestなどの Framework が使用されます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "個々の関数・Methodの動作確認",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "User Interfaceの確認",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Network接続の確認",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Database性能の確認",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Quick Sortの平均時間計算量はどれですか？",
+    "explanation": "Quick Sortは分割統治法に基づくSort Algorithmで、平均時間計算量は O(n log n) です。Pivot要素を選び、それより小さい要素と大きい要素に分割して再帰的にSortします。最悪の場合は O(n²) ですが、Random Pivotを使用することで回避できます。",
+    "difficulty": 3,
+    "choices": [
+      {
+        "choice_text": "O(n log n)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "O(n)",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "O(n²)",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "O(log n)",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "API (Application Programming Interface) のREST原則に含まれないものはどれですか？",
+    "explanation": "RESTful APIの原則には、Stateless（状態を持たない）、Client-Server分離、Cacheability、Uniform Interface、Layered Systemなどがあります。Binary Communicationは原則ではなく、RESTは通常HTTPとJSONを使用したText-basedの通信です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Binary Communication",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Stateless（状態を持たない）",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Client-Server分離",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Uniform Interface",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Design Patternの「Singleton Pattern」とは何ですか？",
+    "explanation": "Singleton Patternは、Classのインスタンスが1つだけ存在することを保証するDesign Patternです。Global状態の管理、Database接続、Loggerなどに使用されます。ただし、Test困難性やGlobal状態による副作用のため、慎重に使用すべきです。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Classのインスタンスを1つに制限",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "複数のインスタンスを同時生成",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Objectを複製するPattern",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Interfaceを統一するPattern",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "関数型Programming (Functional Programming) の特徴として適切でないものはどれですか？",
+    "explanation": "関数型Programmingは、Immutable Data、Pure Function（副作用なし）、Higher-Order Function（関数を引数や戻り値として扱う）が特徴です。Global変数の頻繁な使用は、関数型Programmingの原則に反します。Haskell、Lisp、Scalaなどが代表的な言語です。",
+    "difficulty": 3,
+    "choices": [
+      {
+        "choice_text": "Global変数の頻繁な使用",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Immutable Data",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Pure Function（副作用なし）",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Higher-Order Function",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Dynamic Typing (動的型付け) とStatic Typing (静的型付け) の違いとして正しいものはどれですか？",
+    "explanation": "Static Typingは Compile時に型Check、Dynamic Typingは実行時に型Checkが行われます。Python、JavaScriptはDynamic、Java、C++、TypeScriptはStaticです。Static Typingは早期Error検出、Dynamic Typingは柔軟性が特徴です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "型Checkのタイミングが異なる",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Memoryの使用量が異なる",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "実行速度が必ず異なる",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "使用できるData型が異なる",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Linked List (連結List) の主な利点は何ですか？",
+    "explanation": "Linked Listは、要素の挿入・削除が O(1)（位置がわかっている場合）で効率的です。ArrayはIndex Accessが O(1) ですが、中間への挿入・削除は O(n) です。Linked ListはNode間のPointer（参照）で繋がっており、動的なSize変更が容易です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "要素の挿入・削除が効率的",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Random Accessが高速",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Memory使用量が少ない",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Sortが高速",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Compile言語とScript言語の主な違いは何ですか？",
+    "explanation": "Compile言語（C、C++、Javaなど）はSource CodeをMachine CodeやByte Codeに変換してから実行します。Script言語（Python、JavaScriptなど）はInterpreterで1行ずつ実行されます。Compile言語は一般的に高速ですが、Script言語は柔軟性と開発速度に優れます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "事前Compileの有無",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "使用できるData構造",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "変数の命名規則",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Comment記法",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "DRY原則 (Don't Repeat Yourself) が意味することは何ですか？",
+    "explanation": "DRY原則は、同じCodeや知識を重複させないという原則です。重複を避けることで、保守性が向上し、Bugの修正が容易になります。関数化、Classの活用、Moduleの分離などで実現します。SOLID原則と並ぶ重要なSoftware開発原則です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Codeの重複を避ける",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Commentを書かない",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Global変数を使わない",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "長い関数を避ける",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Garbage Collection (GC) の主な役割は何ですか？",
+    "explanation": "Garbage Collectionは、使用されなくなったMemoryを自動的に解放する機能です。Java、Python、JavaScriptなどの言語に実装されており、Memory Leakを防ぎます。C/C++では手動でMemory管理が必要ですが、GCのある言語ではProgrammerの負担が軽減されます。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "不要なMemoryの自動解放",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Codeの最適化",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Errorの自動修正",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Fileの削除",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  }
+]

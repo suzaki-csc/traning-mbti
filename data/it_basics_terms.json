@@ -1,0 +1,32 @@
+[
+  {
+    "term_name": "TCP/IP",
+    "description": "Internetで使用される通信Protocolの集合。信頼性の高い通信を実現します。",
+    "url": "#",
+    "display_order": 1
+  },
+  {
+    "term_name": "DNS (Domain Name System)",
+    "description": "Domain NameとIP Addressを対応付けるSystem。Internetの電話帳の役割を果たします。",
+    "url": "#",
+    "display_order": 2
+  },
+  {
+    "term_name": "Cloud Computing",
+    "description": "Internetを通じてComputing資源をService として提供する形態。IaaS、PaaS、SaaSなどがあります。",
+    "url": "#",
+    "display_order": 3
+  },
+  {
+    "term_name": "Virtual Machine",
+    "description": "物理的なComputerを Software的に再現したもの。1台の物理Serverで複数のOSを実行できます。",
+    "url": "#",
+    "display_order": 4
+  },
+  {
+    "term_name": "API (Application Programming Interface)",
+    "description": "Software間でData・機能をやり取りするための Interface。Web Serviceの連携に広く使用されます。",
+    "url": "#",
+    "display_order": 5
+  }
+]

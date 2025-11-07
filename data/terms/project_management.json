@@ -1,0 +1,32 @@
+[
+  {
+    "term_name": "Agile",
+    "description": "変化に柔軟に対応する反復的な開発手法。Scrum、Kanban、XPなどが含まれます。",
+    "url": "#",
+    "display_order": 1
+  },
+  {
+    "term_name": "Scrum",
+    "description": "Agile Frameworkの一つ。Sprint、Daily Scrum、Retrospectiveなどの要素で構成されます。",
+    "url": "#",
+    "display_order": 2
+  },
+  {
+    "term_name": "PMBOK",
+    "description": "Project Management Body of Knowledge。PMIが発行するProject管理の知識体系。",
+    "url": "#",
+    "display_order": 3
+  },
+  {
+    "term_name": "Risk Management",
+    "description": "Project上の不確実性を特定・分析・対応するProcess。脅威と機会の両方を扱います。",
+    "url": "#",
+    "display_order": 4
+  },
+  {
+    "term_name": "Stakeholder Management",
+    "description": "Projectに関わる全関係者のExpectationを管理し、適切にEngageするProcess。",
+    "url": "#",
+    "display_order": 5
+  }
+]

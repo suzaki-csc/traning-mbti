@@ -1,0 +1,542 @@
+[
+  {
+    "question_text": "Agile開発手法の特徴として適切でないものはどれですか？",
+    "explanation": "Agile開発は、短いIterationでの開発、変更への柔軟な対応、顧客との継続的なCollaborationが特徴です。詳細な事前計画と変更の最小化はWaterfall開発の特徴であり、Agileでは変化を歓迎します。Scrum、Kanban、XPなどがAgile手法の代表例です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "詳細な事前計画と変更の最小化",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "短いIterationでの開発",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "顧客との継続的なCollaboration",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "変化への柔軟な対応",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "ScrumにおけるSprint期間として一般的なものはどれですか？",
+    "explanation": "Sprintは通常1〜4週間で設定されることが多く、2週間が最も一般的です。短すぎるとOverheadが大きく、長すぎると柔軟性が失われます。Sprint終了時にはReviewとRetrospectiveを実施し、継続的な改善を図ります。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "1〜4週間",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "1〜3日",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "2〜6ヶ月",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "期間の定めなし",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "PMBOKにおけるProject管理の知識エリアに含まれないものはどれですか？",
+    "explanation": "PMBOK (Project Management Body of Knowledge) の10の知識エリアは、統合、Scope、Schedule、Cost、品質、Resource、Communication、Risk、調達、Stakeholder管理です。Marketing戦略は知識エリアには含まれません。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Marketing戦略",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Risk管理",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Cost管理",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Stakeholder管理",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Waterfall開発手法の主な特徴は何ですか？",
+    "explanation": "Waterfall手法は、要件定義→設計→実装→Test→運用という順序で進み、前工程が完了してから次工程に進みます。変更に弱いですが、計画が明確で、安定した要件のProjectに適しています。対照的にAgileは反復的な開発を行います。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "順序的に工程を進める",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "反復的に開発を進める",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "並行して全工程を実施",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "工程の順序が自由",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Critical Path Method (CPM) の主な目的は何ですか？",
+    "explanation": "CPMは、Projectの最短完了期間を求め、遅延が許されないCritical（重要）なTaskの連鎖を特定する手法です。Critical Path上のTaskが遅れると、Project全体が遅延します。Resource配分や進捗管理の優先順位付けに活用されます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "最短完了期間の算出",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "予算の最適化",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Team Memberの評価",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "品質の測定",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Stakeholderとは誰を指しますか？",
+    "explanation": "Stakeholderは、Projectに影響を与える、またはProjectから影響を受けるすべての個人や組織です。Customer、Sponsor、Team Member、経営陣、End User、Vendorなど多岐にわたります。適切なStakeholder管理がProject成功の鍵となります。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Projectに関わる全ての関係者",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Project Managerのみ",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Customerのみ",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "開発Teamのみ",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Risk管理のプロセスに含まれないものはどれですか？",
+    "explanation": "Risk管理は、Risk特定、分析、対応計画、監視・管理のプロセスで構成されます。品質Test実施はQuality管理の一部であり、Risk管理の直接的なプロセスではありません。Riskは不確実な事象で、プラス（機会）とマイナス（脅威）の両方があります。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "品質Test実施",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Risk特定",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Risk分析",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Risk対応計画",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Kanbanの主な特徴として正しいものはどれですか？",
+    "explanation": "Kanbanは、Work In Progress (WIP) を制限することで、仕掛かり作業を抑え、Flow効率を高めます。Visualizationを重視し、Taskの流れを可視化します。ScrumのようなFixed Iterationはなく、継続的なFlowでTaskを処理します。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "WIP (Work In Progress) の制限",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "固定的なSprint期間",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "毎日のStand-up必須",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Role定義が厳格",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "EVM (Earned Value Management) で使用されないMetricsはどれですか？",
+    "explanation": "EVMは、PV (Planned Value)、EV (Earned Value)、AC (Actual Cost) の3つの基本Metricsを使用します。ROI (Return on Investment) は投資対効果を示す指標で、EVMの直接的なMetricsではありません。EVMはProject進捗とCostを統合的に管理します。",
+    "difficulty": 3,
+    "choices": [
+      {
+        "choice_text": "ROI (Return on Investment)",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "PV (Planned Value)",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "EV (Earned Value)",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "AC (Actual Cost)",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Daily Scrum (Daily Stand-up) の主な目的は何ですか？",
+    "explanation": "Daily Scrumは、Team全体で進捗を共有し、障害を早期発見することが目的です。通常15分以内で、「昨日やったこと」「今日やること」「障害」を共有します。詳細な技術議論や意思決定の場ではなく、同期とTransparency確保が目的です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "進捗共有と障害の早期発見",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "詳細な技術的議論",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Performanceの評価",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "次Sprintの計画",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Product Backlogに関する説明として正しいものはどれですか？",
+    "explanation": "Product Backlogは、Productに必要な機能のPriority付きListです。Product Ownerが管理し、優先度の高いものから順に実装されます。動的に変化し、常にRefinementされます。Sprint Backlogとは異なり、Product全体のBacklogです。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Productに必要な機能のPriority付きList",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "完了したTaskのList",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Bugの一覧",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Team Memberの割り当て表",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Retrospective (振り返り) の主な目的は何ですか？",
+    "explanation": "Retrospectiveは、Teamが自己改善するための重要な機会です。Sprint終了時に実施し、「良かったこと」「改善すべきこと」「次Sprintで試すこと」を議論します。Blame-freeな環境で、プロセス改善にFocusします。継続的改善の核となる活動です。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Processの継続的改善",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "個人のPerformance評価",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "次Projectの計画",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Budget承認",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Scopeクリープ (Scope Creep) とは何ですか？",
+    "explanation": "Scope Creepは、Project範囲が計画なく徐々に拡大していく現象です。小さな追加要求の積み重ねで、Schedule遅延やBudget超過の原因となります。Change管理プロセスの確立、明確なScope定義、Stakeholderとの合意が予防策です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Project範囲の計画外の拡大",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Team規模の縮小",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Budgetの削減",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Scheduleの短縮",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Definition of Done (DoD) の役割は何ですか？",
+    "explanation": "DoDは、TaskやUser Storyが「完了」と見なされる基準を明確に定義したものです。Test完了、Code Review済み、Document更新など、Team全体で合意した完了基準です。Qualityを保証し、認識のズレを防ぎます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "完了の明確な基準定義",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Projectの最終納品物",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Team Memberの役割分担",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Budget上限の設定",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "三点見積もり (Three-Point Estimation) で使用する3つの値は何ですか？",
+    "explanation": "三点見積もりは、楽観値 (Optimistic)、最頻値 (Most Likely)、悲観値 (Pessimistic) の3つを使用します。PERT (Program Evaluation and Review Technique) で用いられ、不確実性を考慮した見積もりが可能です。期待値は (O + 4M + P) / 6 で計算されます。",
+    "difficulty": 3,
+    "choices": [
+      {
+        "choice_text": "楽観値、最頻値、悲観値",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "最小値、平均値、最大値",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "過去値、現在値、未来値",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "計画値、実績値、予測値",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Velocity (ベロシティ) とは何を示す指標ですか？",
+    "explanation": "Velocityは、TeamがSprint内で完了できる作業量を示す指標です。Story PointやTask数で測定され、将来のSprintの計画に使用されます。Teamのキャパシティを把握し、現実的な計画を立てるために重要です。Team間の比較には使用できません。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "Teamが完了できる作業量",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Codeの実行速度",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Bugの発見率",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Customerの満足度",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Change管理プロセスの主な目的は何ですか？",
+    "explanation": "Change管理は、変更要求を体系的に評価・承認・実装するProcessです。影響分析、優先順位付け、Resource配分、Risk評価を行い、Projectへの悪影響を最小化します。Change Boardが承認判断を行うことが一般的です。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "変更の影響を評価し管理",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "変更を一切受け付けない",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "全ての変更を自動承認",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Teamの組織変更",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Burndown Chartの主な用途は何ですか？",
+    "explanation": "Burndown Chartは、残作業量の推移を時系列で可視化するChartです。X軸が時間、Y軸が残作業量で、理想線と実績線を比較します。Sprint進捗の可視化、遅延の早期発見、Velocity調整の判断に活用されます。Transparencyを高める重要なToolです。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "残作業量の推移を可視化",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Budgetの消費状況",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "Team Memberの稼働率",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Customerの満足度",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "MVP (Minimum Viable Product) の目的は何ですか？",
+    "explanation": "MVPは、最小限の機能でProductをReleaseし、早期にUser Feedbackを得ることが目的です。仮説検証、Market Fit確認、開発Directionの調整を可能にします。Lean StartupやAgile開発で重視される概念で、無駄な機能開発を避けられます。",
+    "difficulty": 2,
+    "choices": [
+      {
+        "choice_text": "早期のUser Feedback取得",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "完璧なProductの完成",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "全機能の実装",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "Costの最大化",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  },
+  {
+    "question_text": "Lessons Learned (教訓) の収集時期として最も適切なのはどれですか？",
+    "explanation": "Lessons Learnedは、Project全体を通じて継続的に収集すべきです。各Phase終了時、Major Milestone時、Project完了時だけでなく、日々の活動から学びを得ることが重要です。知識Management Systemに蓄積し、組織の資産とします。",
+    "difficulty": 1,
+    "choices": [
+      {
+        "choice_text": "Project全体を通じて継続的に",
+        "is_correct": true,
+        "display_order": 1
+      },
+      {
+        "choice_text": "Project完了時のみ",
+        "is_correct": false,
+        "display_order": 2
+      },
+      {
+        "choice_text": "問題発生時のみ",
+        "is_correct": false,
+        "display_order": 3
+      },
+      {
+        "choice_text": "収集する必要なし",
+        "is_correct": false,
+        "display_order": 4
+      }
+    ]
+  }
+]
