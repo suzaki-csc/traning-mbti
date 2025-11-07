@@ -2,8 +2,42 @@
 1 day研修で使用する研修テーマ案
 
 ## 概要
-このリポジトリは研修向けMBTI性格診断アプリの試作を行っています。  
+このリポジトリは研修向けWebアプリケーションの試作を行っています。  
 段階的な機能追加を学習するため、試作はブランチごとに管理しています。
+
+## 📁 プロジェクト一覧
+
+### 1. パスワード強度チェッカー
+パスワードの強度をリアルタイムで評価し、セキュリティ向上のためのアドバイスを提供するWebアプリケーション。
+
+**起動方法（Docker Compose）:**
+```bash
+# macOS / Linux
+./start_password_checker.sh start
+
+# Windows
+start_password_checker.bat start
+```
+
+**主要コマンド:**
+```bash
+./start_password_checker.sh start     # 起動
+./start_password_checker.sh stop      # 停止
+./start_password_checker.sh logs      # ログ表示
+./start_password_checker.sh status    # 状態確認
+```
+
+**詳細ドキュメント:**
+- [クイックスタート](QUICKSTART.md) - 最速で起動する方法
+- [実装仕様書](README_APP.md) - 詳細な仕様とアルゴリズム
+- [使用方法とテスト](README_PASSWORD_CHECKER.md) - テストガイド
+
+**技術スタック:** Docker, Flask, Bootstrap 5, JavaScript (Vanilla)
+
+---
+
+### 2. MBTI性格診断アプリ
+研修向けMBTI性格診断アプリの試作。
 
 ## ブランチ構成
 

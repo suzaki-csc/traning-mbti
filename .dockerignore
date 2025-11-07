@@ -1,0 +1,59 @@
+# Git関連
+.git
+.gitignore
+.gitattributes
+
+# Python関連
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+env/
+
+# Poetry
+poetry.lock.bak
+
+# IDE関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ドキュメント（イメージサイズ削減のため）
+README*.md
+QUICKSTART.md
+_prompts/
+
+# データベース（開発用）
+instance/
+*.db
+*.sqlite
+
+# ログ
+*.log
+
+# Docker関連
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# 起動スクリプト（コンテナ内では不要）
+start_password_checker.sh
+start_password_checker.bat
+
+# その他
+.env
+*.bak
+*.tmp
+migrations/
+password_checker/
+

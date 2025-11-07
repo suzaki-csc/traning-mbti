@@ -1,0 +1,22 @@
+version: '3.8'
+
+# 本番環境用のdocker-compose設定
+# 使用方法: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  password-checker:
+    environment:
+      - FLASK_ENV=production
+    # ホットリロード用のボリュームマウントを削除
+    volumes: []
+    restart: always
+    # リソース制限（必要に応じて調整）
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
