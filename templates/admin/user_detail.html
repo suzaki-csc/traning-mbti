@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー詳細 - 管理画面{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-person"></i> ユーザー詳細</h2>
+        <div>
+            <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> 一覧へ戻る
+            </a>
+            <a href="{{ url_for('admin_user_edit', user_id=user.id) }}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> 編集
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">基本情報</h5>
+                    <hr>
+                    <p><strong>ID:</strong> {{ user.id }}</p>
+                    <p><strong>メールアドレス:</strong><br>{{ user.email }}</p>
+                    <p><strong>ユーザー名:</strong><br>{{ user.username or 'N/A' }}</p>
+                    <p><strong>ロール:</strong><br>
+                        {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">管理者</span>
+                        {% else %}
+                            <span class="badge bg-primary">一般ユーザー</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>状態:</strong><br>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">有効</span>
+                        {% else %}
+                            <span class="badge bg-secondary">無効</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>登録日:</strong><br>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</p>
+                    <p><strong>最終ログイン:</strong><br>{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '未ログイン' }}</p>
+                    
+                    <hr>
+                    
+                    <form method="POST" action="{{ url_for('admin_user_delete', user_id=user.id) }}" onsubmit="return confirm('本当にこのユーザーを削除しますか？');">
+                        <button type="submit" class="btn btn-danger w-100" {% if user.id == current_user.id %}disabled{% endif %}>
+                            <i class="bi bi-trash"></i> ユーザー削除
+                        </button>
+                    </form>
+                    {% if user.id == current_user.id %}
+                        <small class="text-muted">※ 自分自身は削除できません</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-clock-history"></i> チェック履歴（最新20件）
+                    </h5>
+                    <hr>
+                    
+                    {% if checks %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>パスワード</th>
+                                        <th>スコア</th>
+                                        <th>強度</th>
+                                        <th>日時</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for check in checks %}
+                                    <tr>
+                                        <td>{{ check.id }}</td>
+                                        <td><code>{{ check.password_masked }}</code></td>
+                                        <td>{{ check.score }}/100</td>
+                                        <td>
+                                            {% if check.strength_level == 'very-strong' %}
+                                                <span class="badge bg-success">非常に強い</span>
+                                            {% elif check.strength_level == 'strong' %}
+                                                <span class="badge bg-info">強い</span>
+                                            {% elif check.strength_level == 'fair' %}
+                                                <span class="badge bg-warning">普通</span>
+                                            {% elif check.strength_level == 'weak' %}
+                                                <span class="badge bg-warning">弱い</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">非常に弱い</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ check.created_at.strftime('%Y-%m-%d %H:%M') if check.created_at else 'N/A' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> チェック履歴がありません
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

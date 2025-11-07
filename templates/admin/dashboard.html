@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}管理画面 - パスワード強度チェッカー{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">
+        <i class="bi bi-gear"></i> 管理者ダッシュボード
+    </h2>
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> 総ユーザー数</h5>
+                    <p class="card-text display-4">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check-circle"></i> 総チェック数</h5>
+                    <p class="card-text display-4">{{ total_checks }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-graph-up"></i> 平均</h5>
+                    <p class="card-text display-6">{{ (total_checks / total_users)|round(1) if total_users > 0 else 0 }} チェック/人</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> 最近登録されたユーザー</h5>
+                    <hr>
+                    {% if recent_users %}
+                        <div class="list-group">
+                            {% for user in recent_users %}
+                            <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ user.email }}</h6>
+                                    <small>{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</small>
+                                </div>
+                                <p class="mb-1">
+                                    {% if user.role == 'admin' %}
+                                        <span class="badge bg-danger">管理者</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">一般ユーザー</span>
+                                    {% endif %}
+                                    <span class="badge bg-secondary">{{ user.password_checks.count() }} チェック</span>
+                                </p>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">ユーザーが登録されていません</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-sliders"></i> 管理メニュー</h5>
+                    <hr>
+                    <div class="list-group">
+                        <a href="{{ url_for('admin_users') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> ユーザー管理
+                        </a>
+                        <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-house"></i> パスワードチェッカーへ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

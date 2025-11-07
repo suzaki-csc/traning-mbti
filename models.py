@@ -2,13 +2,110 @@
 パスワード強度チェッカー - データベースモデル
 
 パスワードチェックの履歴を保存するためのモデル定義
+ユーザー認証とロール管理機能を含む
 """
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 import hashlib
 
 db = SQLAlchemy()
+
+
+class User(UserMixin, db.Model):
+    """
+    ユーザーテーブル
+    
+    認証情報とロール管理を行います。
+    """
+    
+    __tablename__ = 'users'
+    
+    # 主キー
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    # 認証情報
+    email = db.Column(db.String(255), unique=True, nullable=False, index=True, comment='メールアドレス')
+    password_hash = db.Column(db.String(255), nullable=False, comment='パスワードハッシュ')
+    
+    # ユーザー情報
+    username = db.Column(db.String(100), nullable=True, comment='ユーザー名')
+    
+    # ロール管理
+    role = db.Column(db.String(20), nullable=False, default='user', comment='ロール（user/admin）')
+    
+    # アカウント状態
+    is_active = db.Column(db.Boolean, default=True, comment='アカウント有効状態')
+    
+    # タイムスタンプ
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, comment='作成日時')
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow, comment='更新日時')
+    last_login = db.Column(db.DateTime, nullable=True, comment='最終ログイン日時')
+    
+    # リレーション
+    password_checks = db.relationship('PasswordCheck', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f'<User id={self.id} email={self.email} role={self.role}>'
+    
+    def set_password(self, password):
+        """
+        パスワードをハッシュ化して保存
+        
+        Args:
+            password (str): 平文パスワード
+        """
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """
+        パスワードを検証
+        
+        Args:
+            password (str): 検証するパスワード
+            
+        Returns:
+            bool: パスワードが正しい場合True
+        """
+        return check_password_hash(self.password_hash, password)
+    
+    def is_admin(self):
+        """
+        管理者かどうかを判定
+        
+        Returns:
+            bool: 管理者の場合True
+        """
+        return self.role == 'admin'
+    
+    def to_dict(self, include_checks=False):
+        """
+        モデルオブジェクトを辞書形式に変換
+        
+        Args:
+            include_checks (bool): チェック履歴を含めるか
+            
+        Returns:
+            dict: ユーザー情報を含む辞書
+        """
+        data = {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'role': self.role,
+            'is_active': self.is_active,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'last_login': self.last_login.isoformat() if self.last_login else None,
+            'total_checks': self.password_checks.count()
+        }
+        
+        if include_checks:
+            data['recent_checks'] = [check.to_dict() for check in self.password_checks.order_by(PasswordCheck.created_at.desc()).limit(10)]
+        
+        return data
 
 
 class PasswordCheck(db.Model):
@@ -25,6 +122,9 @@ class PasswordCheck(db.Model):
     
     # 主キー
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    # ユーザーID（外部キー）
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True, index=True, comment='ユーザーID（NULL可：未ログイン時）')
     
     # パスワード情報（2種類の形式）
     password_hash = db.Column(db.String(64), nullable=False, index=True, comment='SHA-256ハッシュ値')
@@ -56,6 +156,7 @@ class PasswordCheck(db.Model):
     
     # インデックス
     __table_args__ = (
+        db.Index('idx_user_id', 'user_id'),
         db.Index('idx_score', 'score'),
         db.Index('idx_strength_level', 'strength_level'),
         db.Index('idx_created_at', 'created_at'),
@@ -96,15 +197,19 @@ class PasswordCheck(db.Model):
         else:
             return password[0] + '*' * (len(password) - 1)
     
-    def to_dict(self):
+    def to_dict(self, include_user=False):
         """
         モデルオブジェクトを辞書形式に変換
+        
+        Args:
+            include_user (bool): ユーザー情報を含めるか
         
         Returns:
             dict: モデルのデータを含む辞書
         """
-        return {
+        data = {
             'id': self.id,
+            'user_id': self.user_id,
             'password_masked': self.password_masked,
             'score': self.score,
             'strength_level': self.strength_level,
@@ -121,4 +226,13 @@ class PasswordCheck(db.Model):
             'password_length': self.password_length,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+        
+        if include_user and self.user:
+            data['user'] = {
+                'id': self.user.id,
+                'email': self.user.email,
+                'username': self.user.username
+            }
+        
+        return data
 
