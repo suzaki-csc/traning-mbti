@@ -9,7 +9,7 @@
     </h2>
     
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-people"></i> 総ユーザー数</h5>
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card text-white bg-success mb-3">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-check-circle"></i> 総チェック数</h5>
@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card text-white bg-info mb-3">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-graph-up"></i> 平均</h5>
@@ -33,7 +33,27 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-shield-lock"></i> ポリシー数</h5>
+                    <p class="card-text display-4">{{ total_policies }}</p>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <!-- アクティブポリシー情報 -->
+    {% if active_policy %}
+    <div class="alert alert-success mb-4">
+        <h5><i class="bi bi-check-circle-fill"></i> アクティブなポリシー: {{ active_policy.name }}</h5>
+        <p class="mb-0">最小文字数: {{ active_policy.min_length }} / 最低スコア: {{ active_policy.min_score_required }}</p>
+    </div>
+    {% else %}
+    <div class="alert alert-warning mb-4">
+        <i class="bi bi-exclamation-triangle"></i> アクティブなパスワードポリシーが設定されていません
+    </div>
+    {% endif %}
     
     <div class="row">
         <div class="col-md-6 mb-4">
@@ -75,6 +95,9 @@
                     <div class="list-group">
                         <a href="{{ url_for('admin_users') }}" class="list-group-item list-group-item-action">
                             <i class="bi bi-people"></i> ユーザー管理
+                        </a>
+                        <a href="{{ url_for('admin_policies') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-shield-lock"></i> パスワードポリシー管理
                         </a>
                         <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action">
                             <i class="bi bi-house"></i> パスワードチェッカーへ

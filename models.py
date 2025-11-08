@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import hashlib
+import json
 
 db = SQLAlchemy()
 
@@ -235,4 +236,150 @@ class PasswordCheck(db.Model):
             }
         
         return data
+
+
+class PasswordPolicy(db.Model):
+    """
+    パスワード強度ポリシーテーブル
+    
+    組織のセキュリティポリシーに応じたパスワード要件を定義します。
+    """
+    
+    __tablename__ = 'password_policies'
+    
+    # 主キー
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    # ポリシー名
+    name = db.Column(db.String(100), nullable=False, comment='ポリシー名')
+    description = db.Column(db.Text, nullable=True, comment='説明')
+    
+    # アクティブフラグ（1つだけアクティブにできる）
+    is_active = db.Column(db.Boolean, default=False, comment='アクティブ')
+    
+    # 長さ要件
+    min_length = db.Column(db.Integer, default=8, comment='最小文字数')
+    max_length = db.Column(db.Integer, default=128, comment='最大文字数')
+    
+    # 文字種要件
+    require_lowercase = db.Column(db.Boolean, default=True, comment='小文字必須')
+    require_uppercase = db.Column(db.Boolean, default=True, comment='大文字必須')
+    require_digit = db.Column(db.Boolean, default=True, comment='数字必須')
+    require_symbol = db.Column(db.Boolean, default=False, comment='記号必須')
+    
+    # 禁止パターン
+    block_common_words = db.Column(db.Boolean, default=True, comment='よくある単語を禁止')
+    block_repeating = db.Column(db.Boolean, default=True, comment='繰り返しパターンを禁止')
+    block_sequential = db.Column(db.Boolean, default=True, comment='連番パターンを禁止')
+    block_keyboard_patterns = db.Column(db.Boolean, default=True, comment='キーボード並びを禁止')
+    
+    # カスタム禁止単語（JSON形式）
+    custom_blocked_words = db.Column(db.Text, nullable=True, comment='カスタム禁止単語（JSON配列）')
+    
+    # スコア閾値
+    min_score_required = db.Column(db.Integer, default=50, comment='必要最低スコア')
+    
+    # タイムスタンプ
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, comment='作成日時')
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow, comment='更新日時')
+    
+    def __repr__(self):
+        return f'<PasswordPolicy id={self.id} name={self.name} active={self.is_active}>'
+    
+    def get_custom_blocked_words(self):
+        """
+        カスタム禁止単語をリストで取得
+        
+        Returns:
+            list: 禁止単語のリスト
+        """
+        if not self.custom_blocked_words:
+            return []
+        try:
+            return json.loads(self.custom_blocked_words)
+        except:
+            return []
+    
+    def set_custom_blocked_words(self, words_list):
+        """
+        カスタム禁止単語を設定
+        
+        Args:
+            words_list (list): 禁止単語のリスト
+        """
+        if isinstance(words_list, list):
+            self.custom_blocked_words = json.dumps(words_list, ensure_ascii=False)
+        else:
+            self.custom_blocked_words = None
+    
+    def to_dict(self):
+        """
+        モデルオブジェクトを辞書形式に変換
+        
+        Returns:
+            dict: ポリシー情報を含む辞書
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'is_active': self.is_active,
+            'min_length': self.min_length,
+            'max_length': self.max_length,
+            'require_lowercase': self.require_lowercase,
+            'require_uppercase': self.require_uppercase,
+            'require_digit': self.require_digit,
+            'require_symbol': self.require_symbol,
+            'block_common_words': self.block_common_words,
+            'block_repeating': self.block_repeating,
+            'block_sequential': self.block_sequential,
+            'block_keyboard_patterns': self.block_keyboard_patterns,
+            'custom_blocked_words': self.get_custom_blocked_words(),
+            'min_score_required': self.min_score_required,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+    
+    @staticmethod
+    def get_active_policy():
+        """
+        アクティブなポリシーを取得
+        
+        Returns:
+            PasswordPolicy: アクティブなポリシー、なければNone
+        """
+        return PasswordPolicy.query.filter_by(is_active=True).first()
+    
+    @staticmethod
+    def get_default_policy():
+        """
+        デフォルトポリシーを取得または作成
+        
+        Returns:
+            PasswordPolicy: デフォルトポリシー
+        """
+        default = PasswordPolicy.query.filter_by(name='デフォルト').first()
+        if not default:
+            default = PasswordPolicy(
+                name='デフォルト',
+                description='標準的なパスワード要件',
+                is_active=True,
+                min_length=8,
+                max_length=128,
+                require_lowercase=True,
+                require_uppercase=True,
+                require_digit=True,
+                require_symbol=False,
+                block_common_words=True,
+                block_repeating=True,
+                block_sequential=True,
+                block_keyboard_patterns=True,
+                min_score_required=50
+            )
+            db.session.add(default)
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+        return default
 

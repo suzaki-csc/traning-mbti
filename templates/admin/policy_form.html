@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}{% if policy %}ポリシー編集{% else %}新規ポリシー作成{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-shield-lock"></i> 
+        {% if policy %}ポリシー編集{% else %}新規ポリシー作成{% endif %}
+    </h1>
+
+    <!-- パンくずリスト -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">管理画面</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('admin_policies') }}">パスワードポリシー</a></li>
+            <li class="breadcrumb-item active">{% if policy %}編集{% else %}新規作成{% endif %}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        <!-- 基本情報 -->
+                        <h5 class="card-title mb-3"><i class="bi bi-info-circle"></i> 基本情報</h5>
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">ポリシー名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ policy.name if policy else '' }}" required>
+                            <div class="form-text">例: 標準ポリシー、高セキュリティ、社内用</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">説明</label>
+                            <textarea class="form-control" id="description" name="description" rows="2">{{ policy.description if policy and policy.description else '' }}</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                       {% if policy and policy.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    <strong>このポリシーをアクティブにする</strong>
+                                    <div class="form-text">※ アクティブなポリシーは1つのみです</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- 長さ要件 -->
+                        <h5 class="card-title mb-3"><i class="bi bi-rulers"></i> 長さ要件</h5>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="min_length" class="form-label">最小文字数</label>
+                                <input type="number" class="form-control" id="min_length" name="min_length" 
+                                       value="{{ policy.min_length if policy else 8 }}" min="1" max="128" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="max_length" class="form-label">最大文字数</label>
+                                <input type="number" class="form-control" id="max_length" name="max_length" 
+                                       value="{{ policy.max_length if policy else 128 }}" min="1" max="256" required>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- 文字種要件 -->
+                        <h5 class="card-title mb-3"><i class="bi bi-check2-square"></i> 必須文字種</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="require_lowercase" name="require_lowercase" 
+                                       {% if policy and policy.require_lowercase %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="require_lowercase">
+                                    小文字 (a-z) を必須にする
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="require_uppercase" name="require_uppercase" 
+                                       {% if policy and policy.require_uppercase %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="require_uppercase">
+                                    大文字 (A-Z) を必須にする
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="require_digit" name="require_digit" 
+                                       {% if policy and policy.require_digit %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="require_digit">
+                                    数字 (0-9) を必須にする
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="require_symbol" name="require_symbol" 
+                                       {% if policy and policy.require_symbol %}checked{% endif %}>
+                                <label class="form-check-label" for="require_symbol">
+                                    記号 (!@#$ など) を必須にする
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- 禁止パターン -->
+                        <h5 class="card-title mb-3"><i class="bi bi-x-circle"></i> 禁止パターン</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="block_common_words" name="block_common_words" 
+                                       {% if policy and policy.block_common_words %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="block_common_words">
+                                    よくある単語を禁止 (password, admin など)
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="block_repeating" name="block_repeating" 
+                                       {% if policy and policy.block_repeating %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="block_repeating">
+                                    繰り返しパターンを禁止 (aaa, 111 など)
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="block_sequential" name="block_sequential" 
+                                       {% if policy and policy.block_sequential %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="block_sequential">
+                                    連番パターンを禁止 (abc, 123 など)
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="block_keyboard_patterns" name="block_keyboard_patterns" 
+                                       {% if policy and policy.block_keyboard_patterns %}checked{% elif not policy %}checked{% endif %}>
+                                <label class="form-check-label" for="block_keyboard_patterns">
+                                    キーボード並びを禁止 (qwerty, asdf など)
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- カスタム禁止単語 -->
+                        <h5 class="card-title mb-3"><i class="bi bi-ban"></i> カスタム禁止単語</h5>
+                        
+                        <div class="mb-4">
+                            <label for="custom_blocked_words" class="form-label">禁止する単語（カンマ区切り）</label>
+                            <textarea class="form-control" id="custom_blocked_words" name="custom_blocked_words" rows="3" 
+                                      placeholder="例: company, school, 社名">{{ policy.get_custom_blocked_words()|join(', ') if policy else '' }}</textarea>
+                            <div class="form-text">組織名や特定の単語を禁止したい場合に設定します</div>
+                        </div>
+
+                        <hr>
+
+                        <!-- スコア閾値 -->
+                        <h5 class="card-title mb-3"><i class="bi bi-speedometer2"></i> 必要最低スコア</h5>
+                        
+                        <div class="mb-4">
+                            <label for="min_score_required" class="form-label">
+                                最低スコア: <span id="scoreValue">{{ policy.min_score_required if policy else 50 }}</span> / 100
+                            </label>
+                            <input type="range" class="form-range" id="min_score_required" name="min_score_required" 
+                                   min="0" max="100" step="5" value="{{ policy.min_score_required if policy else 50 }}"
+                                   oninput="document.getElementById('scoreValue').textContent = this.value">
+                            <div class="form-text">このスコア未満のパスワードは「弱い」と判定されます</div>
+                        </div>
+
+                        <!-- ボタン -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('admin_policies') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> 戻る
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> 
+                                {% if policy %}更新{% else %}作成{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- サイドバー: ヘルプ -->
+        <div class="col-lg-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-question-circle"></i> ポリシー設定のヒント</h5>
+                    
+                    <h6 class="mt-3">🎓 教育機関向け</h6>
+                    <ul class="small">
+                        <li>最小文字数: 8-10文字</li>
+                        <li>記号必須: なし</li>
+                        <li>最低スコア: 40-50</li>
+                    </ul>
+
+                    <h6 class="mt-3">🏢 企業向け (標準)</h6>
+                    <ul class="small">
+                        <li>最小文字数: 10-12文字</li>
+                        <li>記号必須: あり</li>
+                        <li>最低スコア: 50-60</li>
+                    </ul>
+
+                    <h6 class="mt-3">🔒 高セキュリティ</h6>
+                    <ul class="small">
+                        <li>最小文字数: 14文字以上</li>
+                        <li>記号必須: あり</li>
+                        <li>最低スコア: 70以上</li>
+                        <li>すべての禁止パターン有効</li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-3 small mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>注意:</strong> 要件を厳しくしすぎると、ユーザーが覚えにくいパスワードを設定してしまう可能性があります。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

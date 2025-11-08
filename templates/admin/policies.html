@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}パスワードポリシー管理{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-shield-lock"></i> パスワードポリシー管理
+    </h1>
+
+    <!-- パンくずリスト -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">管理画面</a></li>
+            <li class="breadcrumb-item active">パスワードポリシー</li>
+        </ol>
+    </nav>
+
+    <!-- アクション -->
+    <div class="mb-4">
+        <a href="{{ url_for('admin_policy_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> 新規ポリシー作成
+        </a>
+    </div>
+
+    <!-- ポリシー一覧 -->
+    {% if policies %}
+        <div class="row">
+            {% for policy in policies %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 {% if policy.is_active %}border-success{% endif %}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            {{ policy.name }}
+                            {% if policy.is_active %}
+                                <span class="badge bg-success ms-2">アクティブ</span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if policy.description %}
+                            <p class="text-muted small">{{ policy.description }}</p>
+                        {% endif %}
+                        
+                        <h6 class="mt-3"><i class="bi bi-rulers"></i> 長さ要件</h6>
+                        <ul class="small">
+                            <li>最小: {{ policy.min_length }} 文字</li>
+                            <li>最大: {{ policy.max_length }} 文字</li>
+                        </ul>
+
+                        <h6><i class="bi bi-check2-square"></i> 必須文字種</h6>
+                        <div class="small mb-2">
+                            {% if policy.require_lowercase %}
+                                <span class="badge bg-info text-dark me-1">小文字</span>
+                            {% endif %}
+                            {% if policy.require_uppercase %}
+                                <span class="badge bg-info text-dark me-1">大文字</span>
+                            {% endif %}
+                            {% if policy.require_digit %}
+                                <span class="badge bg-info text-dark me-1">数字</span>
+                            {% endif %}
+                            {% if policy.require_symbol %}
+                                <span class="badge bg-info text-dark me-1">記号</span>
+                            {% endif %}
+                            {% if not (policy.require_lowercase or policy.require_uppercase or policy.require_digit or policy.require_symbol) %}
+                                <span class="text-muted">なし</span>
+                            {% endif %}
+                        </div>
+
+                        <h6><i class="bi bi-x-circle"></i> 禁止パターン</h6>
+                        <div class="small mb-2">
+                            {% if policy.block_common_words %}
+                                <span class="badge bg-warning text-dark me-1">よくある単語</span>
+                            {% endif %}
+                            {% if policy.block_repeating %}
+                                <span class="badge bg-warning text-dark me-1">繰り返し</span>
+                            {% endif %}
+                            {% if policy.block_sequential %}
+                                <span class="badge bg-warning text-dark me-1">連番</span>
+                            {% endif %}
+                            {% if policy.block_keyboard_patterns %}
+                                <span class="badge bg-warning text-dark me-1">キーボード並び</span>
+                            {% endif %}
+                            {% if not (policy.block_common_words or policy.block_repeating or policy.block_sequential or policy.block_keyboard_patterns) %}
+                                <span class="text-muted">なし</span>
+                            {% endif %}
+                        </div>
+
+                        <h6><i class="bi bi-speedometer2"></i> 最低スコア</h6>
+                        <p class="small mb-0">{{ policy.min_score_required }} / 100</p>
+
+                        {% if policy.get_custom_blocked_words() %}
+                        <h6 class="mt-2"><i class="bi bi-ban"></i> カスタム禁止単語</h6>
+                        <p class="small text-muted mb-0">{{ policy.get_custom_blocked_words()|length }} 個</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between">
+                            <div class="btn-group">
+                                <a href="{{ url_for('admin_policy_edit', policy_id=policy.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> 編集
+                                </a>
+                                {% if not policy.is_active %}
+                                    <form method="post" action="{{ url_for('admin_policy_activate', policy_id=policy.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-check-circle"></i> 有効化
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            {% if not policy.is_active %}
+                                <form method="post" action="{{ url_for('admin_policy_delete', policy_id=policy.id) }}" 
+                                      onsubmit="return confirm('本当に削除しますか？');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            <i class="bi bi-clock"></i> {{ policy.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> パスワードポリシーがありません。新規作成してください。
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

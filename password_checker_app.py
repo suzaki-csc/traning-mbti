@@ -15,7 +15,7 @@ from datetime import datetime
 from functools import wraps
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, PasswordCheck, User
+from models import db, PasswordCheck, User, PasswordPolicy
 
 # Flaskアプリケーションのインスタンスを作成
 app = Flask(__name__)
@@ -403,11 +403,15 @@ def admin_dashboard():
     # 統計情報を取得
     total_users = User.query.count()
     total_checks = PasswordCheck.query.count()
+    total_policies = PasswordPolicy.query.count()
+    active_policy = PasswordPolicy.get_active_policy()
     recent_users = User.query.order_by(User.created_at.desc()).limit(5).all()
     
     return render_template('admin/dashboard.html',
                          total_users=total_users,
                          total_checks=total_checks,
+                         total_policies=total_policies,
+                         active_policy=active_policy,
                          recent_users=recent_users)
 
 
@@ -493,6 +497,247 @@ def admin_user_delete(user_id):
         flash('ユーザーの削除に失敗しました。', 'danger')
     
     return redirect(url_for('admin_users'))
+
+
+# ========================================
+# パスワードポリシー管理
+# ========================================
+
+@app.route('/admin/policies')
+@admin_required
+def admin_policies():
+    """
+    パスワードポリシー一覧
+    """
+    policies = PasswordPolicy.query.order_by(PasswordPolicy.is_active.desc(), PasswordPolicy.created_at.desc()).all()
+    return render_template('admin/policies.html', policies=policies)
+
+
+@app.route('/admin/policies/new', methods=['GET', 'POST'])
+@admin_required
+def admin_policy_new():
+    """
+    新規ポリシー作成
+    """
+    if request.method == 'POST':
+        try:
+            # フォームデータを取得
+            name = request.form.get('name', '').strip()
+            description = request.form.get('description', '').strip()
+            is_active = request.form.get('is_active') == 'on'
+            
+            # 長さ要件
+            min_length = int(request.form.get('min_length', 8))
+            max_length = int(request.form.get('max_length', 128))
+            
+            # 文字種要件
+            require_lowercase = request.form.get('require_lowercase') == 'on'
+            require_uppercase = request.form.get('require_uppercase') == 'on'
+            require_digit = request.form.get('require_digit') == 'on'
+            require_symbol = request.form.get('require_symbol') == 'on'
+            
+            # 禁止パターン
+            block_common_words = request.form.get('block_common_words') == 'on'
+            block_repeating = request.form.get('block_repeating') == 'on'
+            block_sequential = request.form.get('block_sequential') == 'on'
+            block_keyboard_patterns = request.form.get('block_keyboard_patterns') == 'on'
+            
+            # カスタム禁止単語
+            custom_words = request.form.get('custom_blocked_words', '').strip()
+            custom_words_list = [w.strip() for w in custom_words.split(',') if w.strip()]
+            
+            # スコア閾値
+            min_score_required = int(request.form.get('min_score_required', 50))
+            
+            # バリデーション
+            if not name:
+                flash('ポリシー名は必須です。', 'danger')
+                return redirect(url_for('admin_policy_new'))
+            
+            if min_length < 1 or min_length > max_length:
+                flash('最小文字数の設定が正しくありません。', 'danger')
+                return redirect(url_for('admin_policy_new'))
+            
+            # アクティブフラグがONの場合、他のポリシーをOFFにする
+            if is_active:
+                PasswordPolicy.query.update({'is_active': False})
+            
+            # 新規ポリシーを作成
+            policy = PasswordPolicy(
+                name=name,
+                description=description if description else None,
+                is_active=is_active,
+                min_length=min_length,
+                max_length=max_length,
+                require_lowercase=require_lowercase,
+                require_uppercase=require_uppercase,
+                require_digit=require_digit,
+                require_symbol=require_symbol,
+                block_common_words=block_common_words,
+                block_repeating=block_repeating,
+                block_sequential=block_sequential,
+                block_keyboard_patterns=block_keyboard_patterns,
+                min_score_required=min_score_required
+            )
+            
+            if custom_words_list:
+                policy.set_custom_blocked_words(custom_words_list)
+            
+            db.session.add(policy)
+            db.session.commit()
+            
+            flash(f'ポリシー「{name}」を作成しました。', 'success')
+            return redirect(url_for('admin_policies'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'ポリシーの作成に失敗しました: {str(e)}', 'danger')
+            return redirect(url_for('admin_policy_new'))
+    
+    return render_template('admin/policy_form.html', policy=None)
+
+
+@app.route('/admin/policies/<int:policy_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def admin_policy_edit(policy_id):
+    """
+    ポリシー編集
+    """
+    policy = PasswordPolicy.query.get_or_404(policy_id)
+    
+    if request.method == 'POST':
+        try:
+            # フォームデータを取得
+            policy.name = request.form.get('name', '').strip()
+            policy.description = request.form.get('description', '').strip() or None
+            is_active = request.form.get('is_active') == 'on'
+            
+            # 長さ要件
+            policy.min_length = int(request.form.get('min_length', 8))
+            policy.max_length = int(request.form.get('max_length', 128))
+            
+            # 文字種要件
+            policy.require_lowercase = request.form.get('require_lowercase') == 'on'
+            policy.require_uppercase = request.form.get('require_uppercase') == 'on'
+            policy.require_digit = request.form.get('require_digit') == 'on'
+            policy.require_symbol = request.form.get('require_symbol') == 'on'
+            
+            # 禁止パターン
+            policy.block_common_words = request.form.get('block_common_words') == 'on'
+            policy.block_repeating = request.form.get('block_repeating') == 'on'
+            policy.block_sequential = request.form.get('block_sequential') == 'on'
+            policy.block_keyboard_patterns = request.form.get('block_keyboard_patterns') == 'on'
+            
+            # カスタム禁止単語
+            custom_words = request.form.get('custom_blocked_words', '').strip()
+            custom_words_list = [w.strip() for w in custom_words.split(',') if w.strip()]
+            policy.set_custom_blocked_words(custom_words_list if custom_words_list else [])
+            
+            # スコア閾値
+            policy.min_score_required = int(request.form.get('min_score_required', 50))
+            
+            # バリデーション
+            if not policy.name:
+                flash('ポリシー名は必須です。', 'danger')
+                return redirect(url_for('admin_policy_edit', policy_id=policy_id))
+            
+            if policy.min_length < 1 or policy.min_length > policy.max_length:
+                flash('最小文字数の設定が正しくありません。', 'danger')
+                return redirect(url_for('admin_policy_edit', policy_id=policy_id))
+            
+            # アクティブフラグがONの場合、他のポリシーをOFFにする
+            if is_active and not policy.is_active:
+                PasswordPolicy.query.filter(PasswordPolicy.id != policy_id).update({'is_active': False})
+            
+            policy.is_active = is_active
+            db.session.commit()
+            
+            flash(f'ポリシー「{policy.name}」を更新しました。', 'success')
+            return redirect(url_for('admin_policies'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'ポリシーの更新に失敗しました: {str(e)}', 'danger')
+            return redirect(url_for('admin_policy_edit', policy_id=policy_id))
+    
+    return render_template('admin/policy_form.html', policy=policy)
+
+
+@app.route('/admin/policies/<int:policy_id>/activate', methods=['POST'])
+@admin_required
+def admin_policy_activate(policy_id):
+    """
+    ポリシーをアクティブ化
+    """
+    policy = PasswordPolicy.query.get_or_404(policy_id)
+    
+    try:
+        # 他のすべてのポリシーを非アクティブにする
+        PasswordPolicy.query.update({'is_active': False})
+        
+        # 指定されたポリシーをアクティブにする
+        policy.is_active = True
+        db.session.commit()
+        
+        flash(f'ポリシー「{policy.name}」をアクティブにしました。', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'ポリシーのアクティブ化に失敗しました: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_policies'))
+
+
+@app.route('/admin/policies/<int:policy_id>/delete', methods=['POST'])
+@admin_required
+def admin_policy_delete(policy_id):
+    """
+    ポリシー削除
+    """
+    policy = PasswordPolicy.query.get_or_404(policy_id)
+    
+    # アクティブなポリシーは削除できない
+    if policy.is_active:
+        flash('アクティブなポリシーは削除できません。', 'danger')
+        return redirect(url_for('admin_policies'))
+    
+    try:
+        db.session.delete(policy)
+        db.session.commit()
+        flash(f'ポリシー「{policy.name}」を削除しました。', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'ポリシーの削除に失敗しました: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_policies'))
+
+
+@app.route('/api/policy')
+def get_active_policy():
+    """
+    アクティブなパスワードポリシーを取得するAPI
+    
+    Returns:
+        JSON: アクティブなポリシー情報
+    """
+    try:
+        policy = PasswordPolicy.get_active_policy()
+        
+        if not policy:
+            # デフォルトポリシーを作成して返す
+            policy = PasswordPolicy.get_default_policy()
+        
+        return jsonify({
+            'success': True,
+            'data': policy.to_dict()
+        })
+        
+    except Exception as e:
+        app.logger.error(f'Error getting active policy: {str(e)}')
+        return jsonify({
+            'success': False,
+            'message': 'ポリシーの取得に失敗しました',
+            'error': str(e)
+        }), 500
 
 
 @app.route('/profile')
@@ -603,6 +848,12 @@ if __name__ == '__main__':
             except Exception as e:
                 db.session.rollback()
                 print(f"管理者の作成に失敗しました: {str(e)}")
+        
+        # デフォルトポリシーが存在しない場合は作成
+        existing_policy = PasswordPolicy.query.first()
+        if not existing_policy:
+            default_policy = PasswordPolicy.get_default_policy()
+            print(f"デフォルトパスワードポリシーを作成しました: {default_policy.name}")
     
     print("=" * 60)
     print("パスワード強度チェッカーを起動中...")

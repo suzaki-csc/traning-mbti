@@ -821,6 +821,226 @@ function calculatePasswordScore(password) {
 
 ---
 
+## パスワードポリシー管理機能
+
+### 概要
+
+管理者が組織のセキュリティポリシーに応じて、パスワード強度要件をカスタマイズできる機能です。
+会社・学校・組織ごとに異なるセキュリティポリシーに対応します。
+
+### データモデル
+
+```python
+class PasswordPolicy(db.Model):
+    """パスワードポリシーモデル"""
+    
+    # 基本情報
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=False)
+    
+    # 長さ要件
+    min_length = db.Column(db.Integer, default=8)
+    max_length = db.Column(db.Integer, default=128)
+    
+    # 文字種要件
+    require_lowercase = db.Column(db.Boolean, default=True)
+    require_uppercase = db.Column(db.Boolean, default=True)
+    require_digit = db.Column(db.Boolean, default=True)
+    require_symbol = db.Column(db.Boolean, default=False)
+    
+    # 禁止パターン
+    block_common_words = db.Column(db.Boolean, default=True)
+    block_repeating = db.Column(db.Boolean, default=True)
+    block_sequential = db.Column(db.Boolean, default=True)
+    block_keyboard_patterns = db.Column(db.Boolean, default=True)
+    
+    # カスタム禁止単語（JSON配列）
+    custom_blocked_words = db.Column(db.Text)
+    
+    # スコア閾値
+    min_score_required = db.Column(db.Integer, default=50)
+```
+
+### 機能一覧
+
+#### 1. ポリシー一覧 (`/admin/policies`)
+- すべてのパスワードポリシーを一覧表示
+- アクティブなポリシーをハイライト表示
+- 各ポリシーの要件を視覚的に表示
+
+#### 2. ポリシー作成 (`/admin/policies/new`)
+- 新規ポリシーを作成
+- 以下の項目を設定可能:
+  - **基本情報**: 名前、説明、アクティブ状態
+  - **長さ要件**: 最小/最大文字数
+  - **必須文字種**: 小文字/大文字/数字/記号
+  - **禁止パターン**: よくある単語/繰り返し/連番/キーボード並び
+  - **カスタム禁止単語**: 組織名など独自の禁止単語
+  - **最低スコア**: 必要最低スコア (0-100)
+
+#### 3. ポリシー編集 (`/admin/policies/<id>/edit`)
+- 既存ポリシーの設定を変更
+
+#### 4. ポリシー削除 (`/admin/policies/<id>/delete`)
+- 非アクティブなポリシーを削除
+- アクティブなポリシーは削除不可
+
+#### 5. ポリシー有効化 (`/admin/policies/<id>/activate`)
+- 指定したポリシーをアクティブにする
+- 他のすべてのポリシーは自動的に非アクティブになる
+- **重要**: アクティブなポリシーは常に1つのみ
+
+### API エンドポイント
+
+#### `GET /api/policy`
+アクティブなパスワードポリシーを取得
+
+**レスポンス例**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "標準ポリシー",
+    "description": "一般的な企業向けの標準設定",
+    "is_active": true,
+    "min_length": 10,
+    "max_length": 128,
+    "require_lowercase": true,
+    "require_uppercase": true,
+    "require_digit": true,
+    "require_symbol": true,
+    "block_common_words": true,
+    "block_repeating": true,
+    "block_sequential": true,
+    "block_keyboard_patterns": true,
+    "custom_blocked_words": ["company", "acme"],
+    "min_score_required": 60
+  }
+}
+```
+
+### クライアント側実装
+
+JavaScriptでポリシーを取得し、評価ロジックに反映:
+
+```javascript
+// アクティブなポリシーを取得
+async function loadActivePolicy() {
+    const response = await fetch('/api/policy');
+    const data = await response.json();
+    
+    if (data.success) {
+        activePolicy = data.data;
+        displayPolicyInfo();
+    }
+}
+
+// ポリシー情報を画面に表示
+function displayPolicyInfo() {
+    const policyInfoElement = document.getElementById('policyInfo');
+    policyInfoElement.innerHTML = `
+        <div class="alert alert-info">
+            <h6>適用中のポリシー: ${activePolicy.name}</h6>
+            <ul>
+                <li>最小文字数: ${activePolicy.min_length}文字</li>
+                <li>必須文字種: ...</li>
+                <li>最低スコア: ${activePolicy.min_score_required}点</li>
+            </ul>
+        </div>
+    `;
+}
+
+// ポリシーに基づいたアドバイス生成
+function generateAdvice(password, details) {
+    const advice = [];
+    
+    // 長さチェック
+    if (password.length < activePolicy.min_length) {
+        advice.push(`${activePolicy.min_length}文字以上に延ばしてください`);
+    }
+    
+    // 文字種チェック
+    if (activePolicy.require_lowercase && !details.hasLower) {
+        advice.push('小文字を含めてください [ポリシー必須]');
+    }
+    // ...
+    
+    return advice;
+}
+```
+
+### ポリシーテンプレート例
+
+#### 教育機関向け
+```
+名前: 教育機関標準
+最小文字数: 8
+記号必須: なし
+最低スコア: 40
+説明: 学生が使いやすい基本的な要件
+```
+
+#### 企業向け（標準）
+```
+名前: 企業標準
+最小文字数: 10
+記号必須: あり
+最低スコア: 50
+禁止単語: 社名、プロダクト名
+説明: 一般的な企業のセキュリティポリシー
+```
+
+#### 高セキュリティ
+```
+名前: 高セキュリティ
+最小文字数: 14
+記号必須: あり
+最低スコア: 70
+すべての禁止パターン有効
+説明: 金融機関など高度なセキュリティが必要な環境向け
+```
+
+### UI/UX
+
+#### 管理画面
+- **カード形式**: 各ポリシーをカードで表示
+- **視覚的な要件表示**: バッジで必須文字種や禁止パターンを表示
+- **アクティブ表示**: 緑色のボーダーとバッジで明示
+- **ヘルプ**: 設定のヒントをサイドバーに表示
+
+#### トップ画面
+- **ポリシー情報**: 現在適用されているポリシーを表示
+- **リアルタイム評価**: ポリシーに基づいて即座に評価
+- **明確なフィードバック**: 必須要件は「[ポリシー必須]」と表示
+
+### デフォルトポリシー
+
+アプリケーション初回起動時に自動作成される標準ポリシー:
+
+```python
+default_policy = PasswordPolicy(
+    name='デフォルト',
+    description='標準的なパスワード要件',
+    is_active=True,
+    min_length=8,
+    max_length=128,
+    require_lowercase=True,
+    require_uppercase=True,
+    require_digit=True,
+    require_symbol=False,
+    block_common_words=True,
+    block_repeating=True,
+    block_sequential=True,
+    block_keyboard_patterns=True,
+    min_score_required=50
+)
+```
+
+---
+
 ## まとめ
 
 このパスワード強度チェッカーは、以下の特徴を持つ教育的なWebアプリケーションです:
@@ -830,6 +1050,8 @@ function calculatePasswordScore(password) {
 ✅ **教育的**: 初心者がコードから学べる丁寧なコメント  
 ✅ **アクセシブル**: すべてのユーザーが使いやすい設計  
 ✅ **安全**: クライアント側のみで処理、サーバーに送信しない  
+✅ **カスタマイズ可能**: 組織のポリシーに応じた柔軟な設定  
+✅ **データベース対応**: チェック履歴とユーザー管理  
 
 この仕様書をもとに実装することで、実践的なWebセキュリティの知識を学びながら、ユーザーにとって有用なツールを作成できます。
 

@@ -38,11 +38,87 @@ const KEYBOARD_PATTERNS = [
 const CRACK_SPEED = 1000000000; // 10億回/秒
 
 // ========================================
+// グローバル変数
+// ========================================
+
+/**
+ * アクティブなパスワードポリシー
+ * アプリケーション起動時にサーバーから取得
+ */
+let activePolicy = null;
+
+// ========================================
+// ポリシー取得
+// ========================================
+
+/**
+ * アクティブなパスワードポリシーをサーバーから取得
+ */
+async function loadActivePolicy() {
+    try {
+        const response = await fetch('/api/policy');
+        const data = await response.json();
+        
+        if (data.success) {
+            activePolicy = data.data;
+            console.log('アクティブなポリシーを取得しました:', activePolicy.name);
+            
+            // ポリシー情報を画面に表示
+            displayPolicyInfo();
+        } else {
+            console.error('ポリシーの取得に失敗しました:', data.message);
+        }
+    } catch (error) {
+        console.error('ポリシー取得エラー:', error);
+    }
+}
+
+/**
+ * ポリシー情報を画面に表示
+ */
+function displayPolicyInfo() {
+    if (!activePolicy) return;
+    
+    // ページ内にポリシー情報表示エリアがあれば更新
+    const policyInfoElement = document.getElementById('policyInfo');
+    if (policyInfoElement) {
+        let requirementsHtml = '<ul class="small mb-0">';
+        requirementsHtml += `<li>最小文字数: ${activePolicy.min_length}文字</li>`;
+        
+        const requirements = [];
+        if (activePolicy.require_lowercase) requirements.push('小文字');
+        if (activePolicy.require_uppercase) requirements.push('大文字');
+        if (activePolicy.require_digit) requirements.push('数字');
+        if (activePolicy.require_symbol) requirements.push('記号');
+        
+        if (requirements.length > 0) {
+            requirementsHtml += `<li>必須文字種: ${requirements.join('、')}</li>`;
+        }
+        
+        requirementsHtml += `<li>最低スコア: ${activePolicy.min_score_required}点</li>`;
+        requirementsHtml += '</ul>';
+        
+        policyInfoElement.innerHTML = `
+            <div class="alert alert-info">
+                <h6><i class="bi bi-shield-check"></i> 適用中のポリシー: ${activePolicy.name}</h6>
+                ${requirementsHtml}
+            </div>
+        `;
+    }
+}
+
+// ========================================
 // DOM要素の取得
 // ========================================
 
+// デバウンス用タイマー
+let debounceTimer = null;
+const DEBOUNCE_DELAY = 2000; // 2秒（ミリ秒）
+
 // ページ読み込み完了後に実行
 document.addEventListener('DOMContentLoaded', function() {
+    // アクティブなポリシーを取得
+    loadActivePolicy();
     // 入力要素
     const passwordInput = document.getElementById('passwordInput');
     const togglePassword = document.getElementById('togglePassword');
@@ -70,24 +146,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // イベントリスナーの設定
     // ========================================
     
-    /**
-     * パスワード入力時のイベント
-     * ユーザーが文字を入力するたびに評価を実行
-     */
-    passwordInput.addEventListener('input', function() {
-        const password = this.value;
-        
-        // パスワードが空の場合、すべてのセクションを非表示
-        if (password.length === 0) {
-            strengthSection.style.display = 'none';
-            detailsSection.style.display = 'none';
-            adviceSection.style.display = 'none';
-            return;
-        }
-        
-        // パスワードを評価してUIを更新
-        updateUI(password);
-    });
+/**
+ * パスワード入力時のイベント（デバウンス付き）
+ * 
+ * デバウンス処理により、ユーザーが入力を停止してから2秒後に以下を実行:
+ * 1. パスワード強度の評価
+ * 2. 評価結果のUI表示
+ * 3. データベースへの保存（チェック履歴）
+ * 
+ * これにより、連続入力時の無駄な処理とサーバーへのリクエストを削減します。
+ */
+passwordInput.addEventListener('input', function() {
+    const password = this.value;
+    
+    // 既存のタイマーをクリア（連続入力時は前のタイマーをキャンセル）
+    if (debounceTimer) {
+        clearTimeout(debounceTimer);
+    }
+    
+    // パスワードが空の場合、すべてのセクションを非表示
+    if (password.length === 0) {
+        strengthSection.style.display = 'none';
+        detailsSection.style.display = 'none';
+        adviceSection.style.display = 'none';
+        return;
+    }
+    
+    // 入力中であることを表示
+    showEvaluatingStatus();
+    
+    // 2秒後に評価とデータベース保存を実行
+    // 注意: updateUI() 内で saveCheckResult() が呼ばれるため、
+    // チェック処理と保存処理の両方が2秒後に実行されます
+    debounceTimer = setTimeout(function() {
+        updateUI(password);  // 評価 + UI更新 + DB保存
+    }, DEBOUNCE_DELAY);
+});
     
     /**
      * パスワード表示/非表示トグルボタン
@@ -526,6 +620,7 @@ function getStrengthLevel(score) {
 
 /**
  * 改善アドバイスを生成する関数
+ * ポリシー設定に基づいてアドバイスを生成
  * 
  * @param {string} password - パスワード文字列
  * @param {object} details - 評価の詳細情報
@@ -534,25 +629,64 @@ function getStrengthLevel(score) {
 function generateAdvice(password, details) {
     const advice = [];
     
-    // 長さに関するアドバイス
-    if (password.length < 12) {
-        advice.push('12文字以上に延ばしてください');
-    } else if (password.length < 16) {
-        advice.push('16文字以上にすると更に強固になります');
-    }
-    
-    // 文字種に関するアドバイス
-    if (!details.hasLower) {
-        advice.push('小文字（a-z）を含めてください');
-    }
-    if (!details.hasUpper) {
-        advice.push('大文字（A-Z）を含めてください');
-    }
-    if (!details.hasDigit) {
-        advice.push('数字（0-9）を含めてください');
-    }
-    if (!details.hasSymbol) {
-        advice.push('記号（!@#$%等）を含めてください');
+    // アクティブなポリシーがあればそれに基づいてアドバイス
+    if (activePolicy) {
+        // 長さに関するアドバイス（ポリシーベース）
+        if (password.length < activePolicy.min_length) {
+            advice.push(`${activePolicy.min_length}文字以上に延ばしてください（現在: ${password.length}文字）`);
+        } else if (password.length < activePolicy.min_length + 4) {
+            advice.push(`${activePolicy.min_length + 4}文字以上にすると更に強固になります`);
+        }
+        
+        // 文字種に関するアドバイス（ポリシーベース）
+        if (activePolicy.require_lowercase && !details.hasLower) {
+            advice.push('小文字（a-z）を含めてください [ポリシー必須]');
+        }
+        if (activePolicy.require_uppercase && !details.hasUpper) {
+            advice.push('大文字（A-Z）を含めてください [ポリシー必須]');
+        }
+        if (activePolicy.require_digit && !details.hasDigit) {
+            advice.push('数字（0-9）を含めてください [ポリシー必須]');
+        }
+        if (activePolicy.require_symbol && !details.hasSymbol) {
+            advice.push('記号（!@#$%等）を含めてください [ポリシー必須]');
+        }
+        
+        // 推奨文字種（必須ではないがセキュリティ向上のため）
+        if (!activePolicy.require_lowercase && !details.hasLower) {
+            advice.push('小文字（a-z）を含めることを推奨します');
+        }
+        if (!activePolicy.require_uppercase && !details.hasUpper) {
+            advice.push('大文字（A-Z）を含めることを推奨します');
+        }
+        if (!activePolicy.require_digit && !details.hasDigit) {
+            advice.push('数字（0-9）を含めることを推奨します');
+        }
+        if (!activePolicy.require_symbol && !details.hasSymbol) {
+            advice.push('記号（!@#$%等）を含めることを推奨します');
+        }
+        
+        // カスタム禁止単語のチェック
+        if (activePolicy.custom_blocked_words && activePolicy.custom_blocked_words.length > 0) {
+            const lowerPassword = password.toLowerCase();
+            for (const word of activePolicy.custom_blocked_words) {
+                if (lowerPassword.includes(word.toLowerCase())) {
+                    advice.push(`「${word}」を含めないでください [ポリシーで禁止]`);
+                }
+            }
+        }
+    } else {
+        // デフォルトのアドバイス（ポリシーが読み込まれていない場合）
+        if (password.length < 12) {
+            advice.push('12文字以上に延ばしてください');
+        } else if (password.length < 16) {
+            advice.push('16文字以上にすると更に強固になります');
+        }
+        
+        if (!details.hasLower) advice.push('小文字（a-z）を含めてください');
+        if (!details.hasUpper) advice.push('大文字（A-Z）を含めてください');
+        if (!details.hasDigit) advice.push('数字（0-9）を含めてください');
+        if (!details.hasSymbol) advice.push('記号（!@#$%等）を含めてください');
     }
     
     // ペナルティに基づくアドバイス
@@ -577,6 +711,27 @@ function generateAdvice(password, details) {
     }
     
     return advice;
+}
+
+/**
+ * 評価中の状態を表示する関数
+ * ユーザーに評価処理が開始されることを通知
+ */
+function showEvaluatingStatus() {
+    const strengthSection = document.getElementById('strengthSection');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthBadge = document.getElementById('strengthBadge');
+    
+    // 強度セクションを表示
+    strengthSection.style.display = 'block';
+    
+    // 評価中の表示
+    strengthBar.style.width = '100%';
+    strengthBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-secondary';
+    strengthBar.textContent = '評価中...';
+    
+    strengthBadge.textContent = '入力を停止してください';
+    strengthBadge.className = 'badge fs-6 bg-secondary';
 }
 
 /**
@@ -642,12 +797,27 @@ function updateUI(password) {
         adviceList.appendChild(li);
     });
     
-    // データベースに保存（自動保存）
+    // ========================================
+    // データベースに保存（デバウンス後の自動保存）
+    // ========================================
+    // 注意: この関数はデバウンス処理後に呼ばれるため、
+    // ユーザーが入力を停止してから2秒後に実行されます。
+    // これにより、連続入力時の無駄な保存を防ぎます。
     saveCheckResult(password, result, details, entropy, crackTime, strengthLevel);
 }
 
 /**
  * パスワードチェック結果をサーバーに保存する関数
+ * 
+ * この関数は updateUI() 内から呼ばれるため、デバウンス処理が適用されます。
+ * つまり、ユーザーが入力を停止してから2秒後にのみ実行されます。
+ * 
+ * 保存される情報:
+ * - パスワードのハッシュ値（SHA-256）
+ * - パスワードのマスク表示（先頭1文字 + ***）
+ * - スコア、強度レベル、エントロピー、クラック時間
+ * - 文字種の使用状況（小文字/大文字/数字/記号）
+ * - パターン検出結果（よくある単語/繰り返し/連番/キーボード並び）
  * 
  * @param {string} password - パスワード
  * @param {object} result - スコア結果
@@ -658,6 +828,7 @@ function updateUI(password) {
  */
 function saveCheckResult(password, result, details, entropy, crackTime, strengthLevel) {
     // APIエンドポイントにPOSTリクエストを送信
+    // 注意: この処理はデバウンス後（入力停止から2秒後）に実行されます
     fetch('/api/save-check', {
         method: 'POST',
         headers: {
