@@ -74,6 +74,9 @@ if [ "$USE_DOCKER" = "true" ]; then
     echo "📦 コンテナをビルドして起動します..."
     echo "   初回起動時は時間がかかる場合があります。"
     echo ""
+    echo "💡 停止する場合は、別のターミナルで以下を実行してください:"
+    echo "   ./scripts/stop.sh"
+    echo ""
     docker-compose up --build
 else
     echo "💻 ローカル環境でアプリケーションを起動します..."

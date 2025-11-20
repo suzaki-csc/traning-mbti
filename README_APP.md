@@ -693,16 +693,68 @@ docker-compose up --build
 
 ### 14.4 停止方法
 
-Docker Composeを使用している場合:
+#### 14.4.1 ラッパーシェルを使用する場合（推奨）
+
+**通常の停止**（データは保持されます）:
+```bash
+./scripts/stop.sh
+```
+
+**データベースのボリュームも削除する場合**（すべてのデータが削除されます）:
+```bash
+./scripts/stop.sh --volumes
+```
+
+または:
+```bash
+./scripts/stop.sh -v
+```
+
+#### 14.4.2 直接Docker Composeを使用する場合
+
+**通常の停止**（データは保持されます）:
 ```bash
 cd docker
 docker-compose down
 ```
 
-データベースのボリュームも削除する場合:
+**データベースのボリュームも削除する場合**（すべてのデータが削除されます）:
 ```bash
 cd docker
 docker-compose down -v
+```
+
+#### 14.4.3 その他のDocker Composeコマンド
+
+**バックグラウンドで起動**:
+```bash
+cd docker
+docker-compose up -d
+```
+
+**ログを確認**:
+```bash
+cd docker
+docker-compose logs -f
+```
+
+**コンテナの状態を確認**:
+```bash
+cd docker
+docker-compose ps
+```
+
+**コンテナを再起動**:
+```bash
+cd docker
+docker-compose restart
+```
+
+**特定のサービスのみ再起動**:
+```bash
+cd docker
+docker-compose restart web  # アプリケーションのみ再起動
+docker-compose restart db  # データベースのみ再起動
 ```
 
 ### 14.5 効果音ファイルについて

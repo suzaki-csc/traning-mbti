@@ -1,5 +1,21 @@
 version: '3.8'
 
+# クイズアプリケーション用Docker Compose設定
+# 
+# このファイルは、クイズアプリケーションとMySQLデータベースを
+# Docker Composeで管理するための設定です。
+#
+# 使用方法:
+#   docker-compose up -d        # バックグラウンドで起動
+#   docker-compose up            # フォアグラウンドで起動
+#   docker-compose down          # 停止
+#   docker-compose down -v       # 停止してボリュームも削除
+#   docker-compose logs -f       # ログを表示
+#   docker-compose ps            # コンテナの状態を確認
+#
+# 構成が増える場合は、このファイルに新しいサービスを追加してください。
+# 例: Redis、Nginx、バックグラウンドワーカーなど
+
 services:
   # MySQLデータベース
   db:
