@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Flask
+instance/
+.webassets-cache
+
+# データベース（コンテナ内で作成）
+*.db
+*.sqlite
+*.sqlite3
+
+# 環境変数
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 古いコードや不要なディレクトリ（app/は必要なため除外しない）
+routes/
+**/routes/
+
+# ドキュメント
+README*.md
+_prompts/
+
+# 効果音ファイル（大きなファイル）
+static/sounds/*.mp3
+!static/sounds/.gitkeep
+
+# Poetry
+poetry.lock
+
+# ログ
+*.log
+

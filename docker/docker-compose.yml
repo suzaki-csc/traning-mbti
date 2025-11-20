@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Webアプリケーションサービス
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    working_dir: /app
+    container_name: quiz-app-web
+    ports:
+      - "5000:5000"
+    volumes:
+      # 開発時はコードをマウント（ホットリロード用）
+      # 注意: ボリュームマウントは開発時のみ。本番環境ではコメントアウト推奨
+      - ../app:/app/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.app:app
+      - PYTHONPATH=/app
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - DATABASE_URL=mysql+pymysql://quiz_user:quiz_password@mysql:3306/quiz_db
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - quiz-network
+    # ヘルスチェック
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MySQLデータベースサービス
+  mysql:
+    image: mysql:8.0
+    container_name: quiz-app-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-quiz_db}
+      MYSQL_USER: ${MYSQL_USER:-quiz_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-quiz_password}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 初期化スクリプトをマウント（/docker-entrypoint-initdb.d/に配置すると自動実行される）
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - quiz-network
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # 将来的にRedisを追加する場合の例（コメントアウト）
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: quiz-app-redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - quiz-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+# ネットワーク定義
+networks:
+  quiz-network:
+    driver: bridge
+
+# ボリューム定義
+volumes:
+  mysql-data:
+

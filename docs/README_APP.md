@@ -1224,6 +1224,237 @@ selectAnswer('');  // 各問題で実行
 - **Black**: コードフォーマッター
 - **Flake8**: リンター
 
+## 起動方法
+
+### 前提条件
+
+#### Dockerを使用する場合（推奨）
+
+- Docker Desktop または Docker Engine
+- Docker Compose（Docker Desktopに含まれています）
+
+Dockerのインストール方法:
+- **macOS/Windows**: [Docker Desktop](https://www.docker.com/products/docker-desktop/) をダウンロードしてインストール
+- **Linux**: [Docker Engine](https://docs.docker.com/engine/install/) をインストール
+
+#### ローカル環境を使用する場合
+
+- Python 3.12以上
+- Poetry（パッケージ管理ツール）
+
+Poetryのインストール方法:
+```bash
+# macOS/Linux
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Windows (PowerShell)
+(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+```
+
+### 方法1: Docker Composeを使用（推奨）
+
+Docker Composeを使用することで、環境の違いを気にせずにアプリケーションを起動できます。
+
+#### macOS/Linux
+
+```bash
+# 起動
+./run.sh
+
+# 停止（別のターミナルから）
+./stop.sh
+```
+
+#### Windows
+
+```cmd
+REM 起動
+run.bat
+
+REM 停止（別のコマンドプロンプトから）
+stop.bat
+```
+
+ラッパースクリプトは以下の処理を自動的に実行します:
+1. DockerとDocker Composeのインストール確認
+2. コンテナのビルド（初回のみ）
+3. データベースの初期化（存在しない場合）
+4. アプリケーションの起動
+
+#### 手動でDocker Composeを操作する場合
+
+```bash
+# コンテナをビルドして起動
+docker compose up --build
+
+# バックグラウンドで起動
+docker compose up -d
+
+# ログを確認
+docker compose logs -f
+
+# 停止
+docker compose down
+
+# 停止してボリュームも削除
+docker compose down -v
+```
+
+#### 初回起動時のデータベース初期化
+
+初回起動時は自動的に初期化されますが、手動で実行する場合:
+
+```bash
+docker compose exec web poetry run python data/init_questions.py
+```
+
+### 方法2: ローカル環境で起動（Dockerを使用しない場合）
+
+ローカル環境で直接起動する場合の手順です。
+
+#### ステップ1: 依存関係のインストール
+
+#### ステップ1: 依存関係のインストール
+
+```bash
+poetry install
+```
+
+#### ステップ2: 仮想環境の有効化
+
+```bash
+poetry shell
+```
+
+#### ステップ3: データベースの初期化（初回のみ）
+
+```bash
+poetry run python data/init_questions.py
+```
+
+これにより、以下のカテゴリと問題が登録されます:
+- **セキュリティ**: 20問
+- **IT基礎**: カテゴリのみ（問題は後で追加可能）
+- **プログラミング**: カテゴリのみ（問題は後で追加可能）
+
+#### ステップ4: アプリケーションの起動
+
+```bash
+poetry run python app.py
+```
+
+または
+
+```bash
+flask run
+```
+
+アプリケーションは `http://localhost:5000` で起動します。
+
+### アクセス方法
+
+ブラウザで以下のURLにアクセス:
+
+```
+http://localhost:5000
+```
+
+### トラブルシューティング
+
+#### Docker関連
+
+##### ポートが既に使用されている場合
+
+`docker-compose.yml` の `ports` セクションを編集:
+
+```yaml
+ports:
+  - "5001:5000"  # ホストの5001ポートを使用
+```
+
+##### コンテナが起動しない場合
+
+```bash
+# ログを確認
+docker compose logs
+
+# コンテナを再ビルド
+docker compose build --no-cache
+docker compose up
+```
+
+##### データベースをリセットする場合
+
+```bash
+# コンテナを停止してデータベースファイルを削除
+docker compose down
+rm quiz.db  # macOS/Linux
+# del quiz.db  # Windows
+
+# 再起動（自動的に初期化されます）
+./run.sh  # または docker compose up
+```
+
+##### イメージを再ビルドする場合
+
+```bash
+docker compose build --no-cache
+docker compose up
+```
+
+#### ローカル環境関連
+
+##### ポートが既に使用されている場合
+
+`app.py` の最後の行を編集して、別のポートを指定:
+
+```python
+app.run(debug=True, host='0.0.0.0', port=5001)
+```
+
+##### データベースエラーが発生する場合
+
+データベースファイルを削除して再初期化:
+
+```bash
+# macOS/Linux
+rm quiz.db
+poetry run python data/init_questions.py
+
+# Windows
+del quiz.db
+poetry run python data/init_questions.py
+```
+
+##### 仮想環境の問題
+
+仮想環境を再作成:
+
+```bash
+poetry env remove python
+poetry install
+```
+
+#### 共通
+
+##### 効果音が再生されない場合
+
+効果音ファイル（`static/sounds/correct.mp3` と `static/sounds/incorrect.mp3`）が存在しない可能性があります。
+効果音がなくてもアプリケーションは正常に動作します（音が鳴らないだけです）。
+
+効果音ファイルを追加する場合は、`static/sounds/` ディレクトリに配置してください。
+詳細は `static/sounds/README.md` を参照してください。
+
+### 開発モードでの起動
+
+デバッグモードで起動する場合（コード変更が自動反映されます）:
+
+```bash
+export FLASK_ENV=development  # macOS/Linux
+set FLASK_ENV=development     # Windows
+poetry run python app.py
+```
+
 ## まとめ
 
 このクイズアプリは、セキュリティ、IT基礎、プログラミングの学習を支援する教育ツールです。

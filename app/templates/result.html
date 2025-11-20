@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}結果 - {{ category.name }}{% endblock %}
+
+{% block content %}
+<main class="container mt-5" role="main">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- 結果ヘッダー -->
+            <div class="text-center mb-4">
+                <h1 class="display-5 mb-3">
+                    <i class="bi bi-trophy text-warning"></i>
+                    クイズ結果
+                </h1>
+                <p class="lead text-muted">
+                    {{ category.name }}
+                </p>
+            </div>
+
+            <!-- スコア表示カード -->
+            <div class="card shadow-lg mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <h2 class="display-1 fw-bold {% if percentage >= 80 %}text-success{% elif percentage >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ percentage }}%
+                        </h2>
+                        <p class="fs-4 text-muted">
+                            {{ score }} / {{ total }}問正解
+                        </p>
+                    </div>
+                    
+                    <!-- 進捗バー -->
+                    <div class="progress mb-3" style="height: 30px;">
+                        <div class="progress-bar {% if percentage >= 80 %}bg-success{% elif percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ percentage }}%;" 
+                             aria-valuenow="{{ percentage }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{ percentage }}%
+                        </div>
+                    </div>
+
+                    <!-- 評価メッセージ -->
+                    <div class="alert {% if percentage >= 80 %}alert-success{% elif percentage >= 60 %}alert-warning{% else %}alert-danger{% endif %}" role="alert">
+                        {% if percentage >= 80 %}
+                            <i class="bi bi-star-fill me-2"></i>素晴らしい結果です！
+                        {% elif percentage >= 60 %}
+                            <i class="bi bi-check-circle me-2"></i>良い結果です。もう少し頑張りましょう！
+                        {% else %}
+                            <i class="bi bi-exclamation-circle me-2"></i>復習して理解を深めましょう。
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- スコア共有 -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-share me-2"></i>スコアを共有
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="share-text" 
+                               value="{{ share_text }}" readonly 
+                               aria-label="共有用スコアテキスト">
+                        <button class="btn btn-primary" onclick="copyShareText()" 
+                                aria-label="スコアテキストをクリップボードにコピー">
+                            <i class="bi bi-clipboard me-2"></i>コピー
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        <i class="bi bi-info-circle me-1"></i>
+                        コピーしたテキストをSNSなどで共有できます
+                    </small>
+                </div>
+            </div>
+
+            <!-- 間違えた問題一覧 -->
+            {% if wrong_questions %}
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-x-circle me-2"></i>
+                        間違えた問題 ({{ wrong_questions|length }}問)
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for question in wrong_questions %}
+                        <div class="list-group-item">
+                            <h3 class="h6 mb-2">{{ question.question_text }}</h3>
+                            <p class="mb-1">
+                                <strong class="text-success">正解: {{ question.correct_answer }}</strong>
+                            </p>
+                            <p class="text-muted small mb-0">
+                                {{ question.explanation }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                全問正解です！素晴らしい結果です。
+            </div>
+            {% endif %}
+
+            <!-- アクションボタン -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                {% if wrong_questions %}
+                <a href="{{ url_for('review_mode') }}" class="btn btn-warning btn-lg">
+                    <i class="bi bi-arrow-repeat me-2"></i>復習モードで再挑戦
+                </a>
+                {% endif %}
+                <a href="{{ url_for('select_category', category_id=category.id) }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-clockwise me-2"></i>もう一度挑戦
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-house me-2"></i>ホームに戻る
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+/**
+ * スコアテキストをクリップボードにコピー
+ */
+function copyShareText() {
+    const shareText = document.getElementById('share-text');
+    shareText.select();
+    shareText.setSelectionRange(0, 99999); // モバイル対応
+    
+    try {
+        document.execCommand('copy');
+        // ボタンのテキストを一時的に変更
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check me-2"></i>コピーしました！';
+        button.classList.add('btn-success');
+        button.classList.remove('btn-primary');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-primary');
+        }, 2000);
+    } catch (err) {
+        alert('コピーに失敗しました。手動でコピーしてください。');
+    }
+}
+</script>
+{% endblock %}
+

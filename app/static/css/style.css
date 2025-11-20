@@ -1,0 +1,135 @@
+/* クイズアプリ カスタムスタイル */
+
+/* 全体のスタイル */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+/* ナビゲーションバー */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* カードのホバー効果 */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 選択肢ボタンのスタイル */
+#options-container button {
+    transition: all 0.3s ease;
+    text-align: left;
+    padding: 1rem;
+    border: 2px solid;
+}
+
+#options-container button:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#options-container button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* タイマーのアニメーション */
+#timer {
+    transition: all 0.3s ease;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* 進捗バーのアニメーション */
+.progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* 解説カードのアニメーション */
+#explanation-card {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* アクセシビリティ: フォーカス表示 */
+button:focus,
+a:focus,
+input:focus {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* キーボードショートカット表示 */
+.badge.bg-secondary {
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 3rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    #options-container button {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid #000;
+    }
+    
+    .btn {
+        border-width: 2px;
+    }
+}
+
+/* アニメーション無効化（アクセシビリティ） */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
