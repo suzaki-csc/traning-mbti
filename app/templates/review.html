@@ -1,0 +1,30 @@
+{% extends "quiz.html" %}
+
+{% block title %}復習モード - {{ category_name }}{% endblock %}
+
+{% block extra_head %}
+{{ super() }}
+<style>
+    .review-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="position-relative mb-3">
+    <span class="badge bg-warning fs-6" role="status" aria-label="復習モード">
+        <i class="bi bi-arrow-repeat"></i> 復習モード
+    </span>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<!-- 復習モード用JavaScript -->
+<script src="{{ url_for('static', filename='js/review.js') }}"></script>
+{% endblock %}
+

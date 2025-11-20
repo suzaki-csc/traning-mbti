@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}結果 - {{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-center mb-4" role="heading" aria-level="1">
+            <i class="bi bi-trophy"></i> クイズ結果
+        </h1>
+    </div>
+</div>
+
+<!-- スコア表示 -->
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-lg border-0" role="article" aria-labelledby="score-title">
+            <div class="card-body text-center p-5">
+                <h2 class="display-1 fw-bold mb-3" id="score-title" role="heading" aria-level="2">
+                    {{ quiz_result.correct_answers }} / {{ quiz_result.total_questions }}
+                </h2>
+                <p class="lead mb-4">
+                    正答率: <span class="badge bg-primary fs-4">{{ "%.1f"|format(quiz_result.score_percentage) }}%</span>
+                </p>
+                <p class="text-muted">
+                    <i class="bi bi-clock"></i> かかった時間: {{ quiz_result.time_taken }}秒
+                </p>
+                <p class="text-muted">
+                    <i class="bi bi-folder"></i> カテゴリ: {{ category.name }}
+                </p>
+                
+                <!-- スコアコピーボタン -->
+                <div class="mt-4">
+                    <button class="btn btn-outline-primary" id="copy-score-btn" role="button" aria-label="スコアをクリップボードにコピー">
+                        <i class="bi bi-clipboard"></i> スコアをコピー
+                    </button>
+                    <input type="hidden" id="score-string" value="{{ score_string }}">
+                    <input type="hidden" id="quiz-result-id" value="{{ quiz_result.id }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 復習リスト -->
+{% if incorrect_questions %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="h5 mb-0" role="heading" aria-level="3">
+                    <i class="bi bi-exclamation-triangle"></i> 復習が必要な問題 ({{ incorrect_questions|length }}問)
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="reviewAccordion" role="tablist">
+                    {% for item in incorrect_questions %}
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ loop.index }}"
+                                    aria-expanded="false"
+                                    aria-controls="collapse{{ loop.index }}">
+                                問題 {{ loop.index }}: {{ item.question.question_text[:50] }}{% if item.question.question_text|length > 50 %}...{% endif %}
+                            </button>
+                        </h4>
+                        <div id="collapse{{ loop.index }}" 
+                             class="accordion-collapse collapse" 
+                             data-bs-parent="#reviewAccordion"
+                             aria-labelledby="heading{{ loop.index }}">
+                            <div class="accordion-body">
+                                <p class="fw-bold mb-2">{{ item.question.question_text }}</p>
+                                <div class="mb-2">
+                                    <span class="badge bg-danger">あなたの回答: {{ item.user_answer }}</span>
+                                    <span class="badge bg-success ms-2">正解: {{ item.correct_answer }}</span>
+                                </div>
+                                <div class="alert alert-info mb-0">
+                                    <strong>解説:</strong><br>
+                                    {{ item.explanation }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle"></i> 素晴らしい！すべて正解しました！
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- アクションボタン -->
+<div class="row">
+    <div class="col-12 text-center">
+        {% if incorrect_questions %}
+        <a href="{{ url_for('main.review_quiz', quiz_result_id=quiz_result.id) }}" 
+           class="btn btn-warning btn-lg me-2" 
+           role="button"
+           aria-label="復習モードを開始">
+            <i class="bi bi-arrow-repeat"></i> 復習モード
+        </a>
+        {% endif %}
+        <a href="{{ url_for('main.index') }}" 
+           class="btn btn-primary btn-lg" 
+           role="button"
+           aria-label="トップページに戻る">
+            <i class="bi bi-house"></i> トップに戻る
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // スコアコピー機能
+    document.getElementById('copy-score-btn').addEventListener('click', async function() {
+        const quizResultId = document.getElementById('quiz-result-id').value;
+        
+        try {
+            const response = await fetch('/api/copy-score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quiz_result_id: quizResultId })
+            });
+            
+            const data = await response.json();
+            const scoreString = data.score_string;
+            
+            // クリップボードにコピー
+            await navigator.clipboard.writeText(scoreString);
+            
+            // ボタンのテキストを一時的に変更
+            const btn = document.getElementById('copy-score-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check"></i> コピーしました！';
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-primary');
+            }, 2000);
+        } catch (error) {
+            console.error('コピーに失敗しました:', error);
+            alert('コピーに失敗しました。');
+        }
+    });
+</script>
+{% endblock %}
+

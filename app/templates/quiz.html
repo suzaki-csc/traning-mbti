@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}クイズ - {{ category_name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .question-card {
+        min-height: 300px;
+    }
+    .option-btn {
+        min-height: 60px;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+    }
+    .option-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .option-btn:disabled {
+        cursor: not-allowed;
+    }
+    .timer-progress {
+        height: 30px;
+    }
+    .explanation-box {
+        display: none;
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .explanation-box.show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- 進捗バー -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold">進捗: {{ question_number }} / {{ total_questions }}</span>
+                    <span class="badge bg-primary" id="timer-badge">残り時間: <span id="timer-display">30</span>秒</span>
+                </div>
+                <div class="progress timer-progress" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="30" id="timer-progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         id="timer-bar" 
+                         style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 問題カード -->
+        <div class="card question-card shadow" role="article" aria-labelledby="question-text">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0" id="question-text" role="heading" aria-level="2">
+                    <i class="bi bi-question-circle"></i> 問題 {{ question_number }}
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="lead mb-4" id="question-text-content">{{ question.question_text }}</p>
+                
+                <!-- 選択肢 -->
+                <div class="row g-3" role="group" aria-label="選択肢">
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary option-btn w-100" 
+                                data-answer="A" 
+                                id="option-a"
+                                aria-label="選択肢A: {{ question.option_a }}">
+                            <strong>A.</strong> {{ question.option_a }}
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary option-btn w-100" 
+                                data-answer="B" 
+                                id="option-b"
+                                aria-label="選択肢B: {{ question.option_b }}">
+                            <strong>B.</strong> {{ question.option_b }}
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary option-btn w-100" 
+                                data-answer="C" 
+                                id="option-c"
+                                aria-label="選択肢C: {{ question.option_c }}">
+                            <strong>C.</strong> {{ question.option_c }}
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary option-btn w-100" 
+                                data-answer="D" 
+                                id="option-d"
+                                aria-label="選択肢D: {{ question.option_d }}">
+                            <strong>D.</strong> {{ question.option_d }}
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 解説 -->
+                <div class="explanation-box alert" id="explanation-box" role="alert">
+                    <h5 class="alert-heading" id="result-title"></h5>
+                    <p class="mb-0" id="explanation-text"></p>
+                </div>
+                
+                <!-- 次へボタン -->
+                <div class="text-center mt-4" id="next-button-container" style="display: none;">
+                    <button class="btn btn-success btn-lg" id="next-button" role="button" aria-label="次の問題へ">
+                        <i class="bi bi-arrow-right"></i> 次へ
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 効果音設定 -->
+        <div class="text-center mt-3">
+            <button class="btn btn-sm btn-outline-secondary" id="toggle-sound" role="button" aria-label="効果音の切り替え">
+                <i class="bi bi-volume-up" id="sound-icon"></i> <span id="sound-text">効果音ON</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 問題データ（JavaScriptで使用） -->
+<script>
+    const questionData = {
+        id: {{ question.id }},
+        correctAnswer: '{{ question.correct_answer }}'
+    };
+    const questionNumber = {{ question_number }};
+    const totalQuestions = {{ total_questions }};
+    const timerDuration = 30;
+</script>
+
+<!-- クイズ用JavaScript -->
+<script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}
+

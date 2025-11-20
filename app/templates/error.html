@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}エラー - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+            <h2 class="alert-heading">
+                <i class="bi bi-exclamation-triangle"></i> エラーが発生しました
+            </h2>
+            <p>{{ message or '不明なエラーが発生しました。' }}</p>
+            <hr>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary" role="button" aria-label="トップページに戻る">
+                <i class="bi bi-house"></i> トップに戻る
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

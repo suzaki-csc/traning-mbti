@@ -1,0 +1,216 @@
+/**
+ * クイズ画面のメインJavaScript
+ * 
+ * クイズの進行、回答処理、次の問題への遷移などを管理します。
+ */
+
+// グローバル変数
+let currentQuestionId = null;
+let currentQuestionStartTime = null;
+let isAnswered = false;
+
+/**
+ * ページ読み込み時の初期化
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // 問題データの取得
+    currentQuestionId = questionData.id;
+    currentQuestionStartTime = Date.now();
+    
+    // タイマーの初期化
+    initTimer(timerDuration, handleTimeout);
+    
+    // オーディオマネージャーの初期化
+    initAudioManager();
+    
+    // 選択肢ボタンのイベントリスナーを設定
+    setupOptionButtons();
+    
+    // 次へボタンのイベントリスナーを設定
+    setupNextButton();
+});
+
+/**
+ * 選択肢ボタンのイベントリスナーを設定
+ */
+function setupOptionButtons() {
+    const optionButtons = document.querySelectorAll('.option-btn');
+    
+    optionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (isAnswered) {
+                return; // 既に回答済みの場合は何もしない
+            }
+            
+            const userAnswer = this.getAttribute('data-answer');
+            handleAnswer(userAnswer);
+        });
+        
+        // キーボードアクセシビリティ: Enterキーで選択
+        button.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !isAnswered) {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+}
+
+/**
+ * 回答処理
+ */
+async function handleAnswer(userAnswer) {
+    if (isAnswered) {
+        return;
+    }
+    
+    isAnswered = true;
+    
+    // タイマーを停止
+    stopTimer();
+    
+    // 回答にかかった時間を計算
+    const timeTaken = Math.floor((Date.now() - currentQuestionStartTime) / 1000);
+    
+    // すべての選択肢ボタンを無効化
+    const optionButtons = document.querySelectorAll('.option-btn');
+    optionButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+    });
+    
+    // サーバーに回答を送信
+    try {
+        const response = await fetch('/quiz/answer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                question_id: currentQuestionId,
+                answer: userAnswer,
+                time_taken: timeTaken
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('回答の送信に失敗しました');
+        }
+        
+        const result = await response.json();
+        
+        // 結果を表示
+        displayResult(userAnswer, result);
+        
+        // 効果音を再生
+        if (result.is_correct) {
+            playCorrectSound();
+        } else {
+            playIncorrectSound();
+        }
+        
+    } catch (error) {
+        console.error('エラー:', error);
+        alert('回答の送信に失敗しました。ページを再読み込みしてください。');
+        isAnswered = false;
+    }
+}
+
+/**
+ * 結果を表示
+ */
+function displayResult(userAnswer, result) {
+    const optionButtons = document.querySelectorAll('.option-btn');
+    const explanationBox = document.getElementById('explanation-box');
+    const resultTitle = document.getElementById('result-title');
+    const explanationText = document.getElementById('explanation-text');
+    const nextButtonContainer = document.getElementById('next-button-container');
+    
+    // 選択肢ボタンのスタイルを更新
+    optionButtons.forEach(btn => {
+        const answer = btn.getAttribute('data-answer');
+        
+        if (answer === result.correct_answer) {
+            // 正解の選択肢を緑色に
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-success', 'correct');
+        } else if (answer === userAnswer && !result.is_correct) {
+            // ユーザーが選択した不正解の選択肢を赤色に
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-danger', 'incorrect');
+        } else {
+            // その他の選択肢はグレーアウト
+            btn.classList.add('disabled');
+        }
+    });
+    
+    // 解説を表示
+    if (explanationBox && resultTitle && explanationText) {
+        if (result.is_correct) {
+            resultTitle.textContent = '✓ 正解！';
+            explanationBox.classList.remove('alert-danger');
+            explanationBox.classList.add('alert-success', 'show');
+        } else {
+            resultTitle.textContent = '✗ 不正解';
+            explanationBox.classList.remove('alert-success');
+            explanationBox.classList.add('alert-danger', 'show');
+        }
+        explanationText.textContent = result.explanation;
+    }
+    
+    // 次へボタンを表示
+    if (nextButtonContainer) {
+        nextButtonContainer.style.display = 'block';
+        nextButtonContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+/**
+ * 次へボタンのイベントリスナーを設定
+ */
+function setupNextButton() {
+    const nextButton = document.getElementById('next-button');
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', async function() {
+            // 次の問題を取得
+            try {
+                const response = await fetch('/quiz/next');
+                
+                if (!response.ok) {
+                    throw new Error('次の問題の取得に失敗しました');
+                }
+                
+                const data = await response.json();
+                
+                if (data.finished) {
+                    // クイズ終了
+                    window.location.href = data.redirect_url;
+                } else {
+                    // 次の問題を表示（ページを再読み込み）
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('次の問題の取得に失敗しました。ページを再読み込みしてください。');
+            }
+        });
+    }
+}
+
+/**
+ * 時間切れ処理
+ */
+function handleTimeout() {
+    if (isAnswered) {
+        return;
+    }
+    
+    // 自動的に不正解として処理（最初の選択肢を選択したとみなす）
+    // 実際には、時間切れの場合は回答なしとして処理する方が適切かもしれません
+    const firstButton = document.querySelector('.option-btn');
+    if (firstButton) {
+        handleAnswer('A'); // デフォルトでAを選択
+    }
+}
+

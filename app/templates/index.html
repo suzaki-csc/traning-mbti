@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}カテゴリ選択 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-center mb-4" role="heading" aria-level="1">クイズアプリケーション</h1>
+        <p class="lead text-center mb-5">
+            IT関連の知識を楽しく学べるクイズアプリです。<br>
+            カテゴリを選択して、クイズに挑戦しましょう！
+        </p>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for category in categories %}
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm" role="article" aria-labelledby="category-{{ category.id }}-title">
+            <div class="card-body d-flex flex-column">
+                <h2 class="card-title h4" id="category-{{ category.id }}-title">
+                    <i class="bi bi-folder-fill text-primary"></i> {{ category.name }}
+                </h2>
+                <p class="card-text text-muted flex-grow-1">
+                    {{ category.description or 'このカテゴリの問題に挑戦しましょう。' }}
+                </p>
+                <p class="text-muted small">
+                    <i class="bi bi-question-circle"></i> 問題数: {{ category.questions|length }}問
+                </p>
+                <a href="{{ url_for('main.start_quiz', category_id=category.id) }}" 
+                   class="btn btn-primary btn-lg mt-auto" 
+                   role="button"
+                   aria-label="{{ category.name }}のクイズを開始">
+                    <i class="bi bi-play-fill"></i> クイズを開始
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> カテゴリが登録されていません。
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="h5 mb-0" role="heading" aria-level="3">
+                    <i class="bi bi-info-circle"></i> 使い方
+                </h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        カテゴリを選択してクイズを開始します
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        各問題は4択形式で、制限時間は30秒です
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        クイズ終了後、スコアと復習リストが表示されます
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        間違えた問題は復習モードで再度挑戦できます
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

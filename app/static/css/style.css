@@ -1,0 +1,116 @@
+/* クイズアプリケーション カスタムCSS */
+
+/* アクセシビリティ: フォーカス表示を明確に */
+*:focus {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* ボタンのアクセシビリティ向上 */
+.btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.5);
+}
+
+/* カードのホバー効果 */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 選択肢ボタンのスタイル */
+.option-btn {
+    border-width: 2px;
+}
+
+.option-btn.correct {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.option-btn.incorrect {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.option-btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* タイマーのプログレスバー */
+#timer-progress {
+    transition: none;
+}
+
+#timer-bar.warning {
+    background-color: #ffc107;
+}
+
+#timer-bar.danger {
+    background-color: #dc3545;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* 解説ボックスのスタイル */
+.explanation-box {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* スコア表示のスタイル */
+.display-1 {
+    color: #0d6efd;
+}
+
+/* 復習リストのアコーディオン */
+.accordion-button:not(.collapsed) {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* レスポンシブデザインの調整 */
+@media (max-width: 768px) {
+    .option-btn {
+        font-size: 1rem;
+        min-height: 50px;
+    }
+    
+    .display-1 {
+        font-size: 3rem;
+    }
+}
+
+/* 印刷時のスタイル */
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none;
+    }
+}
+
