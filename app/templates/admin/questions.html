@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}クイズ管理{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="bi bi-question-circle me-2"></i>クイズ管理
+                </h2>
+                <div>
+                    <a href="{{ url_for('admin_index') }}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left me-1"></i>管理画面に戻る
+                    </a>
+                    <a href="{{ url_for('admin_question_new') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>新規作成
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('admin_questions') }}" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="category_id" class="form-label">カテゴリで絞り込み</label>
+                            <select class="form-select" id="category_id" name="category_id">
+                                <option value="">すべて</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}" {% if selected_category_id == cat.id %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-outline-primary">絞り込み</button>
+                            {% if selected_category_id %}
+                            <a href="{{ url_for('admin_questions') }}" class="btn btn-outline-secondary ms-2">リセット</a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if questions %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>カテゴリ</th>
+                            <th>問題文</th>
+                            <th>正解</th>
+                            <th>作成日</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in questions %}
+                        <tr>
+                            <td>{{ question.id }}</td>
+                            <td>{{ question.category.name }}</td>
+                            <td>{{ question.question_text[:50] }}{% if question.question_text|length > 50 %}...{% endif %}</td>
+                            <td><span class="badge bg-success">{{ question.correct_answer }}</span></td>
+                            <td>{{ question.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_question_edit', question_id=question.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil me-1"></i>編集
+                                </a>
+                                <form method="POST" action="{{ url_for('admin_question_delete', question_id=question.id) }}" class="d-inline" onsubmit="return confirm('この問題を削除しますか？');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash me-1"></i>削除
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>問題が登録されていません。
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

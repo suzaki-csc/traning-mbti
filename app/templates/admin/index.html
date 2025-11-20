@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}管理画面{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-gear me-2"></i>管理画面
+            </h2>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-people me-2"></i>ユーザ管理
+                            </h5>
+                            <p class="card-text">ユーザの一覧表示、詳細表示、情報・ロールの変更、削除ができます。</p>
+                            <a href="{{ url_for('admin_users') }}" class="btn btn-primary">ユーザ管理へ</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-clock-history me-2"></i>全ユーザの診断履歴
+                            </h5>
+                            <p class="card-text">全ユーザの診断履歴を確認できます。</p>
+                            <a href="{{ url_for('admin_history') }}" class="btn btn-primary">履歴確認へ</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-folder me-2"></i>カテゴリ管理
+                            </h5>
+                            <p class="card-text">カテゴリの作成・修正・削除ができます。</p>
+                            <a href="{{ url_for('admin_categories') }}" class="btn btn-primary">カテゴリ管理へ</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-question-circle me-2"></i>クイズ管理
+                            </h5>
+                            <p class="card-text">クイズの作成・修正・削除ができます。</p>
+                            <a href="{{ url_for('admin_questions') }}" class="btn btn-primary">クイズ管理へ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

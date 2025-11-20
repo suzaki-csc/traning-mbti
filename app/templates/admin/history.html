@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}全ユーザの診断履歴{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="bi bi-clock-history me-2"></i>全ユーザの診断履歴
+                </h2>
+                <a href="{{ url_for('admin_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>管理画面に戻る
+                </a>
+            </div>
+            
+            {% if quiz_sessions %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>日時</th>
+                            <th>ユーザ</th>
+                            <th>カテゴリ</th>
+                            <th>スコア</th>
+                            <th>正答率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in quiz_sessions %}
+                        <tr>
+                            <td>{{ session.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if session.user %}
+                                <a href="{{ url_for('admin_user_detail', user_id=session.user.id) }}">
+                                    {{ session.user.user_id }}
+                                </a>
+                                {% else %}
+                                <span class="text-muted">（ゲスト）</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ session.category.name }}</td>
+                            <td>{{ session.score }}/{{ session.total_questions }}</td>
+                            <td>
+                                {% set percentage = (session.score / session.total_questions * 100) | int %}
+                                <span class="badge {% if percentage >= 80 %}bg-success{% elif percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {{ percentage }}%
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>診断履歴がありません。
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

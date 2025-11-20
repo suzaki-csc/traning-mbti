@@ -1,8 +1,10 @@
 """
 クイズアプリケーションパッケージ
 """
-from app.app import app
-from app.models import db, Category, Question, QuizSession
+# app.pyとmodels.pyは同じディレクトリにあるため、直接インポート
+# FLASK_APP=app.app:app で起動するため、ここではエクスポートのみ
+from . import app
+from . import models
 
-__all__ = ['app', 'db', 'Category', 'Question', 'QuizSession']
+__all__ = ['app', 'models']
 

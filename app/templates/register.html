@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザ登録{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">ユーザ登録</h2>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <div class="mb-3">
+                            <label for="user_id" class="form-label">ユーザID</label>
+                            <input type="text" class="form-control" id="user_id" name="user_id" required>
+                            <small class="form-text text-muted">ログイン時に使用するIDを入力してください</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                            <small class="form-text text-muted">6文字以上で入力してください</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirm" class="form-label">パスワード（確認）</label>
+                            <input type="password" class="form-control" id="password_confirm" name="password_confirm" required minlength="6">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">登録</button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    <div class="text-center">
+                        <p>既にアカウントをお持ちの方は <a href="{{ url_for('login') }}">こちらからログイン</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

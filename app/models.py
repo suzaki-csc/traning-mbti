@@ -63,10 +63,11 @@ class Question(db.Model):
 
 class QuizSession(db.Model):
     """
-    クイズセッションの履歴を保存するモデル（オプション機能）
+    クイズセッションの履歴を保存するモデル
     
     Attributes:
         id: セッションID（主キー）
+        user_id: ユーザID（外部キー、オプション）
         category_id: カテゴリID（外部キー）
         score: 正解数
         total_questions: 総問題数
@@ -75,6 +76,7 @@ class QuizSession(db.Model):
     __tablename__ = 'quiz_session'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     total_questions = db.Column(db.Integer, nullable=False)
@@ -82,4 +84,46 @@ class QuizSession(db.Model):
     
     def __repr__(self):
         return f'<QuizSession {self.id}: {self.score}/{self.total_questions}>'
+
+class User(db.Model):
+    """
+    ユーザを管理するモデル
+    
+    Attributes:
+        id: ユーザID（主キー）
+        user_id: ユーザID（ログイン用、一意）
+        email: メールアドレス（一意）
+        password_hash: パスワードハッシュ
+        role: ロール（'user' または 'admin'）
+        created_at: 作成日時
+        quiz_sessions: このユーザのクイズセッション履歴（リレーション）
+    """
+    __tablename__ = 'user'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), nullable=False, unique=True)
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='user')  # 'user' または 'admin'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # リレーション: このユーザのクイズセッション履歴
+    quiz_sessions = db.relationship('QuizSession', backref='user', lazy=True, cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f'<User {self.user_id} ({self.role})>'
+    
+    def set_password(self, password):
+        """パスワードをハッシュ化して設定"""
+        from werkzeug.security import generate_password_hash
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """パスワードが正しいかチェック"""
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.password_hash, password)
+    
+    def is_admin(self):
+        """管理者かどうかを判定"""
+        return self.role == 'admin'
 

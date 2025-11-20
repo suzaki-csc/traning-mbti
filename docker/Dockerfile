@@ -54,6 +54,7 @@ EXPOSE 5000
 ENV FLASK_APP=app.app:app
 ENV FLASK_ENV=production
 ENV PYTHONPATH=/app
+ENV PYTHONWARNINGS=ignore::RuntimeWarning
 
 # アプリケーションを起動
 CMD ["poetry", "run", "python", "-m", "app.app"]
