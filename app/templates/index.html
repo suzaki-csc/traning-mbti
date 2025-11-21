@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}トップページ - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">クイズアプリケーションへようこそ</h1>
+            <p class="lead">IT関連の知識を楽しく学べるクイズアプリケーションです。</p>
+            <hr class="my-4">
+            <p>セキュリティ、IT基礎、プログラミングなど、様々なカテゴリからクイズを選択して学習できます。</p>
+            {% if not session.user_id %}
+            <div class="mt-4">
+                <a class="btn btn-primary btn-lg me-2" href="{{ url_for('auth.login') }}" role="button">ログイン</a>
+                <a class="btn btn-outline-primary btn-lg" href="{{ url_for('auth.register') }}" role="button">新規登録</a>
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <a class="btn btn-primary btn-lg" href="{{ url_for('quiz.select') }}" role="button">クイズを始める</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

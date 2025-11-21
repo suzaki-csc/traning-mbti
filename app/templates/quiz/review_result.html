@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}復習モード結果 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h2 class="mb-0">{{ category.name }} - 復習モード結果</h2>
+            </div>
+            <div class="card-body text-center">
+                <h1 class="display-1 mb-4">{{ score }}/{{ total }}</h1>
+                <h2 class="mb-4">正答率: {{ "%.1f"|format((score / total * 100) if total > 0 else 0) }}%</h2>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('history.list') }}" class="btn btn-primary btn-lg">履歴に戻る</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

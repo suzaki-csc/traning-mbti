@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}レビュー - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>レビュー一覧</h1>
+            {% if session.user_id %}
+            <a href="{{ url_for('review.new') }}" class="btn btn-primary">レビューを投稿</a>
+            {% endif %}
+        </div>
+        
+        {% if reviews %}
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ review.title }}</h5>
+                        {% if review.rating %}
+                        <small>評価: {{ '★' * review.rating }}{{ '☆' * (5 - review.rating) }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <!-- XSS脆弱性: エスケープなしで表示 -->
+                        <div class="review-content">{{ review.content|safe }}</div>
+                        <small class="text-muted">
+                            {{ review.user.user_id }} - {{ review.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </small>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('review.detail', review_id=review.id) }}" class="btn btn-sm btn-outline-primary">詳細を見る</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            レビューがありません。
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

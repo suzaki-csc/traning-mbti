@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}クイズ管理 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>クイズ管理</h1>
+            <div>
+                <a href="{{ url_for('admin.category_new') }}" class="btn btn-success">カテゴリ作成</a>
+                <a href="{{ url_for('admin.quiz_new') }}" class="btn btn-primary">クイズ作成</a>
+            </div>
+        </div>
+        
+        <!-- カテゴリフィルタ -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="category_id" class="form-label">カテゴリ</label>
+                        <select class="form-select" id="category_id" name="category_id">
+                            <option value="">すべて</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selected_category and selected_category.id == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">フィルタ</button>
+                        <a href="{{ url_for('admin.quizzes') }}" class="btn btn-outline-secondary ms-2">リセット</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- カテゴリ一覧 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>カテゴリ一覧</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名前</th>
+                                <th>説明</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.id }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description or '-' }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.category_edit', category_id=category.id) }}" class="btn btn-sm btn-outline-primary">編集</a>
+                                    <form method="POST" action="{{ url_for('admin.category_delete', category_id=category.id) }}" class="d-inline" onsubmit="return confirm('本当に削除しますか？');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- クイズ一覧 -->
+        <div class="card">
+            <div class="card-header">
+                <h3>クイズ一覧</h3>
+            </div>
+            <div class="card-body">
+                {% if quizzes %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>カテゴリ</th>
+                                <th>問題</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for quiz in quizzes %}
+                            <tr>
+                                <td>{{ quiz.id }}</td>
+                                <td>{{ quiz.category.name }}</td>
+                                <td>{{ quiz.question[:50] }}{% if quiz.question|length > 50 %}...{% endif %}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.quiz_edit', quiz_id=quiz.id) }}" class="btn btn-sm btn-outline-primary">編集</a>
+                                    <form method="POST" action="{{ url_for('admin.quiz_delete', quiz_id=quiz.id) }}" class="d-inline" onsubmit="return confirm('本当に削除しますか？');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    クイズがありません。
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

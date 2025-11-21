@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}管理ダッシュボード - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">管理ダッシュボード</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="display-4">{{ total_users }}</h2>
+                <p class="card-text">ユーザー数</p>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-primary">ユーザー管理</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="display-4">{{ total_categories }}</h2>
+                <p class="card-text">カテゴリ数</p>
+                <a href="{{ url_for('admin.quizzes') }}" class="btn btn-primary">クイズ管理</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="display-4">{{ total_quizzes }}</h2>
+                <p class="card-text">問題数</p>
+                <a href="{{ url_for('admin.quizzes') }}" class="btn btn-primary">クイズ管理</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="display-4">{{ total_results }}</h2>
+                <p class="card-text">クイズ実施回数</p>
+                <a href="{{ url_for('admin.history') }}" class="btn btn-primary">履歴管理</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="list-group">
+            <a href="{{ url_for('admin.users') }}" class="list-group-item list-group-item-action">
+                <h5>ユーザー管理</h5>
+                <p class="mb-0">ユーザーの一覧、詳細、編集、削除</p>
+            </a>
+            <a href="{{ url_for('admin.quizzes') }}" class="list-group-item list-group-item-action">
+                <h5>クイズ管理</h5>
+                <p class="mb-0">カテゴリとクイズの作成、編集、削除</p>
+            </a>
+            <a href="{{ url_for('admin.reviews') }}" class="list-group-item list-group-item-action">
+                <h5>レビュー管理</h5>
+                <p class="mb-0">レビューの一覧、詳細、削除</p>
+            </a>
+            <a href="{{ url_for('admin.history') }}" class="list-group-item list-group-item-action">
+                <h5>全ユーザー履歴</h5>
+                <p class="mb-0">全ユーザーのクイズ履歴を確認</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

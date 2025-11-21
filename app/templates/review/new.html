@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}レビュー投稿 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">レビューを投稿</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('review.new') }}">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">タイトル</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">内容</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">評価（1-5）</label>
+                        <select class="form-select" id="rating" name="rating">
+                            <option value="">評価なし</option>
+                            <option value="1">1 - 悪い</option>
+                            <option value="2">2 - やや悪い</option>
+                            <option value="3">3 - 普通</option>
+                            <option value="4">4 - 良い</option>
+                            <option value="5">5 - 非常に良い</option>
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">投稿</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

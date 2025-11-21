@@ -1,0 +1,57 @@
+services:
+  # MySQLデータベース
+  mysql:
+    image: mysql:8.0
+    container_name: quiz_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: quiz_db
+      MYSQL_USER: quiz_user
+      MYSQL_PASSWORD: quiz_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - quiz_network
+
+  # Flaskアプリケーション
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: quiz_app
+    environment:
+      DATABASE_URL: mysql+pymysql://quiz_user:quiz_password@mysql:3306/quiz_db
+      SECRET_KEY: dev-secret-key-change-in-production
+      FLASK_APP: app
+      FLASK_ENV: production
+    ports:
+      - "5000:5000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../app:/app/app
+    networks:
+      - quiz_network
+    command: >
+      sh -c "
+        poetry run flask db upgrade &&
+        poetry run python -m app.data.initial_data &&
+        gunicorn --bind 0.0.0.0:5000 --workers 4 'app:create_app()'
+      "
+
+volumes:
+  mysql_data:
+
+networks:
+  quiz_network:
+    driver: bridge
+

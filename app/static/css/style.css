@@ -1,0 +1,37 @@
+/* カスタムスタイル */
+
+.alert-container {
+    margin-bottom: 1rem;
+}
+
+.progress-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-item {
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.review-content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* アクセシビリティ: フォーカス表示を明確に */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .progress-item {
+        font-size: 0.75rem;
+    }
+}
+

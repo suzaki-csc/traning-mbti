@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー編集 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">ユーザー編集</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.user_edit', user_id=user.id) }}">
+                    <div class="mb-3">
+                        <label for="user_id" class="form-label">ユーザーID</label>
+                        <input type="text" class="form-control" id="user_id" name="user_id" value="{{ user.user_id }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">メールアドレス</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">ロール</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="user" {% if user.role == 'user' %}selected{% endif %}>一般ユーザー</option>
+                            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>管理者</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">パスワード（変更する場合のみ入力）</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6">
+                        <small class="form-text text-muted">変更しない場合は空欄のままにしてください</small>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">更新</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

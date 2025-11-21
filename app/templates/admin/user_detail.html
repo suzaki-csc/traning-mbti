@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}ユーザー詳細 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">ユーザー詳細</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>{{ user.user_id }}</h3>
+                <p><strong>メールアドレス:</strong> {{ user.email }}</p>
+                <p><strong>ロール:</strong> 
+                    <span class="badge {% if user.role == 'admin' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ '管理者' if user.role == 'admin' else '一般ユーザー' }}
+                    </span>
+                </p>
+                <p><strong>登録日時:</strong> {{ user.created_at.strftime('%Y年%m月%d日 %H:%M') }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('admin.user_edit', user_id=user.id) }}" class="btn btn-primary">編集</a>
+                {% if user.id != session.user_id %}
+                <form method="POST" action="{{ url_for('admin.user_delete', user_id=user.id) }}" class="d-inline" onsubmit="return confirm('本当に削除しますか？');">
+                    <button type="submit" class="btn btn-danger">削除</button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary">一覧に戻る</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

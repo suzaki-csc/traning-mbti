@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}履歴詳細 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">履歴詳細</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>{{ result.category.name }} - {{ result.completed_at.strftime('%Y年%m月%d日 %H:%M') }}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>スコア:</strong> {{ result.score }}/{{ result.total_questions }} ({{ "%.1f"|format(result.get_percentage()) }}%)</p>
+            </div>
+        </div>
+        
+        <h2 class="mb-3">回答詳細</h2>
+        {% for item in quiz_data %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>問題 {{ loop.index }}</h5>
+                <p><strong>{{ item.quiz.question }}</strong></p>
+                <div class="mb-2">
+                    <span class="badge {% if item.answer.is_correct %}bg-success{% else %}bg-danger{% endif %}">
+                        あなたの回答: {{ item.answer.user_answer }}. {{ item.quiz.get_option(item.answer.user_answer) }}
+                    </span>
+                    <span class="badge bg-success ms-2">
+                        正解: {{ item.quiz.correct_answer }}. {{ item.quiz.get_option(item.quiz.correct_answer) }}
+                    </span>
+                </div>
+                <div class="alert alert-info">
+                    <strong>解説:</strong> {{ item.quiz.explanation }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="mt-4">
+            <a href="{{ url_for('history.list') }}" class="btn btn-primary">履歴一覧に戻る</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

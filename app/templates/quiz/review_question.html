@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}復習モード - 問題 {{ progress.current }}/{{ progress.total }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h4>復習モード</h4>
+            <p>間違えた問題を再度挑戦します</p>
+        </div>
+
+        <div class="mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <span>問題 {{ progress.current }}/{{ progress.total }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ category.name }}</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-4">{{ quiz.question }}</h4>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-lg answer-btn" data-answer="1">
+                        1. {{ quiz.option1 }}
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg answer-btn" data-answer="2">
+                        2. {{ quiz.option2 }}
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg answer-btn" data-answer="3">
+                        3. {{ quiz.option3 }}
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg answer-btn" data-answer="4">
+                        4. {{ quiz.option4 }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+<script>
+    const quizConfig = {
+        categoryId: {{ category.id }},
+        questionNum: {{ question_num }},
+        isReviewMode: true
+    };
+    
+    // 復習モード用の回答処理をオーバーライド
+    const originalHandleAnswer = handleAnswer;
+    handleAnswer = function(answer) {
+        const buttons = document.querySelectorAll('.answer-btn');
+        buttons.forEach(function(btn) {
+            btn.disabled = true;
+        });
+        
+        const categoryId = quizConfig.categoryId;
+        const questionNum = quizConfig.questionNum;
+        
+        fetch(`/quiz/${categoryId}/review/answer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                question_num: questionNum,
+                answer: answer
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const selectedButton = document.querySelector(`.answer-btn[data-answer="${answer}"]`);
+            const correctButton = document.querySelector(`.answer-btn[data-answer="${data.correct_answer}"]`);
+            
+            if (data.correct) {
+                selectedButton.classList.remove('btn-outline-primary');
+                selectedButton.classList.add('btn-success');
+                if (typeof playSound === 'function') {
+                    playSound('correct');
+                }
+            } else {
+                selectedButton.classList.remove('btn-outline-primary');
+                selectedButton.classList.add('btn-danger');
+                if (correctButton) {
+                    correctButton.classList.remove('btn-outline-primary');
+                    correctButton.classList.add('btn-success');
+                }
+                if (typeof playSound === 'function') {
+                    playSound('incorrect');
+                }
+            }
+            
+            setTimeout(function() {
+                window.location.href = `/quiz/${categoryId}/review/explanation/${questionNum}`;
+            }, 1500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('エラーが発生しました。ページを再読み込みしてください。');
+        });
+    };
+</script>
+{% endblock %}
+

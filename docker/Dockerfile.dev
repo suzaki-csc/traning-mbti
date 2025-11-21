@@ -1,0 +1,34 @@
+# Flaskアプリケーション用Dockerfile（開発環境用）
+FROM python:3.12-slim
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# システムパッケージのインストール
+RUN apt-get update && apt-get install -y \
+    gcc \
+    default-libmysqlclient-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Poetryのインストール
+RUN pip install poetry
+
+# Poetryの設定（仮想環境を作成しない）
+RUN poetry config virtualenvs.create false
+
+# 依存関係ファイルをコピー
+COPY pyproject.toml poetry.lock ./
+
+# 依存関係のインストール（開発用パッケージも含む）
+RUN poetry install
+
+# アプリケーションコードをコピー（ボリュームマウントで上書きされる）
+COPY . .
+
+# ポートを公開
+EXPOSE 5000
+
+# デフォルトコマンド（docker-composeで上書きされる）
+CMD ["poetry", "run", "flask", "run", "--host=0.0.0.0", "--port=5000", "--reload"]
+

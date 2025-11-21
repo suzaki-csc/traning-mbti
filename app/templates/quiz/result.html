@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}結果 - クイズアプリケーション{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">{{ category.name }} - 結果</h2>
+            </div>
+            <div class="card-body text-center">
+                <h1 class="display-1 mb-4">{{ score }}/{{ total }}</h1>
+                <h2 class="mb-4">正答率: {{ "%.1f"|format((score / total * 100) if total > 0 else 0) }}%</h2>
+                
+                {% if wrong_quizzes %}
+                <div class="alert alert-warning mt-4">
+                    <h4>復習が必要な問題</h4>
+                    <p>以下の問題を間違えました。復習モードで再度挑戦できます。</p>
+                </div>
+                
+                <div class="list-group mb-4">
+                    {% for quiz in wrong_quizzes %}
+                    <div class="list-group-item">
+                        <strong>{{ quiz.question }}</strong><br>
+                        <small>正解: {{ quiz.get_option(quiz.correct_answer) }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <a href="{{ url_for('quiz.review_mode', category_id=category.id, quiz_result_id=quiz_result_id) }}" 
+                   class="btn btn-warning btn-lg mb-3">復習モードで再挑戦</a>
+                {% else %}
+                <div class="alert alert-success mt-4">
+                    <h4>全問正解！おめでとうございます！</h4>
+                </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <button id="copy-score" class="btn btn-secondary btn-lg mb-3">スコアをコピー</button>
+                    <div>
+                        <a href="{{ url_for('quiz.select') }}" class="btn btn-primary btn-lg me-2">別のカテゴリでクイズ</a>
+                        <a href="{{ url_for('history.list') }}" class="btn btn-outline-primary btn-lg">履歴を見る</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // スコアコピー機能
+    document.getElementById('copy-score').addEventListener('click', function() {
+        const scoreText = '{{ category.name }}クイズ: {{ score }}/{{ total }}問正解 ({{ "%.1f"|format((score / total * 100) if total > 0 else 0) }}%)';
+        navigator.clipboard.writeText(scoreText).then(function() {
+            alert('スコアをクリップボードにコピーしました');
+        });
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+services:
+  # MySQLデータベース
+  mysql:
+    image: mysql:8.0
+    container_name: quiz_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: quiz_db
+      MYSQL_USER: quiz_user
+      MYSQL_PASSWORD: quiz_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - quiz_network
+
+  # Flaskアプリケーション（開発環境用）
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: quiz_app
+    environment:
+      DATABASE_URL: mysql+pymysql://quiz_user:quiz_password@mysql:3306/quiz_db
+      SECRET_KEY: dev-secret-key-change-in-production
+      FLASK_APP: app
+      FLASK_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../app:/app/app
+      - ../migrations:/app/migrations
+    networks:
+      - quiz_network
+    command: >
+      sh -c "
+        echo 'データベースの初期化を実行しています...' &&
+        sleep 5 &&
+        poetry run flask db upgrade 2>/dev/null || poetry run flask db init || true &&
+        poetry run flask db migrate -m 'Initial migration' 2>/dev/null || true &&
+        poetry run flask db upgrade &&
+        echo '初期データを投入しています...' &&
+        poetry run python -m app.data.initial_data 2>/dev/null || echo '初期データは既に投入済みです' &&
+        echo '' &&
+        echo '==========================================' &&
+        echo 'アプリケーションを起動しています...' &&
+        echo 'ブラウザで http://localhost:5000 にアクセスしてください' &&
+        echo '==========================================' &&
+        echo '' &&
+        poetry run flask run --host=0.0.0.0 --port=5000 --reload
+      "
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:
+
+networks:
+  quiz_network:
+    driver: bridge
+

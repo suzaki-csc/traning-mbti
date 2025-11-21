@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}復習モード - 解説{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h4>復習モード</h4>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ category.name }} - 問題 {{ question_num + 1 }}</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-4">{{ quiz.question }}</h4>
+                
+                <div class="mb-3">
+                    <strong>あなたの回答:</strong>
+                    <span class="badge {% if answer_data.is_correct %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ answer_data.user_answer }}. {{ quiz.get_option(answer_data.user_answer) }}
+                    </span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>正解:</strong>
+                    <span class="badge bg-success">
+                        {{ quiz.correct_answer }}. {{ quiz.get_option(quiz.correct_answer) }}
+                    </span>
+                </div>
+                
+                <div class="alert {% if answer_data.is_correct %}alert-success{% else %}alert-danger{% endif %}">
+                    <h5>解説</h5>
+                    <p>{{ quiz.explanation }}</p>
+                </div>
+                
+                <div class="text-center">
+                    {% if has_next %}
+                    <a href="{{ url_for('quiz.review_question', category_id=category.id, question_num=question_num + 1) }}" 
+                       class="btn btn-primary btn-lg">次の問題へ</a>
+                    {% else %}
+                    <a href="{{ url_for('quiz.review_result', category_id=category.id) }}" 
+                       class="btn btn-primary btn-lg">結果を見る</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
